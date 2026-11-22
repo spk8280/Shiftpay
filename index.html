@@ -236,7 +236,7 @@ const L = {
     todayLbl:"Today", thisWeek:(h,o)=>`This week: ${h} worked/scheduled${o?` · ${o} overtime`:""}`,
     payPeriod:"Pay period", payday:"Payday",
     regular:"Regular", overtime:"Overtime", double:"Double time", holiday:"Holiday pay", pto:"PTO", diff:"Shift differential",
-    basePay:"Base salary", extraOT:"Extra-day overtime", gross:"Gross pay", k401:"401(k)", insurance:"Health insurance",
+    basePay:"Base salary", extraOT:"Overtime (extra hours)", gross:"Gross pay", k401:"401(k)", insurance:"Health insurance",
     taxes:"Taxes (est.)", takeHome:"Take-home (est.)", afterDed:"After deductions",
     noTaxNote:"Taxes aren't included. Add your tax rate in Settings to see take-home pay.",
     taxNote:p=>`Taxes estimated at ${p}% of taxable pay. Your real paystub may differ.`,
@@ -302,7 +302,7 @@ const L = {
     todayLbl:"오늘", thisWeek:(h,o)=>`이번 주: ${h}${o?` · OT ${o}`:""}`,
     payPeriod:"급여 기간", payday:"급여일",
     regular:"정규", overtime:"OT", double:"2배 근무", holiday:"공휴일 수당", pto:"PTO", diff:"교대 수당",
-    basePay:"기본급", extraOT:"휴무일 출근 OT", gross:"세전 합계", k401:"401(k)", insurance:"건강보험",
+    basePay:"기본급", extraOT:"OT (추가 근무)", gross:"세전 합계", k401:"401(k)", insurance:"건강보험",
     taxes:"세금 (예상)", takeHome:"실수령 (예상)", afterDed:"공제 후",
     noTaxNote:"세금은 빠져 있어요. 설정에서 세율을 넣으면 실수령액을 볼 수 있어요.",
     taxNote:p=>`세금은 과세 급여의 ${p}%로 추정했어요. 실제 명세서와 다를 수 있어요.`,
@@ -391,6 +391,8 @@ Object.assign(L.ko, {
   taxNoteAuto:s=>`2026년 연방 세율과 ${s} 세율로, 이번 급여를 1년 기준으로 환산해 추정했어요. 회사 원천징수액과 조금 다를 수 있어요.`,
   noTaxNote:"세금 계산이 꺼져 있어요. 설정 → 세금에서 켜면 실수령액을 볼 수 있어요."
 });
+Object.assign(L.en, { salDayOT:["Extra hours on work days count as overtime","Stay past your scheduled shift and the extra hours are paid at your overtime rate"] });
+Object.assign(L.ko, { salDayOT:["근무일 초과 시간도 OT","정해진 근무시간보다 더 일한 시간을 OT 배율로 계산"] });
 Object.assign(L.en, { curPeriod:(a,b)=>`Now working: ${a} – ${b}`, curPaid:d=>`Paid ${d} · tap for details` });
 Object.assign(L.ko, { curPeriod:(a,b)=>`지금 근무 중인 기간: ${a} – ${b}`, curPaid:d=>`${d} 지급 · 눌러서 자세히` });
 Object.assign(L.en, {
@@ -640,7 +642,7 @@ function defaults(){
     otMult:1.5, dblMult:2, dailyOT:false, seventhDouble:false, holidayPremium:true, holidayMult:2, salaryOtMult:1,
     freq:"biweekly", weekStart:0, periodAnchor:fromNum(ws), payDow:5, payDelay:0,
     semiMode:"end", semiLag:5, monthlyMode:"last", monthlyDay:5, weekendAdj:true,
-    taxMode:"auto", state:"GA", filing:"single", kids:0, otherDeps:0, extraWH:0, localPct:0, taxPct:0, country:(()=>{ try{ return Intl.DateTimeFormat().resolvedOptions().timeZone==="Asia/Seoul" ? "KR" : "US"; }catch(e){ return "US"; } })(), krSmall:false, krNight:true, krJuhyu:true, krNonTax:200000, krDeps:1, krKids:0, krWh:100,
+    taxMode:"auto", state:"GA", filing:"single", kids:0, otherDeps:0, extraWH:0, localPct:0, taxPct:0, country:(()=>{ try{ return Intl.DateTimeFormat().resolvedOptions().timeZone==="Asia/Seoul" ? "KR" : "US"; }catch(e){ return "US"; } })(), salaryDayOT:true, krSmall:false, krNight:true, krJuhyu:true, krNonTax:200000, krDeps:1, krKids:0, krWh:100,
     deds:[], overrides:{}, hours:{}, notes:{}, bonuses:{}, actuals:{}, pto:null, startDate:"" };
 }
 S = defaults();
@@ -688,14 +690,14 @@ function weekBuckets(ws){
     if(st==="PTO") b.pto = h;
     else if(KR() && isWork(st)){
       b.worked = h;
-      if(S.payType==="salary"){ if(st==="OT") b.extra = h; }
+      if(S.payType==="salary"){ if(st==="OT") b.extra = h; else if(S.salaryDayOT) b.extra = Math.max(0, h - paidHours()); }
       else if(st==="H" || holidayOf(n)){ b.hol = Math.min(h,8); b.dbl = Math.max(h-8,0); }
       else { const dr = Math.min(h,8), reg = Math.max(0, Math.min(dr, 40 - pool)); pool += reg; b.reg = reg; b.ot = (h - dr) + (dr - reg); }
       if(S.krNight && !S.krSmall && S.payType==="hourly") b.night = Math.min(h, nightHours(S.shiftStart, S.shiftEnd, S.breakMin) * (h / (paidHours()||h)));
     }
     else if(isWork(st)){
       b.worked = h;
-      if(S.payType==="salary"){ if(st==="OT") b.extra = h; }
+      if(S.payType==="salary"){ if(st==="OT") b.extra = h; else if(S.salaryDayOT) b.extra = Math.max(0, h - paidHours()); }
       else if(st==="H" || (S.holidayPremium && holidayOf(n))) b.hol = h;
       else if(S.seventhDouble && streakAt(n)===7) b.dbl = h;
       else {
@@ -1092,7 +1094,7 @@ function renderWiz(){
   } else if(step==="ot" && W.country==="KR"){
     body = `<h2>${t("krOtTitle")}</h2><p class="lead">${t("krOtLead")}</p>
       ${W.payType==="hourly" ? `${togH("wKs", W.krSmall, t("krSmall"))}${togH("wKn", W.krNight, t("krNight"))}${togH("wKj", W.krJuhyu, t("krJuhyu"))}`
-        : `<div class="field"><span class="lbl">${t("krSalOt")}</span><div class="quick">${quickH("som", W.salaryOtMult, [[1,"1×"],[1.5,"1.5×"],[2,"2×"]])}</div><span class="hint">${t("krSalOtHint")}</span></div>`}`;
+        : `<div class="field"><span class="lbl">${t("krSalOt")}</span><div class="quick">${quickH("som", W.salaryOtMult, [[1,"1×"],[1.5,"1.5×"],[2,"2×"]])}</div><span class="hint">${t("krSalOtHint")}</span></div>${togH("wSdo", W.salaryDayOT, t("salDayOT"))}`}`;
   } else if(step==="ot"){
     if(W.payType==="hourly"){
       body = `<h2>${t("q_ot")}</h2><p class="lead">${t("q_otLead")}</p>
@@ -1101,7 +1103,7 @@ function renderWiz(){
         ${W.holidayPremium ? `<div class="field"><span class="lbl">${t("holMultLbl")}</span><div class="quick">${quickH("hm", W.holidayMult, [[1.5,"1.5×"],[2,"2×"],[2.5,"2.5×"],[3,"3×"]])}</div></div>` : ""}`;
     } else {
       body = `<h2>${t("q_ot")}</h2><p class="lead">${t("salOtLead")}</p>
-        <div class="field"><span class="lbl">${t("salOtMult")}</span><div class="quick">${quickH("som", W.salaryOtMult, [[0,"0×"],[1,"1×"],[1.5,"1.5×"],[2,"2×"]])}</div><span class="hint">${t("salOtHint")}</span></div>`;
+        <div class="field"><span class="lbl">${t("salOtMult")}</span><div class="quick">${quickH("som", W.salaryOtMult, [[0,"0×"],[1,"1×"],[1.5,"1.5×"],[2,"2×"]])}</div><span class="hint">${t("salOtHint")}</span></div>${togH("wSdo", W.salaryDayOT, t("salDayOT"))}`;
     }
   } else if(step==="freq"){
     body = `<h2>${t("q_freq")}</h2><div class="picks">${pickH("fq", W.freq, ["weekly","biweekly","semimonthly","monthly"].map(k => [k, ...t("freq")[k]]))}</div>`;
@@ -1213,7 +1215,7 @@ function wireWiz(){
     else { Object.assign(W, { freq:"biweekly", weekStart:0, payDow:5, payDelay:0, taxMode:"auto", salaryOtMult:1, rate:"", salary:"", deds:[] }); }
     S.country = c; render(); renderWiz(); });
   const cbk = (id, key) => { const x = $("#"+id); if(x) x.onchange = () => { W[key] = x.checked; renderWiz(); }; };
-  cbk("wKs","krSmall"); cbk("wKn","krNight"); cbk("wKj","krJuhyu");
+  cbk("wSdo","salaryDayOT"); cbk("wKs","krSmall"); cbk("wKn","krNight"); cbk("wKj","krJuhyu");
   const taxPrev = () => { const c = $("#wTaxPrev"); if(!c) return; const g = typicalGross(W); if(!(g>0)){ c.hidden = true; return; } c.hidden = false;
     const keep = S.country; S.country = W.country; const r = taxCalc(g, W); S.country = keep; c.innerHTML = taxesOn(W) ? t("taxPreview", money(r.taxTotal), money(r.net)) : `${t("gross")} ${money(g)} → ${money(r.net)}`; };
   const stSel = $("#wState"); if(stSel) stSel.onchange = () => { W.state = stSel.value; renderWiz(); };
@@ -1266,6 +1268,7 @@ function migrate(o){
   if(o.k401 > 0 && !o.deds.some(d=>d.type==="k401")) o.deds.push({ type:"k401", amt:+o.k401 });
   if(o.insurance > 0 && !o.deds.some(d=>d.type==="health")) o.deds.push({ type:"health", amt:+o.insurance });
   delete o.k401; delete o.insurance;
+  if(o.salaryDayOT === undefined) o.salaryDayOT = true;
   if(!o.taxMode) o.taxMode = +o.taxPct > 0 ? "manual" : "auto";
   return o;
 }
