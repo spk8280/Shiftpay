@@ -393,6 +393,10 @@ Object.assign(L.ko, {
 });
 Object.assign(L.en, { salDayOT:["Extra hours on work days count as overtime","Stay past your scheduled shift and the extra hours are paid at your overtime rate"] });
 Object.assign(L.ko, { salDayOT:["근무일 초과 시간도 OT","정해진 근무시간보다 더 일한 시간을 OT 배율로 계산"] });
+Object.assign(L.en, { thisPeriod:"This pay period", daysLeft:n=> n<=0 ? "Ends today" : n===1 ? "1 day left" : `${n} days left`,
+  q_period:"How is your pay period set up?", monthlyLbl:"Monthly periods run from the 1st to the last day of the month.", periodPreview:(a,b)=>`Current pay period: <b>${a} – ${b}</b>.`, set_freq:"Pay period" });
+Object.assign(L.ko, { thisPeriod:"이번 급여 기간", daysLeft:n=> n<=0 ? "오늘 마감" : `${n}일 남음`,
+  q_period:"급여 기간은 어떻게 나뉘나요?", monthlyLbl:"월급은 매달 1일부터 말일까지가 한 기간이에요.", periodPreview:(a,b)=>`이번 급여 기간: <b>${a} – ${b}</b>`, set_freq:"급여 주기" });
 Object.assign(L.en, { curPeriod:(a,b)=>`Now working: ${a} – ${b}`, curPaid:d=>`Paid ${d} · tap for details` });
 Object.assign(L.ko, { curPeriod:(a,b)=>`지금 근무 중인 기간: ${a} – ${b}`, curPaid:d=>`${d} 지급 · 눌러서 자세히` });
 Object.assign(L.en, {
@@ -406,7 +410,7 @@ Object.assign(L.en, {
   ptoTile:"PTO balance", ptoAfter:h=>`${h} after booked PTO`, ptoSet:"Set up PTO",
   ptoTitle:"PTO balance", ptoBal:"Current balance (hours)", ptoAsOf:"As of", ptoAcc:"Hours earned per paycheck", ptoHint:"Booked PTO days on your calendar are subtracted automatically.",
   startLbl2:"Job start date", startHint:"Used for this year's totals.",
-  yearBtn:y=>`See ${y} so far (W-2 preview)`, yearTitle:y=>`${y} so far`, yearSub:(a,b)=>`Paychecks from ${a} to ${b}`,
+  yearBtn:y=>`See ${y} so far (W-2 preview)`, yearTitle:y=>`${y} so far`, yearSub:(a,b)=>`Pay periods ending ${a} – ${b}`,
   yGross:"Gross pay", yPre:"Pre-tax deductions", yTax:"Total taxes", yPost:"After-tax deductions", yNet:"Take-home", yHours:"Hours worked", yOt:"Overtime hours", yChecks:"Paychecks",
   set_pto:"PTO balance", set_start:"Job start date", saveBtn:"Save"
 });
@@ -421,7 +425,7 @@ Object.assign(L.ko, {
   ptoTile:"PTO 잔액", ptoAfter:h=>`예약한 PTO 뒤 ${h}`, ptoSet:"PTO 설정하기",
   ptoTitle:"PTO 잔액", ptoBal:"현재 잔액 (시간)", ptoAsOf:"기준일", ptoAcc:"급여 1회당 쌓이는 시간", ptoHint:"달력에 PTO로 바꾼 날은 자동으로 빠져요.",
   startLbl2:"이 직장 시작일", startHint:"올해 누적 합계에 써요.",
-  yearBtn:y=>`${y}년 누적 보기 (W-2 미리보기)`, yearTitle:y=>`${y}년 누적`, yearSub:(a,b)=>`${a} ~ ${b} 지급분`,
+  yearBtn:y=>`${y}년 누적 보기 (W-2 미리보기)`, yearTitle:y=>`${y}년 누적`, yearSub:(a,b)=>`${a} ~ ${b}에 끝난 급여 기간`,
   yGross:"세전 합계", yPre:"세전 공제", yTax:"세금 합계", yPost:"세후 공제", yNet:"실수령 합계", yHours:"근무 시간", yOt:"OT 시간", yChecks:"급여 횟수",
   set_pto:"PTO 잔액", set_start:"직장 시작일", saveBtn:"저장"
 });
@@ -729,20 +733,15 @@ function periodFor(n, st=S){
   if(st.freq==="weekly" || st.freq==="biweekly"){
     const len = st.freq==="weekly" ? 7 : 14, a = dayNum(st.periodAnchor);
     const s = a + Math.floor((n - a)/len)*len, e = s + len - 1;
-    const p = e + 1 + ((+st.payDow - dowN(e+1) + 7) % 7) + 7*(+st.payDelay||0);
-    return { s, e, pay:p };
+    return { s, e, pay:e };
   }
   const [y,m,d] = ymdN(n);
   if(st.freq==="semimonthly"){
     const first = d <= 15, s = Date.UTC(y,m-1, first?1:16)/864e5, e = first ? Date.UTC(y,m-1,15)/864e5 : lastDayN(y,m);
-    const p = st.semiMode==="end" ? e : e + (+st.semiLag||0);
-    return { s, e, pay: adjWeekend(p, st) };
+    return { s, e, pay:e };
   }
   const s = Date.UTC(y,m-1,1)/864e5, e = lastDayN(y,m);
-  let p = e;
-  if(st.monthlyMode==="same"){ p = Math.min(Date.UTC(y,m-1,+st.monthlyDay||25)/864e5, e); }
-  else if(st.monthlyMode==="day"){ const ny = m===12?y+1:y, nm = m===12?1:m+1; p = Math.min(Date.UTC(ny,nm-1,+st.monthlyDay||1)/864e5, lastDayN(ny,nm)); }
-  return { s, e, pay: adjWeekend(p, st) };
+  return { s, e, pay:e };
 }
 const shiftPeriod = (p, k) => { let q = p; while(k>0){ q = periodFor(q.e+1); k--; } while(k<0){ q = periodFor(q.s-1); k++; } return q; };
 function nextPayPeriod(st=S){ let p = periodFor(TODAY - 70, st), g = 0; while(p.pay < TODAY && g++ < 60) p = periodFor(p.e+1, st); return p; }
@@ -807,18 +806,15 @@ function yearTotals(){
 /* ================= render ================= */
 let periodOffset = 0, viewY = NOW.getFullYear(), viewM = NOW.getMonth()+1;
 function renderHero(){
-  const p = nextPayPeriod(), pc = paycheck(p), days = p.pay - TODAY;
-  const cur = periodFor(TODAY), len = cur.e - cur.s + 1, dIn = Math.min(len, Math.max(0, TODAY - cur.s + 1));
+  const p = periodFor(TODAY), pc = paycheck(p), len = p.e - p.s + 1, dIn = Math.min(len, Math.max(0, TODAY - p.s + 1));
   const showNet = taxesOn();
   $("#hero").innerHTML = `
-    <div class="eyebrow">${t("nextPayday")}</div>
-    <div class="when"><span class="date">${fDateW(p.pay)}</span><span class="count">${t("inDays", days)}</span></div>
+    <div class="eyebrow">${t("thisPeriod")}</div>
+    <div class="when"><span class="date">${fDate(p.s)} – ${fDate(p.e)}</span><span class="count">${t("daysLeft", p.e - TODAY)}</span></div>
     <div><div class="amt num">${money(showNet ? pc.net : pc.gross)}</div>
-      <div class="amt-cap">${showNet ? t("estNet") : t("estGross")} · ${t("forPeriod", fDate(p.s), fDate(p.e))}</div></div>
+      <div class="amt-cap">${showNet ? t("estNet") : t("estGross")} · ${hrs(pc.x.worked)}</div></div>
     <div><div class="bar"><i style="width:${Math.round(dIn/len*100)}%"></i></div>
-      <div class="barcap"><span>${t("payPeriod")} ${fDate(cur.s)} – ${fDate(cur.e)}</span><span>${t("periodProgress", dIn, len)}</span></div></div>
-    ${cur.s !== p.s ? (() => { const cc = paycheck(cur); return `<button class="curp" id="curP"><span><b>${t("curPeriod", fDate(cur.s), fDate(cur.e))}</b><span>${t("curPaid", fDateW(cur.pay))}</span></span><span class="num">${money(showNet ? cc.net : cc.gross)}</span></button>`; })() : ""}`;
-  const cp = $("#curP"); if(cp) cp.onclick = () => { const base = nextPayPeriod(); let k = 0, q = base; while(q.s < cur.s && k < 12){ q = periodFor(q.e+1); k++; } periodOffset = k; renderStub(); renderCal(); $("#stubCard").scrollIntoView({ behavior:"smooth", block:"start" }); };
+      <div class="barcap"><span>${t("freq")[S.freq][0]}</span><span>${t("periodProgress", dIn, len)}</span></div></div>`;
 }
 function renderToday(){
   const st = statusAt(TODAY), ws = wkStart(TODAY), wk = sumDays(ws, ws+6);
@@ -840,7 +836,7 @@ function renderStub(){
   rows += ln("total", (taxesOn() ? t("takeHome") : t("afterDed")), "", money(pc.net));
   $("#stubCard").innerHTML = `
     <div class="stub-head"><button class="nav-btn" id="pPrev" aria-label="Previous pay period">‹</button><h2>${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)}</h2><button class="nav-btn" id="pNext" aria-label="Next pay period">›</button></div>
-    <div class="stub-sub">${t("payday")} ${fDateW(p.pay)} · ${hrs(pc.x.worked)}</div>
+    <div class="stub-sub">${t("freq")[S.freq][0]} · ${hrs(pc.x.worked)}</div>
     <div class="stub">${rows}</div>
     ${(() => {
       let off = null; for(let n=Math.max(p.s, TODAY); n<=p.e; n++){ if(statusAt(n)==="O"){ off = n; break; } }
@@ -862,7 +858,7 @@ function renderCal(){
   const first = Date.UTC(viewY, viewM-1, 1)/864e5, last = lastDayN(viewY, viewM);
   const lead = (dowN(first) - S.weekStart + 7) % 7, cells = Math.ceil((lead + (last-first+1))/7)*7;
   const sel = shiftPeriod(nextPayPeriod(), periodOffset);
-  const pays = new Set(); let p = periodFor(first - 75), g = 0; while(p.s <= last + 40 && g++ < 60){ pays.add(p.pay); p = periodFor(p.e+1); }
+  const pays = new Set();
   let h = "";
   for(let i=0;i<7;i++) h += `<div class="dow">${fDow((S.weekStart+i)%7)}</div>`;
   for(let i=0;i<cells;i++){
@@ -874,7 +870,7 @@ function renderCal(){
   $("#calCard").innerHTML = `
     <div class="cal-head"><button class="nav-btn" id="mPrev" aria-label="Previous month">‹</button><h2>${fmt(first,{year:"numeric",month:"long"})}</h2><button class="tbtn" id="mToday">${t("today")}</button><button class="nav-btn" id="mNext" aria-label="Next month">›</button></div>
     <div class="grid" id="cal">${h}</div>
-    <div class="legend"><span><span class="pd">$</span>${t("legendPay")}</span><span class="s s-OT">OT</span><span class="s s-PTO">PTO</span><span class="s s-H">${t("st").H}</span><span>${t("tapHint")}</span></div>`;
+    <div class="legend"><span class="s s-OT">OT</span><span class="s s-PTO">PTO</span><span class="s s-H">${t("st").H}</span><span>${t("tapHint")}</span></div>`;
   $("#mPrev").onclick = () => { viewM--; if(viewM<1){viewM=12;viewY--;} renderCal(); };
   $("#mNext").onclick = () => { viewM++; if(viewM>12){viewM=1;viewY++;} renderCal(); };
   $("#mToday").onclick = () => { viewY = NOW.getFullYear(); viewM = NOW.getMonth()+1; periodOffset = 0; renderStub(); renderCal(); };
@@ -942,7 +938,7 @@ function openBonus(p){
   const draw = () => {
     const list = S.bonuses[key] || [];
     openSheet(`<div class="sheet-head"><h2>${t("bonusTitle")}</h2><button class="x" id="bX" aria-label="Close">✕</button></div>
-      <p class="lead">${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)} · ${t("payday")} ${fDateW(p.pay)}</p>
+      <p class="lead">${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)}</p>
       ${list.length ? `<div class="yr">${list.map((b,i) => `<div><span>${(b.name||t("bonus")).replace(/</g,"&lt;")}</span><span style="display:flex;gap:10px;align-items:center"><b>${money(+b.amt)}</b><button class="x" data-rm="${i}" style="width:28px;height:28px;font-size:12px" aria-label="Remove">✕</button></span></div>`).join("")}</div>` : ""}
       <div class="row2"><div class="field"><label for="bN">${t("bonusName")}</label><input id="bN" placeholder="${t("bonusPh")}"></div>
         <div class="field"><label for="bA">${t("bonusAmt")}</label><input id="bA" type="number" inputmode="decimal" step="0.01"></div></div>
@@ -991,7 +987,7 @@ function openSettings(){
     ["shift", t("set_shift"), `${fTime(S.shiftStart)} – ${fTime(S.shiftEnd)}`],
     ["pay", t("set_pay"), S.payType==="hourly" ? `${money(+S.rate||0)}${t("perHr")}` : `${money0(+S.salary||0)}${t("perYr")}`],
     ["ot", t("set_ot"), S.payType==="hourly" ? `${S.otMult}×` : `${S.salaryOtMult}×`],
-    ["freq", t("set_freq"), `${t("freq")[S.freq][0]} · ${fDate(p.pay)}`],
+    ["freq", t("set_freq"), t("freq")[S.freq][0]],
     ["tax", t("set_tax"), S.taxMode==="kr" ? t("krTaxAuto")[0] : S.taxMode==="auto" ? `${(ST[S.state]||[""])[0]} · ${t("filing")[S.filing]}` : S.taxMode==="manual" ? `${+S.taxPct}%` : t("none")],
     ["pto", t("set_pto"), (() => { const b = ptoBalance(); return b ? hrs(b.now) : t("none"); })()],
     ["start", t("set_start"), S.startDate ? fDate(dayNum(S.startDate)) : "—"],
@@ -1108,24 +1104,12 @@ function renderWiz(){
   } else if(step==="freq"){
     body = `<h2>${t("q_freq")}</h2><div class="picks">${pickH("fq", W.freq, ["weekly","biweekly","semimonthly","monthly"].map(k => [k, ...t("freq")[k]]))}</div>`;
   } else if(step==="payday"){
-    const np = nextPayPeriod(W), wsQ = `<div class="field"><span class="lbl">${t("weekStartLbl")}</span><div class="quick">${quickH("ws", W.weekStart, [[0,fDowLong(0)],[1,fDowLong(1)]])}</div></div>`;
-    if(W.freq==="weekly" || W.freq==="biweekly"){
-      body = `<h2>${t("q_payday")}</h2>${wsQ}
-        <div class="field"><label for="wAnchor">${t("periodStartLbl")}</label><input id="wAnchor" type="date" value="${W.periodAnchor}"><span class="hint">${t("periodStartHint")}</span></div>
-        <div class="field"><span class="lbl">${t("paydayDowLbl")}</span><div class="quick">${quickH("pd", W.payDow, [1,2,3,4,5].map(d=>[d, fDowLong(d)]))}</div></div>
-        <div class="field"><span class="lbl">${t("delayLbl")}</span><div class="quick">${quickH("dl", W.payDelay, [[0,t("delay0")],[1,t("delay1")],[2,t("delay2")]])}</div></div>`;
-    } else if(W.freq==="semimonthly"){
-      body = `<h2>${t("q_payday")}</h2><p class="lead">${t("semiLbl")}</p>
-        <div class="picks">${pickH("sm", W.semiMode, [["end",t("semiEnd")],["lag",t("semiLag")]])}</div>
-        ${W.semiMode==="lag" ? `<div class="field"><label for="wLag">${t("lagDays")}</label><input id="wLag" type="number" min="0" max="20" value="${W.semiLag}"></div>` : ""}
-        ${togH("wWk", W.weekendAdj, t("weekendAdj"))}${wsQ}`;
-    } else {
-      body = `<h2>${t("q_payday")}</h2>
-        <div class="picks">${pickH("mm", W.monthlyMode, [["same",t("monthlySame")],["last",t("monthlyLast")],["day",t("monthlyDay")]])}</div>
-        ${W.monthlyMode==="day" || W.monthlyMode==="same" ? `<div class="field"><label for="wMd">${W.monthlyMode==="same" ? t("monthlySame") : t("dayOfMonth")}</label><input id="wMd" type="number" min="1" max="31" value="${W.monthlyDay}"></div>` : ""}
-        ${togH("wWk", W.weekendAdj, t("weekendAdj"))}${wsQ}`;
-    }
-    body += `<div class="calc" id="wPayPrev">${t("paydayPreview", fDate(np.s), fDate(np.e), fDateW(np.pay))}</div>`;
+    const np = periodFor(TODAY, W), wsQ = `<div class="field"><span class="lbl">${t("weekStartLbl")}</span><div class="quick">${quickH("ws", W.weekStart, [[0,fDowLong(0)],[1,fDowLong(1)]])}</div></div>`;
+    body = `<h2>${t("q_period")}</h2>${wsQ}`;
+    if(W.freq==="weekly" || W.freq==="biweekly")
+      body += `<div class="field"><label for="wAnchor">${t("periodStartLbl")}</label><input id="wAnchor" type="date" value="${W.periodAnchor}"><span class="hint">${t("periodStartHint")}</span></div>`;
+    else body += `<p class="lead">${W.freq==="semimonthly" ? t("semiLbl") : t("monthlyLbl")}</p>`;
+    body += `<div class="calc" id="wPayPrev">${t("periodPreview", fDate(np.s), fDate(np.e))}</div>`;
   } else if(step==="tax" && W.country==="KR"){
     if(W.taxMode==="auto") W.taxMode = "kr";
     body = `<h2>${t("q_tax")}</h2><div class="picks two">${pickH("tm", W.taxMode, [["kr",...t("krTaxAuto")],["manual",...t("taxManual")]])}</div>`;
@@ -1179,7 +1163,7 @@ function renderWiz(){
         <li><span>${t("sumShift")}</span><b>${W.shiftLabel==="night"?t("nightShift"):t("dayShift")} · ${fTime(W.shiftStart)} – ${fTime(W.shiftEnd)}</b></li>
         <li><span>${t("sumPay")}</span><b>${W.payType==="hourly" ? money(+W.rate||0)+t("perHr") : money0(+W.salary||0)+t("perYr")}</b></li>
         <li><span>${t("sumFreq")}</span><b>${t("freq")[W.freq][0]}</b></li>
-        <li><span>${t("sumNext")}</span><b>${fDateW(np.pay)}</b></li>
+        <li><span>${t("thisPeriod")}</span><b>${fDate(np.s)} – ${fDate(np.e)}</b></li>
       </ul>${stripHtml("preview")}<p class="lead">${t("doneNote")}</p>`;
     nextL = t("start");
   }
@@ -1199,7 +1183,7 @@ function wireWiz(){
   setv("som","salaryOtMult",true); setv("fq","freq"); setv("ws","weekStart",true); setv("pd","payDow",true); setv("dl","payDelay",true);
   setv("sm","semiMode"); setv("mm","monthlyMode"); setv("tx","taxPct",true);
   el.querySelectorAll(".strip [data-n]").forEach(b => b.onclick = () => { const n = +b.dataset.n, i = W._tapped.indexOf(n); i>=0 ? W._tapped.splice(i,1) : W._tapped.push(n); renderWiz(); });
-  const payPrev = () => { const c = $("#wPayPrev"); if(!c) return; try{ const np = nextPayPeriod(W); c.innerHTML = t("paydayPreview", fDate(np.s), fDate(np.e), fDateW(np.pay)); }catch(e){} };
+  const payPrev = () => { const c = $("#wPayPrev"); if(!c) return; try{ const np = periodFor(TODAY, W); c.innerHTML = t("periodPreview", fDate(np.s), fDate(np.e)); }catch(e){} };
   const calc = () => { const c = $("#wCalc"); if(c) c.innerHTML = t("paidHours", paidHours(W.shiftStart, W.shiftEnd, W.breakMin)); };
   const inp = (id, key, num, live) => { const x = $("#"+id); if(!x) return; x.oninput = x.onchange = () => { W[key] = num ? (x.value===""?"":Number(x.value)) : x.value; if(live) live(); }; };
   inp("wCustom","customCycle"); inp("wS","shiftStart",false,calc); inp("wE","shiftEnd",false,calc); inp("wB","breakMin",true,calc);
