@@ -47,6 +47,7 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px}
 .hero{background:var(--hero);color:var(--hero-ink);border-radius:24px;padding:20px;display:grid;gap:14px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;border:28px solid var(--hero-line);pointer-events:none}
+.hero{touch-action:pan-y}
 .hero-top{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
 .hero-top .eyebrow{flex:1;text-align:center}
 .hnav{width:34px;height:34px;border-radius:10px;border:1px solid var(--hero-line);background:rgba(255,255,255,.06);color:var(--hero-ink);font-size:18px;flex:none}
@@ -812,7 +813,14 @@ function yearTotals(){
 /* ================= render ================= */
 let periodOffset = 0, viewY = NOW.getFullYear(), viewM = NOW.getMonth()+1;
 const selPeriod = () => shiftPeriod(periodFor(TODAY), periodOffset);
-function goPeriod(d){ if(d===0) periodOffset = 0; else periodOffset += d; renderHero(); renderStub(); renderCal(); }
+function offsetFor(n){ let k = 0, q = periodFor(TODAY); if(n >= q.s){ while(q.e < n && k < 300){ q = periodFor(q.e+1); k++; } } else { while(q.s > n && k > -300){ q = periodFor(q.s-1); k--; } } return k; }
+function syncPeriodViews(){ renderHero(); renderStub(); renderCal(); }
+// one cursor for everything: hero, calendar month and paystub always show the same pay period
+function goPeriod(d){
+  periodOffset = d===0 ? 0 : periodOffset + d;
+  const p = selPeriod(), anchor = periodOffset===0 ? TODAY : Math.floor((p.s + p.e)/2), [y,m] = ymdN(anchor);
+  viewY = y; viewM = m; syncPeriodViews();
+}
 function renderHero(){
   const p = selPeriod(), pc = paycheck(p), len = p.e - p.s + 1;
   const isCur = periodOffset === 0, past = p.e < TODAY;
@@ -829,6 +837,9 @@ function renderHero(){
     <div><div class="bar"><i style="width:${Math.round(dIn/len*100)}%"></i></div>
       <div class="barcap"><span>${t("freq")[S.freq][0]}</span><span>${t("periodProgress", dIn, len)}</span></div></div>`;
   $("#hPrev").onclick = () => goPeriod(-1); $("#hNext").onclick = () => goPeriod(1);
+  const h = $("#hero"); h.ontouchstart = e => { h._x = e.touches[0].clientX; h._y = e.touches[0].clientY; };
+  h.ontouchend = e => { if(h._x == null) return; const dx = e.changedTouches[0].clientX - h._x, dy = e.changedTouches[0].clientY - h._y; h._x = null;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.5) goPeriod(dx < 0 ? 1 : -1); };
   const hn = $("#hNow"); if(hn) hn.onclick = () => goPeriod(0);
 }
 function renderToday(){
@@ -886,10 +897,13 @@ function renderCal(){
     <div class="cal-head"><button class="nav-btn" id="mPrev" aria-label="Previous month">‹</button><h2>${fmt(first,{year:"numeric",month:"long"})}</h2><button class="tbtn" id="mToday">${t("today")}</button><button class="nav-btn" id="mNext" aria-label="Next month">›</button></div>
     <div class="grid" id="cal">${h}</div>
     <div class="legend"><span class="s s-OT">OT</span><span class="s s-PTO">PTO</span><span class="s s-H">${t("st").H}</span><span>${t("tapHint")}</span></div>`;
-  $("#mPrev").onclick = () => { viewM--; if(viewM<1){viewM=12;viewY--;} renderCal(); };
-  $("#mNext").onclick = () => { viewM++; if(viewM>12){viewM=1;viewY++;} renderCal(); };
+  const monthTo = () => { const mid = Date.UTC(viewY, viewM-1, 15)/864e5, cur = periodFor(TODAY);
+    periodOffset = (TODAY >= Date.UTC(viewY,viewM-1,1)/864e5 && TODAY <= lastDayN(viewY,viewM)) ? 0 : offsetFor(mid); syncPeriodViews(); };
+  $("#mPrev").onclick = () => { viewM--; if(viewM<1){viewM=12;viewY--;} monthTo(); };
+  $("#mNext").onclick = () => { viewM++; if(viewM>12){viewM=1;viewY++;} monthTo(); };
   $("#mToday").onclick = () => { viewY = NOW.getFullYear(); viewM = NOW.getMonth()+1; goPeriod(0); };
-  $("#cal").onclick = e => { const b = e.target.closest("[data-n]"); if(b) openDay(+b.dataset.n); };
+  $("#cal").onclick = e => { const b = e.target.closest("[data-n]"); if(!b) return; const n = +b.dataset.n, k = offsetFor(n);
+    if(k !== periodOffset){ periodOffset = k; const [y,m] = ymdN(n); viewY = y; viewM = m; syncPeriodViews(); } openDay(n); };
 }
 function renderOutlook(){
   const y = ymdN(TODAY)[0], dec31 = Date.UTC(y,11,31)/864e5;
