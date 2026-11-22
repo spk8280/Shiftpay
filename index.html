@@ -56,6 +56,10 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .bar{height:8px;border-radius:8px;background:var(--hero-line);overflow:hidden}
 .bar i{display:block;height:100%;background:var(--pay);border-radius:8px}
 .hero .barcap{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--hero-muted);margin-top:6px}
+.curp{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--hero-line);background:rgba(255,255,255,.06);color:var(--hero-ink);border-radius:16px;padding:12px 14px}
+.curp b{display:block;font-size:13.5px}
+.curp span span{font-size:12px;color:var(--hero-muted)}
+.curp>.num{font-family:var(--f-display);font-weight:800;font-size:20px;flex:none}
 .today{display:flex;align-items:center;gap:12px}
 .today .dot{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-family:var(--f-display);font-size:12px;flex:none;text-align:center}
 .today .t1{font-weight:700}
@@ -387,6 +391,8 @@ Object.assign(L.ko, {
   taxNoteAuto:s=>`2026년 연방 세율과 ${s} 세율로, 이번 급여를 1년 기준으로 환산해 추정했어요. 회사 원천징수액과 조금 다를 수 있어요.`,
   noTaxNote:"세금 계산이 꺼져 있어요. 설정 → 세금에서 켜면 실수령액을 볼 수 있어요."
 });
+Object.assign(L.en, { curPeriod:(a,b)=>`Now working: ${a} – ${b}`, curPaid:d=>`Paid ${d} · tap for details` });
+Object.assign(L.ko, { curPeriod:(a,b)=>`지금 근무 중인 기간: ${a} – ${b}`, curPaid:d=>`${d} 지급 · 눌러서 자세히` });
 Object.assign(L.en, {
   bonus:"Bonus / tips", addBonus:"+ Add bonus, tips or adjustment", bonusTitle:"Extra pay this period", bonusName:"What is it?", bonusAmt:"Amount ($)",
   bonusPh:"Sign-on bonus, tips, back pay…", add:"Add", bonusHint:"Added to this paycheck's gross pay and taxed with it. Use a minus amount for a deduction.",
@@ -808,7 +814,9 @@ function renderHero(){
     <div><div class="amt num">${money(showNet ? pc.net : pc.gross)}</div>
       <div class="amt-cap">${showNet ? t("estNet") : t("estGross")} · ${t("forPeriod", fDate(p.s), fDate(p.e))}</div></div>
     <div><div class="bar"><i style="width:${Math.round(dIn/len*100)}%"></i></div>
-      <div class="barcap"><span>${t("payPeriod")} ${fDate(cur.s)} – ${fDate(cur.e)}</span><span>${t("periodProgress", dIn, len)}</span></div></div>`;
+      <div class="barcap"><span>${t("payPeriod")} ${fDate(cur.s)} – ${fDate(cur.e)}</span><span>${t("periodProgress", dIn, len)}</span></div></div>
+    ${cur.s !== p.s ? (() => { const cc = paycheck(cur); return `<button class="curp" id="curP"><span><b>${t("curPeriod", fDate(cur.s), fDate(cur.e))}</b><span>${t("curPaid", fDateW(cur.pay))}</span></span><span class="num">${money(showNet ? cc.net : cc.gross)}</span></button>`; })() : ""}`;
+  const cp = $("#curP"); if(cp) cp.onclick = () => { const base = nextPayPeriod(); let k = 0, q = base; while(q.s < cur.s && k < 12){ q = periodFor(q.e+1); k++; } periodOffset = k; renderStub(); renderCal(); $("#stubCard").scrollIntoView({ behavior:"smooth", block:"start" }); };
 }
 function renderToday(){
   const st = statusAt(TODAY), ws = wkStart(TODAY), wk = sumDays(ws, ws+6);
