@@ -209,6 +209,7 @@ textarea.note-in{border:1px solid var(--line);background:var(--surface);border-r
 .yr div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
 .yr div b{font-family:var(--f-mono)}
 .yr div.tot b{color:var(--pay);font-size:17px}
+html[lang="ko"] body{word-break:keep-all;overflow-wrap:anywhere}
 .splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(120% 80% at 80% 0%,#1c5a7f 0%,#0e2c42 55%,#0a1f30 100%);color:#fff;transition:opacity .45s ease,visibility .45s}
 .splash.out{opacity:0;visibility:hidden}
 .splash-in{display:grid;justify-items:center;gap:14px;text-align:center}
@@ -427,6 +428,8 @@ Object.assign(L.ko, {
 });
 Object.assign(L.en, { salDayOT:["Extra hours on work days count as overtime","Stay past your scheduled shift and the extra hours are paid at your overtime rate"] });
 Object.assign(L.ko, { salDayOT:["근무일 초과 시간도 OT","정해진 근무시간보다 더 일한 시간을 OT 배율로 계산"] });
+Object.assign(L.en, { feat3:"This pay period's estimate, always up to date" });
+Object.assign(L.ko, { feat3:"이번 급여 기간 예상 급여를 바로 확인" });
 Object.assign(L.en, { example:"Example", langLbl:"Language",
   shareTitle:"Share ShiftPay", shareLead:"Send this link to coworkers. Everyone's schedule and pay stay on their own phone.", copy:"Copy", copied:"Copied!",
   shareSteps:["Open the link in Safari (iPhone) or Chrome (Android).","Tap Share → Add to Home Screen.","Open ShiftPay from the home screen icon and answer the setup questions.","Tap any date on the calendar to log overtime, PTO or extra hours."],
