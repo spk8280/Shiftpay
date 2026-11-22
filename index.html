@@ -47,6 +47,10 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px}
 .hero{background:var(--hero);color:var(--hero-ink);border-radius:24px;padding:20px;display:grid;gap:14px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;border:28px solid var(--hero-line);pointer-events:none}
+.hero-top{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
+.hero-top .eyebrow{flex:1;text-align:center}
+.hnav{width:34px;height:34px;border-radius:10px;border:1px solid var(--hero-line);background:rgba(255,255,255,.06);color:var(--hero-ink);font-size:18px;flex:none}
+.hback{border:1px solid var(--hero-line);background:transparent;color:var(--hero-ink);border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700}
 .hero .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--hero-muted)}
 .hero .when{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .hero .date{font-family:var(--f-display);font-size:26px;font-weight:800}
@@ -393,6 +397,8 @@ Object.assign(L.ko, {
 });
 Object.assign(L.en, { salDayOT:["Extra hours on work days count as overtime","Stay past your scheduled shift and the extra hours are paid at your overtime rate"] });
 Object.assign(L.ko, { salDayOT:["근무일 초과 시간도 OT","정해진 근무시간보다 더 일한 시간을 OT 배율로 계산"] });
+Object.assign(L.en, { pastPeriod:"Past period", futurePeriod:"Upcoming", backToNow:"Back to now" });
+Object.assign(L.ko, { pastPeriod:"지난 기간", futurePeriod:"다가올 기간", backToNow:"이번 기간으로" });
 Object.assign(L.en, { thisPeriod:"This pay period", daysLeft:n=> n<=0 ? "Ends today" : n===1 ? "1 day left" : `${n} days left`,
   q_period:"How is your pay period set up?", monthlyLbl:"Monthly periods run from the 1st to the last day of the month.", periodPreview:(a,b)=>`Current pay period: <b>${a} – ${b}</b>.`, set_freq:"Pay period" });
 Object.assign(L.ko, { thisPeriod:"이번 급여 기간", daysLeft:n=> n<=0 ? "오늘 마감" : `${n}일 남음`,
@@ -805,16 +811,25 @@ function yearTotals(){
 
 /* ================= render ================= */
 let periodOffset = 0, viewY = NOW.getFullYear(), viewM = NOW.getMonth()+1;
+const selPeriod = () => shiftPeriod(periodFor(TODAY), periodOffset);
+function goPeriod(d){ if(d===0) periodOffset = 0; else periodOffset += d; renderHero(); renderStub(); renderCal(); }
 function renderHero(){
-  const p = periodFor(TODAY), pc = paycheck(p), len = p.e - p.s + 1, dIn = Math.min(len, Math.max(0, TODAY - p.s + 1));
+  const p = selPeriod(), pc = paycheck(p), len = p.e - p.s + 1;
+  const isCur = periodOffset === 0, past = p.e < TODAY;
+  const dIn = past ? len : p.s > TODAY ? 0 : Math.min(len, TODAY - p.s + 1);
   const showNet = taxesOn();
+  const badge = isCur ? t("daysLeft", p.e - TODAY) : past ? t("pastPeriod") : t("futurePeriod");
   $("#hero").innerHTML = `
-    <div class="eyebrow">${t("thisPeriod")}</div>
-    <div class="when"><span class="date">${fDate(p.s)} – ${fDate(p.e)}</span><span class="count">${t("daysLeft", p.e - TODAY)}</span></div>
+    <div class="hero-top"><button class="hnav" id="hPrev" aria-label="Previous pay period">‹</button>
+      <div class="eyebrow">${isCur ? t("thisPeriod") : t("payPeriod")}</div>
+      <button class="hnav" id="hNext" aria-label="Next pay period">›</button></div>
+    <div class="when"><span class="date">${fDate(p.s)} – ${fDate(p.e)}</span><span class="count">${badge}</span>${isCur ? "" : `<button class="hback" id="hNow">${t("backToNow")}</button>`}</div>
     <div><div class="amt num">${money(showNet ? pc.net : pc.gross)}</div>
       <div class="amt-cap">${showNet ? t("estNet") : t("estGross")} · ${hrs(pc.x.worked)}</div></div>
     <div><div class="bar"><i style="width:${Math.round(dIn/len*100)}%"></i></div>
       <div class="barcap"><span>${t("freq")[S.freq][0]}</span><span>${t("periodProgress", dIn, len)}</span></div></div>`;
+  $("#hPrev").onclick = () => goPeriod(-1); $("#hNext").onclick = () => goPeriod(1);
+  const hn = $("#hNow"); if(hn) hn.onclick = () => goPeriod(0);
 }
 function renderToday(){
   const st = statusAt(TODAY), ws = wkStart(TODAY), wk = sumDays(ws, ws+6);
@@ -825,7 +840,7 @@ function renderToday(){
     <div><div class="t1">${t("todayLbl")} · ${top}</div><div class="t2">${sub}</div></div>`;
 }
 function renderStub(){
-  const p = shiftPeriod(nextPayPeriod(), periodOffset), pc = paycheck(p);
+  const p = selPeriod(), pc = paycheck(p);
   const ln = (cls, l, d, v, color) => `<div class="ln ${cls}"><span class="l">${color?`<i class="sw" style="background:${color}"></i>`:""}${l}</span>${d?`<span class="d">${d}</span>`:""}<span class="v">${v}</span></div>`;
   const sec = l => `<div class="ln sec"><span class="l">${l}</span></div>`, tc = pc.tc;
   let rows = sec(t("secEarn")) + (pc.lines.length ? pc.lines.map(x => ln("", x.label || t(x.key), x.h!=null ? `${hrs(x.h)} × ${money(x.rate)}` : "", money(x.v), x.color)).join("") : ln("", t("regular"), "", money(0), "var(--work)"));
@@ -851,13 +866,13 @@ function renderStub(){
     if(v == null || v === ""){ d.textContent = ""; return; } const diff = Math.round((+v - pc.net)*100)/100; d.textContent = t("actualDiff", diff, pc.net ? Math.abs(Math.round(diff/pc.net*1000)/10) : 0); d.style.color = Math.abs(diff) <= pc.net*0.02 ? "var(--pay)" : "var(--ot)"; };
   if(ai){ ai.oninput = () => { if(ai.value==="") delete S.actuals[fromNum(p.s)]; else S.actuals[fromNum(p.s)] = +ai.value; save(); showDiff(); }; showDiff(); }
   $("#addBonus").onclick = () => openBonus(p);
-  $("#pPrev").onclick = () => { periodOffset--; renderStub(); renderCal(); };
-  $("#pNext").onclick = () => { periodOffset++; renderStub(); renderCal(); };
+  $("#pPrev").onclick = () => goPeriod(-1);
+  $("#pNext").onclick = () => goPeriod(1);
 }
 function renderCal(){
   const first = Date.UTC(viewY, viewM-1, 1)/864e5, last = lastDayN(viewY, viewM);
   const lead = (dowN(first) - S.weekStart + 7) % 7, cells = Math.ceil((lead + (last-first+1))/7)*7;
-  const sel = shiftPeriod(nextPayPeriod(), periodOffset);
+  const sel = selPeriod();
   const pays = new Set();
   let h = "";
   for(let i=0;i<7;i++) h += `<div class="dow">${fDow((S.weekStart+i)%7)}</div>`;
@@ -873,7 +888,7 @@ function renderCal(){
     <div class="legend"><span class="s s-OT">OT</span><span class="s s-PTO">PTO</span><span class="s s-H">${t("st").H}</span><span>${t("tapHint")}</span></div>`;
   $("#mPrev").onclick = () => { viewM--; if(viewM<1){viewM=12;viewY--;} renderCal(); };
   $("#mNext").onclick = () => { viewM++; if(viewM>12){viewM=1;viewY++;} renderCal(); };
-  $("#mToday").onclick = () => { viewY = NOW.getFullYear(); viewM = NOW.getMonth()+1; periodOffset = 0; renderStub(); renderCal(); };
+  $("#mToday").onclick = () => { viewY = NOW.getFullYear(); viewM = NOW.getMonth()+1; goPeriod(0); };
   $("#cal").onclick = e => { const b = e.target.closest("[data-n]"); if(b) openDay(+b.dataset.n); };
 }
 function renderOutlook(){
