@@ -1,0 +1,1287 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0e2c42"><meta name="apple-mobile-web-app-capable" content="yes"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body>
+<title>ShiftPay</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: phone app — payday hero, today strip, paystub-style period card, shift calendar, outlook; setup wizard and day editor as sheets */
+:root{
+  --bg:#f3f4f6; --surface:#ffffff; --ink:#111821; --muted:#5b6574; --line:#e0e4ea; --chip:#edf0f3;
+  --hero:#0e2c42; --hero-ink:#ffffff; --hero-muted:#a6bccd; --hero-line:rgba(255,255,255,.14);
+  --accent:#1e5fd0; --accent-ink:#ffffff; --accent-soft:#e3ebfa;
+  --work:#1e5fd0; --work-soft:#e1e9f9; --ot:#b35f00; --ot-soft:#fcebd6; --pto:#22804f; --pto-soft:#dcf0e4;
+  --hol:#b0306f; --hol-soft:#f8e0ec; --off:#8b95a3; --un:#7a5642; --pay:#14996b; --pay-soft:#d9f3e9; --period:#f5f8fc; --err:#c0362c;
+  --f-display:"Manrope","Noto Sans KR",system-ui,sans-serif;
+  --f-body:"Manrope","Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b0f14; --surface:#151b22; --ink:#e7ecf2; --muted:#98a3b1; --line:#262f39; --chip:#1d242c;
+  --hero:#123a57; --hero-ink:#ffffff; --hero-muted:#a9c3d6; --hero-line:rgba(255,255,255,.14);
+  --accent:#72a6f5; --accent-ink:#06193a; --accent-soft:#172741;
+  --work:#72a6f5; --work-soft:#182740; --ot:#f2a75a; --ot-soft:#3b2814; --pto:#69c693; --pto-soft:#14301f;
+  --hol:#ee8abd; --hol-soft:#3b1a2b; --off:#6b7583; --un:#c9a089; --pay:#4fd3a2; --pay-soft:#12352a; --period:#111821; --err:#f28a80;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b0f14; --surface:#151b22; --ink:#e7ecf2; --muted:#98a3b1; --line:#262f39; --chip:#1d242c;
+  --hero:#123a57; --hero-ink:#ffffff; --hero-muted:#a9c3d6; --hero-line:rgba(255,255,255,.14);
+  --accent:#72a6f5; --accent-ink:#06193a; --accent-soft:#172741;
+  --work:#72a6f5; --work-soft:#182740; --ot:#f2a75a; --ot-soft:#3b2814; --pto:#69c693; --pto-soft:#14301f;
+  --hol:#ee8abd; --hol-soft:#3b1a2b; --off:#6b7583; --un:#c9a089; --pay:#4fd3a2; --pay-soft:#12352a; --period:#111821; --err:#f28a80;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 48px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.num{font-variant-numeric:tabular-nums}
+.app{max-width:520px;margin:0 auto;display:grid;gap:14px}
+.top{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--hero);display:grid;place-items:center;flex:none}
+.logo svg{width:20px;height:20px;stroke:var(--pay);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.top h1{font-size:19px;font-weight:800}
+.top .sub{font-size:12px;color:var(--muted);line-height:1.2}
+.top .gear{margin-left:auto;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 12px;font-weight:700;font-size:13.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px}
+.hero{background:var(--hero);color:var(--hero-ink);border-radius:24px;padding:20px;display:grid;gap:14px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;border:28px solid var(--hero-line);pointer-events:none}
+.hero .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--hero-muted)}
+.hero .when{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hero .date{font-family:var(--f-display);font-size:26px;font-weight:800}
+.hero .count{font-size:13px;font-weight:800;color:#06261a;background:var(--pay);padding:2px 10px;border-radius:999px}
+.hero .amt{font-family:var(--f-display);font-size:44px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.hero .amt-cap{font-size:13px;color:var(--hero-muted);margin-top:6px}
+.bar{height:8px;border-radius:8px;background:var(--hero-line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pay);border-radius:8px}
+.hero .barcap{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--hero-muted);margin-top:6px}
+.today{display:flex;align-items:center;gap:12px}
+.today .dot{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-family:var(--f-display);font-size:12px;flex:none;text-align:center}
+.today .t1{font-weight:700}
+.today .t2{font-size:13px;color:var(--muted)}
+.stub-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.stub-head h2{font-size:16px;flex:1;min-width:0}
+.nav-btn{border:1px solid var(--line);background:var(--surface);width:34px;height:34px;border-radius:10px;font-size:16px;flex:none}
+.stub-sub{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.stub{display:grid;border-top:1px dashed var(--line)}
+.stub .ln{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:8px 0;border-bottom:1px dashed var(--line);align-items:baseline}
+.stub .ln .l{font-size:14px}
+.stub .ln .d{grid-column:1;font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.stub .ln .v{grid-row:1;grid-column:2;font-family:var(--f-mono);font-weight:600;font-size:14.5px;text-align:right}
+.stub .ln.sub .v{color:var(--muted)}
+.stub .ln.total{border-bottom:0}
+.stub .ln.total .l{font-weight:800;font-family:var(--f-display);font-size:15.5px}
+.stub .ln.total .v{font-size:19px;color:var(--pay)}
+.stub .ln.gross .l,.stub .ln.gross .v{font-weight:700}
+.sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.note{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.cal-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cal-head h2{font-size:17px;flex:1}
+.cal-head .tbtn{border:1px solid var(--line);background:var(--surface);border-radius:10px;height:34px;padding:0 10px;font-size:13px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dow{text-align:center;font-size:11.5px;color:var(--muted);padding-bottom:2px;font-weight:600}
+.day{position:relative;border:1px solid transparent;border-radius:12px;min-height:62px;padding:5px 2px 4px;display:grid;justify-items:center;align-content:start;gap:3px;background:none;min-width:0}
+.day.out{opacity:.35}
+.day.inper{background:var(--period)}
+.day.is-today{border-color:var(--ink)}
+.day .d{font-size:13px;font-weight:600}
+.day .s{font-size:10px;font-weight:800;border-radius:6px;padding:1px 5px;line-height:1.5;white-space:nowrap}
+.day .pd{position:absolute;top:3px;right:3px;width:15px;height:15px;border-radius:50%;background:var(--pay);color:#06261a;font-size:10px;font-weight:800;display:grid;place-items:center;line-height:1}
+.day .hl{font-size:9px;color:var(--hol);font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px}
+.day .chg{position:absolute;top:5px;left:5px;width:5px;height:5px;border-radius:50%;background:var(--ot)}
+.s-W{background:var(--work-soft);color:var(--work)} .s-O{color:var(--off)} .s-OT{background:var(--ot-soft);color:var(--ot)}
+.s-PTO{background:var(--pto-soft);color:var(--pto)} .s-H{background:var(--hol-soft);color:var(--hol)} .s-UN{color:var(--un);text-decoration:line-through}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:12px;font-size:12px;color:var(--muted);align-items:center}
+.legend .s{font-size:10px;font-weight:800;border-radius:6px;padding:1px 5px}
+.legend .pd{display:inline-grid;width:15px;height:15px;border-radius:50%;background:var(--pay);color:#06261a;font-size:10px;font-weight:800;place-items:center;margin-right:4px}
+.outlook{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ok{background:var(--chip);border-radius:14px;padding:10px;display:grid;gap:2px;min-width:0}
+.ok .v{font-family:var(--f-display);font-weight:800;font-size:17px;overflow:hidden;text-overflow:ellipsis}
+.ok .k{font-size:11.5px;color:var(--muted)}
+.shade{position:fixed;inset:0;background:rgba(4,10,18,.5);z-index:40}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--surface);border-radius:22px 22px 0 0;max-height:90vh;overflow-y:auto;
+  padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet-in{max-width:520px;margin:0 auto;display:grid;gap:14px}
+.sheet-head{display:flex;align-items:center;gap:8px}
+.sheet-head h2{font-size:18px;flex:1}
+.x{border:0;background:var(--chip);width:36px;height:36px;border-radius:50%;font-size:16px;flex:none}
+.wiz{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;
+  padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wiz-in{max-width:520px;margin:0 auto;display:grid;gap:16px}
+.steps{display:flex;gap:4px}
+.steps i{flex:1;height:4px;border-radius:4px;background:var(--line)}
+.steps i.on{background:var(--accent)}
+.wiz h2{font-size:24px;line-height:1.25}
+.lead{margin:0;color:var(--muted);font-size:14px}
+.picks{display:grid;gap:8px}
+.picks.two{grid-template-columns:1fr 1fr}
+.pick{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 16px;text-align:left;display:grid;gap:2px}
+.pick b{font-size:15.5px}
+.pick span{font-size:12.5px;color:var(--muted)}
+.pick[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.field{display:grid;gap:6px;min-width:0}
+.field>label,.field>.lbl{font-size:13px;font-weight:700}
+.hint{font-size:12px;color:var(--muted)}
+.field input,.field select{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 10px;width:100%;min-width:0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.quick{display:flex;flex-wrap:wrap;gap:6px}
+.quick button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px}
+.quick button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.toggle{display:flex;align-items:flex-start;gap:10px;font-size:14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.toggle input{width:20px;height:20px;accent-color:var(--accent);flex:none;margin-top:1px}
+.toggle small{display:block;color:var(--muted);font-size:12px}
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.strip .dw{text-align:center;font-size:11.5px;color:var(--muted)}
+.strip button{border:1px solid var(--line);background:var(--surface);border-radius:12px;min-height:58px;display:grid;place-items:center;padding:4px 0}
+.strip button b{font-size:15px}
+.strip button span{font-size:10px;color:var(--muted)}
+.strip button[aria-pressed="true"]{background:var(--work);border-color:var(--work);color:var(--accent-ink)}
+.strip button[aria-pressed="true"] span{color:inherit}
+.strip button.td{outline:2px solid var(--ink);outline-offset:1px}
+.wk{font-size:12.5px;color:var(--muted);margin:2px 0 -2px}
+.result{border-radius:14px;padding:12px 14px;background:var(--accent-soft);font-size:14px;display:grid;gap:4px}
+.calc{border-radius:14px;padding:12px 14px;background:var(--pay-soft);font-size:14px}
+.calc b{font-family:var(--f-mono)}
+.wiz-nav{display:flex;gap:8px}
+.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:800;background:var(--accent);color:var(--accent-ink);width:100%}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+.err{color:var(--err);margin:0;min-height:1.2em;font-size:13.5px}
+.lang{display:flex;gap:6px;justify-content:flex-end}
+.lang button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.welcome{display:grid;gap:12px;padding-top:8px}
+.welcome .big{font-family:var(--f-display);font-size:32px;font-weight:800;line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
+.feat{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.feat li{display:flex;gap:10px;align-items:center;font-size:14.5px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.feat li i{font-style:normal;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:800;flex:none}
+.done-list{display:grid;gap:8px;margin:0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;list-style:none}
+.done-list li{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.done-list li span{color:var(--muted);flex:none}
+.done-list li b{text-align:right}
+.setlist{display:grid;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.setlist button{border:0;border-bottom:1px solid var(--line);background:var(--surface);text-align:left;padding:13px 14px;display:flex;align-items:center;gap:10px}
+.setlist button:last-child{border-bottom:0}
+.setlist button b{flex:1;font-size:14.5px}
+.setlist button span{font-size:12.5px;color:var(--muted);text-align:right;max-width:55%}
+.setlist button::after{content:"›";color:var(--muted);font-size:18px}
+.hours{display:flex;align-items:center;gap:10px}
+.hours button{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:20px;font-weight:700}
+.hours output{flex:1;text-align:center;font-family:var(--f-mono);font-size:22px;font-weight:600}
+.dedlist{display:grid;gap:8px}
+.ded{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px;display:grid;gap:8px}
+.ded-top{display:flex;align-items:center;gap:8px}
+.ded-top b{flex:1}
+.ded-top .tag{font-size:11px;font-weight:800;border-radius:6px;padding:1px 7px;background:var(--chip);color:var(--muted)}
+.ded-top .tag.pre{background:var(--pay-soft);color:var(--pay)}
+.ded-top .rm{border:0;background:var(--chip);width:28px;height:28px;border-radius:50%;font-size:13px}
+.ded-row{display:flex;gap:8px;align-items:center}
+.ded-row input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 10px}
+.ded-row span{font-size:12.5px;color:var(--muted);flex:none}
+.addchips{display:flex;flex-wrap:wrap;gap:6px}
+.addchips button{border:1px dashed var(--line);background:transparent;border-radius:999px;padding:7px 12px;font-size:13.5px;font-weight:600}
+.stub .ln.sec{padding:10px 0 2px;border-bottom:0}
+.stub .ln.sec .l{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tipbox{margin-top:10px;border-radius:14px;padding:10px 12px;background:var(--ot-soft);color:var(--ink);font-size:13.5px;display:flex;gap:8px;align-items:flex-start}
+.tipbox b{color:var(--ot)}
+.gain{border-radius:14px;padding:12px 14px;background:var(--ot-soft);font-size:14px}
+.gain b{font-family:var(--f-display);font-size:20px;color:var(--ot);display:block}
+.actual{margin-top:10px;display:grid;gap:6px}
+.actual .row{display:flex;gap:8px;align-items:center}
+.actual input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 10px;font-family:var(--f-mono)}
+.actual .diff{font-size:13px;font-weight:700}
+.linkbtn{border:1px dashed var(--line);background:transparent;border-radius:12px;padding:9px 12px;font-weight:700;font-size:13.5px;width:100%;margin-top:10px;color:var(--ink)}
+.day .nt{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:14px;height:2px;border-radius:2px;background:var(--muted)}
+textarea.note-in{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;width:100%;min-height:70px;resize:vertical;font:inherit;color:inherit}
+.outlook{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.yr{display:grid;gap:0;border-top:1px dashed var(--line)}
+.yr div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.yr div b{font-family:var(--f-mono)}
+.yr div.tot b{color:var(--pay);font-size:17px}
+@media (max-width:380px){.hero .amt{font-size:38px}.outlook{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr 1fr}}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .6s ease}}
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></div>
+    <div><h1>ShiftPay</h1><div class="sub" id="tagline"></div></div>
+    <button class="gear" id="openSettings"></button>
+  </header>
+  <section class="hero" id="hero" aria-live="polite"></section>
+  <section class="card today" id="today"></section>
+  <section class="card" id="stubCard"></section>
+  <section class="card" id="calCard"></section>
+  <section class="card" id="outlookCard"></section>
+</div>
+<div class="shade" id="shade" hidden></div>
+<section class="sheet" id="sheet" hidden></section>
+<section class="wiz" id="wiz" hidden></section>
+
+<script>
+/* ================= i18n ================= */
+const L = {
+  en:{
+    tagline:"Shifts · overtime · paychecks", settings:"Settings",
+    nextPayday:"Next payday", inDays:n=> n===0?"Today!":n===1?"Tomorrow":`in ${n} days`,
+    estNet:"estimated take-home", estGross:"estimated gross pay", forPeriod:(a,b)=>`for ${a} – ${b}`,
+    periodProgress:(d,tt)=>`Day ${d} of ${tt}`,
+    todayShift:(lab,a,b)=>`${lab} · ${a} – ${b}`, todayOff:"Day off", todayOffSub:"Enjoy it. Picked up a shift? Tap the date on your calendar.",
+    todayLbl:"Today", thisWeek:(h,o)=>`This week: ${h} worked/scheduled${o?` · ${o} overtime`:""}`,
+    payPeriod:"Pay period", payday:"Payday",
+    regular:"Regular", overtime:"Overtime", double:"Double time", holiday:"Holiday pay", pto:"PTO", diff:"Shift differential",
+    basePay:"Base salary", extraOT:"Extra-day overtime", gross:"Gross pay", k401:"401(k)", insurance:"Health insurance",
+    taxes:"Taxes (est.)", takeHome:"Take-home (est.)", afterDed:"After deductions",
+    noTaxNote:"Taxes aren't included. Add your tax rate in Settings to see take-home pay.",
+    taxNote:p=>`Taxes estimated at ${p}% of taxable pay. Your real paystub may differ.`,
+    today:"Today",
+    st:{W:"Work",O:"Off",OT:"OT",PTO:"PTO",H:"Hol",UN:"Unpaid"},
+    stLong:{W:"Scheduled shift",O:"Day off",OT:"Picked-up shift (OT)",PTO:"Paid time off",H:"Holiday worked",UN:"Unpaid / missed"},
+    stDesc:{W:"Normal work day",O:"Not working",OT:"Worked on a day off",PTO:"Use PTO hours",H:"Paid at holiday rate",UN:"No pay this day"},
+    legendPay:"Payday", tapHint:"Tap a date to change it",
+    outlook:"Outlook", restYear:y=>`Rest of ${y}`, next12:"Next 12 months", avgCheck:"Avg. paycheck",
+    outlookNote:"Based on your rotation and settings. Calendar changes update this instantly.",
+    original:s=>`Scheduled: ${s}`, changed:"Edited", hoursLbl:"Paid hours this day", reset:"Reset day", done:"Done",
+    back:"Back", next:"Next", skip:"Skip", start:"Start using ShiftPay", save:"Save", cancel:"Cancel",
+    welcomeBig:"Know your paycheck before payday.", welcomeLead:"Answer a few quick questions. ShiftPay builds your shift calendar and estimates every paycheck — overtime included.",
+    feat1:"Your rotation, filled in automatically", feat2:"Overtime, double time and holidays counted", feat3:"A countdown to your next payday",
+    getStarted:"Let's set it up",
+    q_pattern:"What's your work rotation?", q_patternLead:"Pick the one that matches your schedule.",
+    pat:{p223:["2-2-3 (Panama)","2 on, 2 off, 3 on, 2 off, 2 on, 3 off — 14 days"],p42:["4 on, 2 off","6-day cycle"],p44:["4 on, 4 off","8-day cycle"],p5:["Monday – Friday","Weekends off"],p6:["6 days a week","One day off each week"],custom:["Custom","Build your own on/off cycle"]},
+    customLbl:"Your cycle (W = work, O = off)", customHint:"Example: 3 on, 3 off → WWWOOO",
+    q_shift:"When does your shift run?", dayShift:"Day shift", nightShift:"Night shift", startLbl:"Start", endLbl:"End", breakLbl:"Unpaid break",
+    min:"min", paidHours:h=>`That's <b>${h} paid hours</b> per shift.`,
+    q_days:"Tap the days you work in these two weeks", q_daysLead:p=>`We'll find where you are in the ${p} rotation. Check your work calendar.`,
+    thisWk:"This week", nextWk:"Next week", work:"Work", off:"Off",
+    matchPerfect:"Found your rotation — perfect match.", matchClose:n=>`Closest match: ${n} of 14 days line up. You can fix single days later.`,
+    fixedMF:"Monday – Friday is set. Nothing to tap.", fixed6:"Which day do you have off each week?",
+    q_pay:"How are you paid?", hourly:["Hourly","Paid for every hour you work"], salary:["Salary","A set yearly amount"],
+    rateLbl:"Hourly rate", diffLbl:"Shift differential (optional)", diffHint:"Extra pay per hour, like a night premium. Leave 0 if none.",
+    salaryLbl:"Annual salary",
+    q_ot:"How is overtime paid?", q_otLead:"Federal rule: hours over 40 in a workweek pay 1.5×. Some employers pay more.",
+    otMultLbl:"Overtime rate",
+    dailyOT:["Daily overtime (California rule)","Over 8 hrs in a day is OT, over 12 hrs is double time"],
+    seventh:["7th day in a row pays double","The 7th consecutive day worked is paid at double time"],
+    holPrem:["Holiday premium","Working a US federal holiday pays extra"], holMultLbl:"Holiday rate",
+    salOtLead:"When you work on a day off, how is it paid?", salOtMult:"Extra-day rate",
+    salOtHint:"Based on your hourly equivalent (salary ÷ 2,080 hrs).",
+    q_freq:"How often do you get paid?",
+    freq:{weekly:["Weekly","Every week · 52 paychecks a year"],biweekly:["Every two weeks","Biweekly · 26 paychecks a year"],semimonthly:["Twice a month","Semi-monthly · 24 paychecks a year"],monthly:["Monthly","12 paychecks a year"]},
+    q_payday:"When is payday?",
+    weekStartLbl:"Your workweek starts on", periodStartLbl:"First day of a recent pay period", periodStartHint:"It's on your paystub as \"Period start\" or \"Period begin\".",
+    paydayDowLbl:"Payday is on", delayLbl:"How long after the pay period ends?",
+    delay0:"The very next one", delay1:"One week later", delay2:"Two weeks later",
+    semiLbl:"Semi-monthly periods run the 1st–15th and the 16th–end of month.", semiEnd:"On the 15th and the last day", semiLag:"A few days after each period ends",
+    lagDays:"Days after the period ends", monthlyLast:"Last day of the month", monthlyDay:"A set day of next month", dayOfMonth:"Day of next month",
+    weekendAdj:["Paid early when payday is a weekend","Saturday/Sunday paydays move to Friday"],
+    paydayPreview:(a,b,c)=>`Next up: work from ${a} – ${b}, paid <b>${c}</b>.`,
+    q_ded:"What comes out of your paycheck?", q_dedLead:"Optional. Copy these from your last paystub for a closer take-home number.",
+    k401Lbl:"401(k) (%)", insLbl:"Health insurance ($ per check)",
+    taxLbl:"Estimated tax rate (%)", taxHint:"Total taxes ÷ gross pay on your last paystub. Most people land between 15% and 25%.",
+    q_done:"You're all set!", sumRot:"Rotation", sumShift:"Shift", sumPay:"Pay", sumFreq:"Paid", sumNext:"Next payday",
+    doneNote:"Picked up a shift or took PTO? Just tap that date on your calendar.",
+    err_custom:"Use W for work days and O for days off.", err_tap:"Tap at least one work day.", err_rate:"Enter your hourly rate.",
+    err_salary:"Enter your salary.", err_time:"Check your shift times.", err_date:"Pick a date.",
+    set_language:"Language", set_rotation:"Rotation & work days", set_shift:"Shift time", set_pay:"Pay rate", set_ot:"Overtime rules",
+    set_freq:"Pay frequency & payday", set_ded:"Deductions & taxes", set_clear:"Reset edited dates", set_redo:"Run setup again",
+    clearConfirm:n=>`Reset ${n} edited dates? Tap again to confirm.`, cleared:"Edited dates reset.",
+    perHr:"/hr", perYr:"/yr"
+  },
+  ko:{
+    tagline:"교대 근무 · OT · 급여", settings:"설정",
+    nextPayday:"다음 급여일", inDays:n=> n===0?"오늘!":n===1?"내일":`${n}일 남음`,
+    estNet:"예상 실수령액", estGross:"예상 세전 급여", forPeriod:(a,b)=>`${a} – ${b} 근무분`,
+    periodProgress:(d,tt)=>`${tt}일 중 ${d}일째`,
+    todayShift:(lab,a,b)=>`${lab} · ${a} – ${b}`, todayOff:"오늘은 휴무", todayOffSub:"푹 쉬세요. 출근했다면 달력에서 날짜를 눌러 OT로 바꾸세요.",
+    todayLbl:"오늘", thisWeek:(h,o)=>`이번 주: ${h}${o?` · OT ${o}`:""}`,
+    payPeriod:"급여 기간", payday:"급여일",
+    regular:"정규", overtime:"OT", double:"2배 근무", holiday:"공휴일 수당", pto:"PTO", diff:"교대 수당",
+    basePay:"기본급", extraOT:"휴무일 출근 OT", gross:"세전 합계", k401:"401(k)", insurance:"건강보험",
+    taxes:"세금 (예상)", takeHome:"실수령 (예상)", afterDed:"공제 후",
+    noTaxNote:"세금은 빠져 있어요. 설정에서 세율을 넣으면 실수령액을 볼 수 있어요.",
+    taxNote:p=>`세금은 과세 급여의 ${p}%로 추정했어요. 실제 명세서와 다를 수 있어요.`,
+    today:"오늘",
+    st:{W:"근무",O:"휴무",OT:"OT",PTO:"PTO",H:"공휴",UN:"결근"},
+    stLong:{W:"정규 근무",O:"휴무",OT:"휴무일 출근 (OT)",PTO:"유급 휴가",H:"공휴일 근무",UN:"무급 · 결근"},
+    stDesc:{W:"원래 근무일",O:"쉬는 날",OT:"쉬는 날에 출근",PTO:"PTO 사용",H:"공휴일 배율 적용",UN:"이날은 급여 없음"},
+    legendPay:"급여일", tapHint:"날짜를 누르면 바꿀 수 있어요",
+    outlook:"전망", restYear:y=>`${y}년 남은 기간`, next12:"앞으로 12개월", avgCheck:"평균 급여(1회)",
+    outlookNote:"근무 패턴과 설정 기준이에요. 달력을 바꾸면 바로 반영돼요.",
+    original:s=>`원래 일정: ${s}`, changed:"바꾼 날", hoursLbl:"이날 유급 시간", reset:"원래대로", done:"완료",
+    back:"이전", next:"다음", skip:"건너뛰기", start:"ShiftPay 시작하기", save:"저장", cancel:"취소",
+    welcomeBig:"급여일 전에 내 급여를 미리 알아요.", welcomeLead:"몇 가지만 답하면 근무 달력을 만들고, OT까지 포함해서 매번 급여를 계산해 드려요.",
+    feat1:"교대 패턴대로 달력 자동 완성", feat2:"OT·2배·공휴일 수당 자동 계산", feat3:"다음 급여일 카운트다운",
+    getStarted:"설정 시작하기",
+    q_pattern:"어떤 교대 패턴으로 일하세요?", q_patternLead:"내 근무표와 맞는 걸 고르세요.",
+    pat:{p223:["2-2-3 (파나마)","2근 2휴 3근 2휴 2근 3휴 — 14일 주기"],p42:["4근 2휴","6일 주기"],p44:["4근 4휴","8일 주기"],p5:["월 ~ 금","주말 휴무"],p6:["주 6일","매주 하루 휴무"],custom:["직접 만들기","근무·휴무 순서를 직접 입력"]},
+    customLbl:"내 주기 (W = 근무, O = 휴무)", customHint:"예: 3근 3휴 → WWWOOO",
+    q_shift:"근무 시간은 언제인가요?", dayShift:"주간 근무", nightShift:"야간 근무", startLbl:"시작", endLbl:"종료", breakLbl:"무급 휴게",
+    min:"분", paidHours:h=>`한 번 근무에 <b>유급 ${h}시간</b>이에요.`,
+    q_days:"이번 2주 중 출근하는 날을 눌러 주세요", q_daysLead:p=>`${p} 패턴에서 내 위치를 앱이 찾아요. 회사 근무표대로 눌러 주세요.`,
+    thisWk:"이번 주", nextWk:"다음 주", work:"근무", off:"휴무",
+    matchPerfect:"패턴을 찾았어요. 딱 맞아요.", matchClose:n=>`가장 비슷한 패턴: 14일 중 ${n}일 일치. 다른 날은 나중에 달력에서 고치면 돼요.`,
+    fixedMF:"월~금 근무로 맞췄어요. 누를 필요 없어요.", fixed6:"매주 쉬는 요일을 고르세요.",
+    q_pay:"급여는 어떻게 받으세요?", hourly:["시급제","일한 시간만큼 받아요"], salary:["연봉제","정해진 연봉을 받아요"],
+    rateLbl:"시급", diffLbl:"교대 수당 (선택)", diffHint:"야간 수당처럼 시간당 더 받는 금액. 없으면 0.",
+    salaryLbl:"연봉",
+    q_ot:"OT는 어떻게 계산되나요?", q_otLead:"미국 연방 규정: 한 주 40시간 넘는 시간은 1.5배. 회사에 따라 더 줄 수 있어요.",
+    otMultLbl:"OT 배율",
+    dailyOT:["일일 OT (캘리포니아 규정)","하루 8시간 넘으면 OT, 12시간 넘으면 2배"],
+    seventh:["7일 연속 근무 시 7일째 2배","7일 연속 출근한 7번째 날을 2배로 계산"],
+    holPrem:["공휴일 수당","미국 연방 공휴일에 일하면 더 받아요"], holMultLbl:"공휴일 배율",
+    salOtLead:"쉬는 날 출근하면 어떻게 받나요?", salOtMult:"휴무일 출근 배율", salOtHint:"시급 환산액(연봉 ÷ 2,080시간) 기준이에요.",
+    q_freq:"급여는 얼마나 자주 받으세요?",
+    freq:{weekly:["매주","1주급 · 연 52회"],biweekly:["2주마다","2주급 · 연 26회"],semimonthly:["한 달에 두 번","반월급 · 연 24회"],monthly:["한 달에 한 번","월급 · 연 12회"]},
+    q_payday:"급여일은 언제인가요?",
+    weekStartLbl:"한 주 시작 요일", periodStartLbl:"최근 급여 기간의 첫날", periodStartHint:"급여명세서의 Period start(Period begin) 날짜예요.",
+    paydayDowLbl:"급여 받는 요일", delayLbl:"급여 기간이 끝나고 언제 받나요?",
+    delay0:"바로 다음 그 요일", delay1:"한 주 뒤", delay2:"두 주 뒤",
+    semiLbl:"반월급은 1~15일, 16일~말일이 한 기간이에요.", semiEnd:"15일과 말일에 받아요", semiLag:"기간이 끝나고 며칠 뒤에 받아요",
+    lagDays:"기간 끝나고 며칠 뒤", monthlyLast:"그달 말일", monthlyDay:"다음 달 정해진 날", dayOfMonth:"다음 달 며칠",
+    weekendAdj:["급여일이 주말이면 금요일에","토·일요일 급여일을 금요일로 당겨요"],
+    paydayPreview:(a,b,c)=>`다음: ${a} – ${b} 근무분, <b>${c}</b> 지급.`,
+    q_ded:"급여에서 빠지는 게 있나요?", q_dedLead:"선택이에요. 최근 명세서를 보고 넣으면 실수령액이 정확해져요.",
+    k401Lbl:"401(k) (%)", insLbl:"건강보험료 ($/1회)",
+    taxLbl:"예상 세율 (%)", taxHint:"명세서의 세금 합계 ÷ 세전 급여. 보통 15~25%예요.",
+    q_done:"세팅 끝!", sumRot:"패턴", sumShift:"근무", sumPay:"급여", sumFreq:"지급", sumNext:"다음 급여일",
+    doneNote:"OT 출근이나 PTO는 달력에서 날짜를 눌러 바꾸세요.",
+    err_custom:"근무는 W, 휴무는 O로 적어 주세요.", err_tap:"출근하는 날을 하나 이상 눌러 주세요.", err_rate:"시급을 적어 주세요.",
+    err_salary:"연봉을 적어 주세요.", err_time:"근무 시간을 확인해 주세요.", err_date:"날짜를 골라 주세요.",
+    set_language:"언어", set_rotation:"패턴 · 근무일", set_shift:"근무 시간", set_pay:"급여", set_ot:"OT 규칙",
+    set_freq:"급여 주기 · 급여일", set_ded:"공제 · 세금", set_clear:"바꾼 날짜 모두 되돌리기", set_redo:"처음 설정 다시 하기",
+    clearConfirm:n=>`바꾼 날짜 ${n}개를 되돌릴까요? 한 번 더 누르세요.`, cleared:"되돌렸어요.",
+    perHr:"/시간", perYr:"/년"
+  }
+};
+Object.assign(L.en, {
+  q_tax:"How should we estimate taxes?",
+  taxAuto:["Estimate for me","Federal, Social Security, Medicare and state tax (2026 rates)"], taxManual:["Use my own rate","One percentage from your paystub"],
+  stateLbl:"State you work in", filingLbl:"Filing status (W-4)", filing:{single:"Single",mfj:"Married filing jointly",hoh:"Head of household"},
+  kidsLbl:"Children under 17", depsLbl:"Other dependents", extraWHLbl:"Extra federal withholding ($ per check)",
+  localLbl:"Local / city tax (%)", localHint:"Only if your city or county taxes wages (NYC, many Ohio and Pennsylvania towns).",
+  noStateTax:s=>`${s} doesn't tax wages.`, taxPreview:(a,b)=>`On a typical paycheck: about <b>${a}</b> in taxes, <b>${b}</b> take-home.`,
+  fedTax:"Federal income tax", ss:"Social Security", medicare:"Medicare", stateTax:s=>`State income tax (${s})`, localTax:"Local tax",
+  secEarn:"Earnings", secPre:"Pre-tax deductions", secTax:"Taxes", secPost:"After-tax deductions",
+  q_ded:"What comes out of your paycheck?", q_dedLead:"Add everything on your paystub. Pre-tax items lower your taxes.",
+  dedNames:{k401:"401(k)",roth:"Roth 401(k)",health:"Medical insurance",dental:"Dental",vision:"Vision",hsa:"HSA",fsa:"FSA",life:"Life insurance",union:"Union dues",other:"Other deduction"},
+  preTax:"Pre-tax", postTax:"After-tax", perCheck:"$ per check", pctGross:"% of gross", addDed:"Tap to add", otherName:"Name", noDeds:"No deductions yet. Tap one below.",
+  set_tax:"Taxes", set_ded:"Deductions", none:"None",
+  taxNoteAuto:s=>`Estimated with 2026 federal brackets and ${s} rates, annualized from this check. Your employer's withholding may differ slightly.`,
+  noTaxNote:"Taxes are turned off. Turn them on in Settings → Taxes to see take-home pay."
+});
+Object.assign(L.ko, {
+  q_tax:"세금은 어떻게 계산할까요?",
+  taxAuto:["자동 계산","연방세·사회보장세·메디케어·주 소득세 (2026년 기준)"], taxManual:["세율 직접 입력","명세서 기준 퍼센트 하나"],
+  stateLbl:"일하는 주(州)", filingLbl:"신고 유형 (W-4)", filing:{single:"독신",mfj:"부부 합산",hoh:"세대주"},
+  kidsLbl:"17세 미만 자녀", depsLbl:"기타 부양가족", extraWHLbl:"추가 연방 원천징수 ($/1회)",
+  localLbl:"지방·도시 소득세 (%)", localHint:"도시나 카운티가 급여에 세금을 매길 때만 (뉴욕시, 오하이오·펜실베이니아 일부 지역).",
+  noStateTax:s=>`${s}는 근로소득에 주 소득세가 없어요.`, taxPreview:(a,b)=>`보통 급여 기준: 세금 약 <b>${a}</b>, 실수령 <b>${b}</b>.`,
+  fedTax:"연방 소득세", ss:"사회보장세", medicare:"메디케어", stateTax:s=>`주 소득세 (${s})`, localTax:"지방세",
+  secEarn:"수입", secPre:"세전 공제", secTax:"세금", secPost:"세후 공제",
+  q_ded:"급여에서 빠지는 게 있나요?", q_dedLead:"명세서에 있는 항목을 모두 추가하세요. 세전 공제는 세금을 줄여줘요.",
+  dedNames:{k401:"401(k)",roth:"Roth 401(k)",health:"의료보험",dental:"치과보험",vision:"안과보험",hsa:"HSA",fsa:"FSA",life:"생명보험",union:"노조비",other:"기타 공제"},
+  preTax:"세전", postTax:"세후", perCheck:"$/1회", pctGross:"세전 급여의 %", addDed:"눌러서 추가", otherName:"이름", noDeds:"아직 공제가 없어요. 아래에서 골라 주세요.",
+  set_tax:"세금", set_ded:"공제", none:"없음",
+  taxNoteAuto:s=>`2026년 연방 세율과 ${s} 세율로, 이번 급여를 1년 기준으로 환산해 추정했어요. 회사 원천징수액과 조금 다를 수 있어요.`,
+  noTaxNote:"세금 계산이 꺼져 있어요. 설정 → 세금에서 켜면 실수령액을 볼 수 있어요."
+});
+Object.assign(L.en, {
+  bonus:"Bonus / tips", addBonus:"+ Add bonus, tips or adjustment", bonusTitle:"Extra pay this period", bonusName:"What is it?", bonusAmt:"Amount ($)",
+  bonusPh:"Sign-on bonus, tips, back pay…", add:"Add", bonusHint:"Added to this paycheck's gross pay and taxed with it. Use a minus amount for a deduction.",
+  pickupTip:v=>`Pick up one more shift this period and you'd take home about <b>+${v}</b>.`, pickupTipGross:v=>`One more shift this period adds about <b>+${v}</b> gross.`,
+  pickupTitle:"If you pick up this shift", pickupNet:v=>`+${v} take-home`, pickupGross:v=>`+${v} gross pay`,
+  dayValue:v=>`This shift is worth about ${v} take-home.`,
+  noteLbl:"Note", notePh:"Swap with Mike, training, mandatory OT…",
+  actualLbl:"What did you actually get?", actualPh:"Net pay on your stub", actualDiff:(d,p)=> d===0 ? "Spot on." : `${d>0?"Got":"Got"} ${d>0?"more":"less"} than estimated by ${money(Math.abs(d))} (${p}%).`,
+  ptoTile:"PTO balance", ptoAfter:h=>`${h} after booked PTO`, ptoSet:"Set up PTO",
+  ptoTitle:"PTO balance", ptoBal:"Current balance (hours)", ptoAsOf:"As of", ptoAcc:"Hours earned per paycheck", ptoHint:"Booked PTO days on your calendar are subtracted automatically.",
+  startLbl2:"Job start date", startHint:"Used for this year's totals.",
+  yearBtn:y=>`See ${y} so far (W-2 preview)`, yearTitle:y=>`${y} so far`, yearSub:(a,b)=>`Paychecks from ${a} to ${b}`,
+  yGross:"Gross pay", yPre:"Pre-tax deductions", yTax:"Total taxes", yPost:"After-tax deductions", yNet:"Take-home", yHours:"Hours worked", yOt:"Overtime hours", yChecks:"Paychecks",
+  set_pto:"PTO balance", set_start:"Job start date", saveBtn:"Save"
+});
+Object.assign(L.ko, {
+  bonus:"보너스 · 팁", addBonus:"+ 보너스·팁·수당 추가", bonusTitle:"이번 기간 추가 수입", bonusName:"항목", bonusAmt:"금액 ($)",
+  bonusPh:"입사 보너스, 팁, 소급분…", add:"추가", bonusHint:"이번 급여 세전 금액에 더해지고 세금도 같이 계산돼요. 빼야 하면 마이너스로 입력하세요.",
+  pickupTip:v=>`이번 기간에 하루 더 출근하면 실수령 약 <b>+${v}</b>예요.`, pickupTipGross:v=>`이번 기간에 하루 더 출근하면 세전 약 <b>+${v}</b>예요.`,
+  pickupTitle:"이 날 출근하면", pickupNet:v=>`실수령 +${v}`, pickupGross:v=>`세전 +${v}`,
+  dayValue:v=>`이 날 근무는 실수령 약 ${v}예요.`,
+  noteLbl:"메모", notePh:"근무 교대, 교육, 강제 OT…",
+  actualLbl:"실제로 받은 금액은요?", actualPh:"명세서의 실수령액", actualDiff:(d,p)=> d===0 ? "정확히 맞았어요." : `예상보다 ${money(Math.abs(d))} ${d>0?"더":"덜"} 받았어요 (${p}%).`,
+  ptoTile:"PTO 잔액", ptoAfter:h=>`예약한 PTO 뒤 ${h}`, ptoSet:"PTO 설정하기",
+  ptoTitle:"PTO 잔액", ptoBal:"현재 잔액 (시간)", ptoAsOf:"기준일", ptoAcc:"급여 1회당 쌓이는 시간", ptoHint:"달력에 PTO로 바꾼 날은 자동으로 빠져요.",
+  startLbl2:"이 직장 시작일", startHint:"올해 누적 합계에 써요.",
+  yearBtn:y=>`${y}년 누적 보기 (W-2 미리보기)`, yearTitle:y=>`${y}년 누적`, yearSub:(a,b)=>`${a} ~ ${b} 지급분`,
+  yGross:"세전 합계", yPre:"세전 공제", yTax:"세금 합계", yPost:"세후 공제", yNet:"실수령 합계", yHours:"근무 시간", yOt:"OT 시간", yChecks:"급여 횟수",
+  set_pto:"PTO 잔액", set_start:"직장 시작일", saveBtn:"저장"
+});
+Object.assign(L.en, {
+  countryLbl:"Where do you work?", cUS:"United States", cKR:"South Korea", set_country:"Country",
+  krRate:"Hourly wage (₩)", krRateHint:"2026 minimum wage: ₩10,320/hr", krMonthly:"Monthly salary (₩, before tax)",
+  krOtTitle:"Korean labor rules", krOtLead:"Overtime 1.5× (over 8 hrs/day or 40 hrs/week), holiday work 1.5× (2× over 8 hrs), night work 22:00–06:00 +50%.",
+  krSmall:["Fewer than 5 employees","Overtime, night and holiday premiums don't apply"], krNight:["Night premium (+50%)","Hours between 10 PM and 6 AM"],
+  krJuhyu:["Weekly holiday pay (주휴수당)","Paid when you're scheduled 15+ hours a week"], krSalOt:"Extra-day pay rate", krSalOtHint:"Based on monthly salary ÷ 209 hrs.",
+  krTaxAuto:["Calculate for me","4 social insurances + income tax (2026)"], krDeps:"Dependents incl. yourself", krKids:"Children aged 8–20",
+  krWh:"Withholding rate", krNonTax:"Tax-free allowance per month (₩)", krNonTaxHint:"Meal allowance up to ₩200,000/month is tax-free.",
+  pension:"National Pension", health:"Health insurance", ltc:"Long-term care", empIns:"Employment insurance", incomeTax:"Income tax", localIncTax:"Local income tax",
+  night:"Night premium", juhyu:"Weekly holiday pay", krTaxNote:"4 social insurances use 2026 rates; income tax is an estimate of the NTS withholding table.",
+  monthlySame:"A set day this month", krYearBtn:y=>`See ${y} so far`
+});
+Object.assign(L.ko, {
+  countryLbl:"어디에서 일하세요?", cUS:"미국", cKR:"한국", set_country:"국가",
+  krRate:"시급 (₩)", krRateHint:"2026년 최저시급 10,320원", krMonthly:"월급 (세전, ₩)",
+  krOtTitle:"근로기준법 기준", krOtLead:"연장근로 1.5배(하루 8시간·주 40시간 초과), 휴일근로 1.5배(8시간 초과 2배), 야간근로(22시~6시) 50% 가산.",
+  krSmall:["5인 미만 사업장","연장·야간·휴일 가산수당이 적용되지 않아요"], krNight:["야간근로 가산 (+50%)","밤 10시~아침 6시 근무 시간"],
+  krJuhyu:["주휴수당","주 15시간 이상 근무하면 지급"], krSalOt:"휴무일 출근 배율", krSalOtHint:"통상시급(월급 ÷ 209시간) 기준이에요.",
+  krTaxAuto:["자동 계산","4대보험 + 소득세 (2026년 기준)"], krDeps:"부양가족 수 (본인 포함)", krKids:"8~20세 자녀 수",
+  krWh:"원천징수 비율", krNonTax:"월 비과세 수당 (₩)", krNonTaxHint:"식대는 월 20만원까지 비과세예요.",
+  pension:"국민연금", health:"건강보험", ltc:"장기요양보험", empIns:"고용보험", incomeTax:"소득세", localIncTax:"지방소득세",
+  night:"야간 가산", juhyu:"주휴수당", krTaxNote:"4대보험은 2026년 요율, 소득세는 국세청 간이세액표를 근사한 예상치예요.",
+  monthlySame:"그달 정해진 날", krYearBtn:y=>`${y}년 누적 보기`
+});
+let S, W = null;
+const t = (k, ...a) => { const v = (L[S.lang]||L.en)[k] ?? L.en[k]; return typeof v === "function" ? v(...a) : v; };
+const LOC = () => S.lang==="ko" ? "ko-KR" : "en-US";
+
+/* ================= dates ================= */
+const pad = n => String(n).padStart(2,"0");
+const toKey = (y,m,d) => `${y}-${pad(m)}-${pad(d)}`;
+const dayNum = k => { const [y,m,d] = k.split("-").map(Number); return Date.UTC(y,m-1,d)/864e5; };
+const fromNum = n => { const x = new Date(n*864e5); return toKey(x.getUTCFullYear(), x.getUTCMonth()+1, x.getUTCDate()); };
+const dowN = n => new Date(n*864e5).getUTCDay();
+const ymdN = n => { const x = new Date(n*864e5); return [x.getUTCFullYear(), x.getUTCMonth()+1, x.getUTCDate()]; };
+const NOW = new Date(); const TODAY = dayNum(toKey(NOW.getFullYear(), NOW.getMonth()+1, NOW.getDate()));
+const lastDayN = (y,m) => Date.UTC(y, m, 0)/864e5;
+const fmt = (n, o) => new Intl.DateTimeFormat(LOC(), Object.assign({ timeZone:"UTC" }, o)).format(new Date(n*864e5));
+const fDate = n => fmt(n, { month:"short", day:"numeric" });
+const fDateW = n => fmt(n, { weekday:"short", month:"short", day:"numeric" });
+const fDow = d => new Intl.DateTimeFormat(LOC(), { weekday:"short", timeZone:"UTC" }).format(new Date(Date.UTC(2023,0,1+d)));
+const fDowLong = d => new Intl.DateTimeFormat(LOC(), { weekday:"long", timeZone:"UTC" }).format(new Date(Date.UTC(2023,0,1+d)));
+const fTime = hm => { const [h,m] = String(hm||"0:0").split(":").map(Number); return new Intl.DateTimeFormat(LOC(), { hour:"numeric", minute:"2-digit", timeZone:"UTC" }).format(new Date(Date.UTC(2023,0,1,h||0,m||0))); };
+const KR = () => S && S.country==="KR";
+const money = v => KR() ? (v<0?"-":"") + "₩" + Math.round(Math.abs(v)).toLocaleString("ko-KR") : "$" + (Math.round(v*100)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const money0 = v => KR() ? "₩" + Math.round(v).toLocaleString("ko-KR") : "$" + Math.round(v).toLocaleString("en-US");
+const hrs = v => (Math.round(v*100)/100).toLocaleString("en-US") + (S.lang==="ko"?"시간":" hrs");
+
+/* US federal holidays (observed dates) */
+const holCache = {};
+function holidays(y){
+  if(holCache[y]) return holCache[y];
+  const nth = (m, dow, n) => { const f = Date.UTC(y,m-1,1)/864e5; return f + ((dow - dowN(f) + 7) % 7) + (n-1)*7; };
+  const last = (m, dow) => { const l = lastDayN(y,m); return l - ((dowN(l) - dow + 7) % 7); };
+  const obs = n => dowN(n)===6 ? n-1 : dowN(n)===0 ? n+1 : n;
+  const fx = (m,d) => obs(Date.UTC(y,m-1,d)/864e5);
+  const map = {};
+  [[fx(1,1),"New Year's Day","새해"],[nth(1,1,3),"MLK Day","MLK 데이"],[nth(2,1,3),"Presidents' Day","대통령의 날"],
+   [last(5,1),"Memorial Day","메모리얼 데이"],[fx(6,19),"Juneteenth","준틴스"],[fx(7,4),"Independence Day","독립기념일"],
+   [nth(9,1,1),"Labor Day","노동절"],[nth(10,1,2),"Columbus Day","콜럼버스 데이"],[fx(11,11),"Veterans Day","재향군인의 날"],
+   [nth(11,4,4),"Thanksgiving","추수감사절"],[fx(12,25),"Christmas","크리스마스"]].forEach(([n,en,ko]) => map[n] = { en, ko });
+  return holCache[y] = map;
+}
+// Korea: KASI calendar data 2026–2027 (incl. substitute holidays); fixed-date holidays for other years
+const KR_HOL = {
+  2026:[["01-01","New Year's Day","신정"],["02-16","Seollal","설날"],["02-17","Seollal","설날"],["02-18","Seollal","설날"],["03-01","Independence Movement Day","3·1절"],["03-02","Substitute holiday","대체공휴일"],
+    ["05-05","Children's Day","어린이날"],["05-24","Buddha's Birthday","부처님오신날"],["05-25","Substitute holiday","대체공휴일"],["06-03","Local elections","지방선거"],["06-06","Memorial Day","현충일"],
+    ["07-17","Constitution Day","제헌절"],["08-15","Liberation Day","광복절"],["08-17","Substitute holiday","대체공휴일"],["09-24","Chuseok","추석"],["09-25","Chuseok","추석"],["09-26","Chuseok","추석"],
+    ["10-03","National Foundation Day","개천절"],["10-05","Substitute holiday","대체공휴일"],["10-09","Hangul Day","한글날"],["12-25","Christmas","성탄절"]],
+  2027:[["01-01","New Year's Day","신정"],["02-06","Seollal","설날"],["02-07","Seollal","설날"],["02-08","Seollal","설날"],["02-09","Substitute holiday","대체공휴일"],["03-01","Independence Movement Day","3·1절"],
+    ["05-01","Labor Day","노동절"],["05-03","Substitute holiday","대체공휴일"],["05-05","Children's Day","어린이날"],["05-13","Buddha's Birthday","부처님오신날"],["06-06","Memorial Day","현충일"],
+    ["07-17","Constitution Day","제헌절"],["07-19","Substitute holiday","대체공휴일"],["08-15","Liberation Day","광복절"],["08-16","Substitute holiday","대체공휴일"],
+    ["09-14","Chuseok","추석"],["09-15","Chuseok","추석"],["09-16","Chuseok","추석"],["10-03","National Foundation Day","개천절"],["10-04","Substitute holiday","대체공휴일"],
+    ["10-09","Hangul Day","한글날"],["10-11","Substitute holiday","대체공휴일"],["12-25","Christmas","성탄절"],["12-27","Substitute holiday","대체공휴일"]]
+};
+const krCache = {};
+function krHolidays(y){
+  if(krCache[y]) return krCache[y];
+  const list = KR_HOL[y] || [["01-01","New Year's Day","신정"],["03-01","Independence Movement Day","3·1절"],["05-05","Children's Day","어린이날"],["06-06","Memorial Day","현충일"],["07-17","Constitution Day","제헌절"],["08-15","Liberation Day","광복절"],["10-03","National Foundation Day","개천절"],["10-09","Hangul Day","한글날"],["12-25","Christmas","성탄절"]];
+  const map = {}; list.forEach(([md,en,ko]) => map[dayNum(`${y}-${md}`)] = { en, ko });
+  return krCache[y] = map;
+}
+const holidayOf = n => (KR() ? krHolidays(ymdN(n)[0]) : holidays(ymdN(n)[0]))[n] || null;
+function nightHours(st, en, br){
+  const [a,b] = String(st||"0:0").split(":").map(Number), [c,d] = String(en||"0:0").split(":").map(Number);
+  const s0 = a*60+b; let e0 = c*60+d; if(e0 <= s0) e0 += 1440;
+  let m = 0; [[-120,360],[1320,1800],[2760,3240]].forEach(([x,y]) => { m += Math.max(0, Math.min(e0,y) - Math.max(s0,x)); });
+  const tot = e0 - s0; return tot ? Math.round(m*(1 - (+br||0)/tot)/60*100)/100 : 0;
+}
+
+/* ================= taxes (2026) ================= */
+// Federal: IRS Rev. Proc. 2025-32 via Tax Foundation. FICA: SSA 2026 wage base $184,500.
+const FED = {
+  single:{ std:16100, b:[[0,10],[12400,12],[50400,22],[105700,24],[201775,32],[256225,35],[640600,37]] },
+  mfj:{ std:32200, b:[[0,10],[24800,12],[100800,22],[211400,24],[403550,32],[512450,35],[768700,37]] },
+  hoh:{ std:24150, b:[[0,10],[17700,12],[67450,22],[105700,24],[201750,32],[256200,35],[640600,37]] }
+};
+const SS_BASE = 184500;
+// State: [name, standard deduction, personal exemption, credit, brackets [[from, %]]] for single filers — Tax Foundation, 2026
+const ST = {
+  AL:["Alabama",3000,1500,0,[[0,2],[500,4],[3000,5]]], AK:["Alaska",0,0,0,[]], AZ:["Arizona",8350,0,0,[[0,2.5]]],
+  AR:["Arkansas",2470,0,29,[[0,2],[4600,3.9]]],
+  CA:["California",5540,0,153,[[0,1],[11079,2],[26264,4],[41452,6],[57542,8],[72724,9.3],[371479,10.3],[445771,11.3],[742953,12.3],[1000000,13.3]]],
+  CO:["Colorado",16100,0,0,[[0,4.4]]], CT:["Connecticut",0,15000,0,[[0,2],[10000,4.5],[50000,5.5],[100000,6],[200000,6.5],[250000,6.9],[500000,6.99]]],
+  DE:["Delaware",3250,0,110,[[0,0],[2000,2.2],[5000,3.9],[10000,4.8],[20000,5.2],[25000,5.55],[60000,6.6]]],
+  DC:["District of Columbia",16100,0,0,[[0,4],[10000,6],[40000,6.5],[60000,8.5],[250000,9.25],[500000,9.75],[1000000,10.75]]],
+  FL:["Florida",0,0,0,[]], GA:["Georgia",12000,0,0,[[0,5.19]]],
+  HI:["Hawaii",4400,1144,0,[[0,1.4],[9600,3.2],[14400,5.5],[19200,6.4],[24000,6.8],[36000,7.2],[48000,7.6],[125000,7.9],[175000,8.25],[225000,9],[275000,10],[325000,11]]],
+  ID:["Idaho",16100,0,0,[[0,0],[4811,5.3]]], IL:["Illinois",0,2925,0,[[0,4.95]]], IN:["Indiana",0,1000,0,[[0,2.95]]],
+  IA:["Iowa",16100,0,40,[[0,3.8]]], KS:["Kansas",3605,9160,0,[[0,5.2],[23000,5.58]]], KY:["Kentucky",3360,0,0,[[0,3.5]]],
+  LA:["Louisiana",12875,0,0,[[0,3]]], ME:["Maine",8350,5300,0,[[0,5.8],[27399,6.75],[64849,7.15]]],
+  MD:["Maryland",3350,3200,0,[[0,2],[1000,3],[2000,4],[3000,4.75],[100000,5],[125000,5.25],[150000,5.5],[250000,5.75],[500000,6.25],[1000000,6.5]]],
+  MA:["Massachusetts",0,4400,0,[[0,5],[1083150,9]]], MI:["Michigan",0,5900,0,[[0,4.25]]],
+  MN:["Minnesota",15300,0,0,[[0,5.35],[33310,6.8],[109430,7.85],[203150,9.85]]], MS:["Mississippi",2300,6000,0,[[0,0],[10000,4]]],
+  MO:["Missouri",16100,0,0,[[0,0],[1348,2],[2696,2.5],[4044,3],[5392,3.5],[6740,4],[8088,4.5],[9436,4.7]]],
+  MT:["Montana",16100,0,0,[[0,4.7],[47500,5.65]]], NE:["Nebraska",8850,0,176,[[0,2.46],[4130,3.51],[24760,4.55]]],
+  NV:["Nevada",0,0,0,[]], NH:["New Hampshire",0,0,0,[]],
+  NJ:["New Jersey",0,1000,0,[[0,1.4],[20000,1.75],[35000,3.5],[40000,5.53],[75000,6.37],[500000,8.97],[1000000,10.75]]],
+  NM:["New Mexico",16100,0,0,[[0,1.5],[5500,3.2],[16500,4.3],[33500,4.7],[66500,4.9],[210000,5.9]]],
+  NY:["New York",8000,0,0,[[0,3.9],[8500,4.4],[11700,5.15],[13900,5.4],[80650,5.9],[215400,6.85],[1077550,9.65],[5000000,10.3],[25000000,10.9]]],
+  NC:["North Carolina",12750,0,0,[[0,3.99]]], ND:["North Dakota",16100,0,0,[[0,0],[48475,1.95],[244825,2.5]]],
+  OH:["Ohio",0,2400,0,[[0,0],[26050,2.75]]], OK:["Oklahoma",6350,1000,0,[[0,0],[3750,2.5],[4900,3.5],[7200,4.5]]],
+  OR:["Oregon",2910,0,256,[[0,4.75],[4550,6.75],[11400,8.75],[125000,9.9]]], PA:["Pennsylvania",0,0,0,[[0,3.07]]],
+  RI:["Rhode Island",11200,5250,0,[[0,3.75],[82050,4.75],[186450,5.99]]], SC:["South Carolina",8350,0,0,[[0,0],[3640,3],[18230,6]]],
+  SD:["South Dakota",0,0,0,[]], TN:["Tennessee",0,0,0,[]], TX:["Texas",0,0,0,[]], UT:["Utah",0,0,966,[[0,4.5]]],
+  VT:["Vermont",7650,5300,0,[[0,3.35],[49400,6.6],[119700,7.6],[249700,8.75]]], VA:["Virginia",8750,930,0,[[0,2],[3000,3],[5000,5],[17000,5.75]]],
+  WA:["Washington",0,0,0,[]], WV:["West Virginia",0,2000,0,[[0,2.22],[10000,2.96],[25000,3.33],[40000,4.44],[60000,4.82]]],
+  WI:["Wisconsin",13960,700,0,[[0,3.5],[15110,4.4],[51950,5.3],[332720,7.65]]], WY:["Wyoming",0,0,0,[]]
+};
+const DEDS = { k401:{unit:"%",tax:"401"}, roth:{unit:"%",tax:"post"}, health:{unit:"$",tax:"125"}, dental:{unit:"$",tax:"125"}, vision:{unit:"$",tax:"125"},
+  hsa:{unit:"$",tax:"125"}, fsa:{unit:"$",tax:"125"}, life:{unit:"$",tax:"post"}, union:{unit:"$",tax:"post"}, other:{unit:"$",tax:"post"} };
+function bracketTax(income, brackets, scale=1){
+  let tax = 0;
+  for(let i=0;i<brackets.length;i++){
+    const lo = brackets[i][0]*scale, hi = i+1<brackets.length ? brackets[i+1][0]*scale : Infinity;
+    if(income > lo) tax += (Math.min(income, hi) - lo) * brackets[i][1]/100;
+  }
+  return tax;
+}
+const perYearOf = cfg => ({ weekly:52, biweekly:26, semimonthly:24, monthly:12 })[cfg.freq] || 26;
+// one paycheck: gross → deductions → taxes → net
+function taxCalc(gross, cfg){
+  const P = perYearOf(cfg), out = { pre:[], post:[], taxes:[], gross };
+  let pre125 = 0, pre401 = 0, post = 0;
+  (cfg.deds||[]).forEach(d => {
+    const def = DEDS[d.type] || DEDS.other, tax = d.type==="other" ? (d.pre ? "125" : "post") : def.tax;
+    const v = def.unit==="%" ? gross * (+d.amt||0)/100 : (+d.amt||0); if(!(v>0)) return;
+    const name = d.type==="other" && d.name ? d.name : t("dedNames")[d.type];
+    const row = { name, v, d: def.unit==="%" ? `${+d.amt}%` : "" };
+    if(tax==="125"){ pre125 += v; out.pre.push(row); } else if(tax==="401"){ pre401 += v; out.pre.push(row); } else { post += v; out.post.push(row); }
+  });
+  if(cfg.country==="KR" && cfg.taxMode==="kr"){
+    // all user deductions are after-tax in Korea
+    out.post = out.post.concat(out.pre); post += pre125 + pre401; out.pre = []; pre125 = 0; pre401 = 0;
+    const nonTax = Math.min(gross, (+cfg.krNonTax||0)*12/P), mo = (gross - nonTax)*P/12, f = 12/P;
+    const pen = Math.min(Math.max(mo, 400000), 6370000)*0.0475*f, hl = mo*0.03595*f, lt = hl*0.1314, em = mo*0.009*f;
+    const G = mo*12;
+    const eD = Math.min(20000000, G<=5e6 ? G*0.7 : G<=15e6 ? 3.5e6+(G-5e6)*0.4 : G<=45e6 ? 7.5e6+(G-15e6)*0.15 : G<=1e8 ? 12e6+(G-45e6)*0.05 : 14.75e6+(G-1e8)*0.02);
+    const base = Math.max(0, G - eD - Math.max(1,+cfg.krDeps||1)*1.5e6 - (pen+hl+lt+em)*P);
+    const KB = [[0,6],[14e6,15],[50e6,24],[88e6,35],[150e6,38],[300e6,40],[500e6,42],[1e9,45]];
+    const calc = bracketTax(base, KB);
+    const lim = G<=33e6 ? 740000 : G<=70e6 ? Math.max(660000, 740000-(G-33e6)*0.008) : G<=120e6 ? Math.max(500000, 660000-(G-70e6)*0.5) : Math.max(200000, 500000-(G-120e6)*0.5);
+    const eC = Math.min(lim, calc<=1.3e6 ? calc*0.55 : 715000 + (calc-1.3e6)*0.3);
+    const k = +cfg.krKids||0, kidMo = k<=0 ? 0 : k===1 ? 12500 : 29160 + Math.max(0,k-2)*25000;
+    const it = Math.max(0, calc - eC - kidMo*12)/P * (+cfg.krWh||100)/100, lit = it*0.1;
+    out.taxes.push({ name:t("pension"), v:pen, d:"4.75%" }, { name:t("health"), v:hl, d:"3.595%" }, { name:t("ltc"), v:lt, d:"13.14%" }, { name:t("empIns"), v:em, d:"0.9%" },
+      { name:t("incomeTax"), v:it }, { name:t("localIncTax"), v:lit, d:"10%" });
+    const taxTotal = pen+hl+lt+em+it+lit;
+    out.preTotal = 0; out.postTotal = post; out.taxTotal = taxTotal; out.net = gross - taxTotal - post;
+    return out;
+  }
+  const fedWages = Math.max(0, gross - pre125 - pre401), ficaWages = Math.max(0, gross - pre125);
+  let taxTotal = 0;
+  if(cfg.taxMode==="manual"){
+    const v = fedWages * (+cfg.taxPct||0)/100; if(v>0) out.taxes.push({ name:t("taxes"), v, d:`${+cfg.taxPct}%` }); taxTotal = v;
+  } else if(cfg.taxMode==="auto"){
+    const f = FED[cfg.filing] || FED.single, A = fedWages*P;
+    const credits = (+cfg.kids||0)*2200 + (+cfg.otherDeps||0)*500;
+    const fed = Math.max(0, bracketTax(Math.max(0, A - f.std), f.b) - credits)/P + (+cfg.extraWH||0);
+    const ss = Math.min(ficaWages, SS_BASE/P) * 0.062;
+    const med = ficaWages*0.0145 + Math.max(0, ficaWages*P - (cfg.filing==="mfj"?250000:200000))/P*0.009;
+    out.taxes.push({ name:t("fedTax"), v:fed }, { name:t("ss"), v:ss, d:"6.2%" }, { name:t("medicare"), v:med, d:"1.45%" });
+    taxTotal = fed + ss + med;
+    const st = ST[cfg.state];
+    if(st && st[4].length){
+      const sc = cfg.filing==="mfj" ? 2 : 1, base = Math.max(0, A - st[1]*sc - st[2]*sc);
+      const stTax = Math.max(0, bracketTax(base, st[4], sc) - st[3]*sc)/P;
+      out.taxes.push({ name:t("stateTax", cfg.state), v:stTax }); taxTotal += stTax;
+    }
+    if(+cfg.localPct > 0){ const lv = fedWages*(+cfg.localPct)/100; out.taxes.push({ name:t("localTax"), v:lv, d:`${+cfg.localPct}%` }); taxTotal += lv; }
+  }
+  out.preTotal = pre125 + pre401; out.postTotal = post; out.taxTotal = taxTotal;
+  out.net = gross - pre125 - pre401 - taxTotal - post;
+  return out;
+}
+const taxesOn = (cfg=S) => cfg.taxMode==="auto" || cfg.taxMode==="kr" || (cfg.taxMode==="manual" && +cfg.taxPct>0);
+// rough typical gross per check from schedule settings (used for previews before the calendar exists)
+function typicalGross(cfg){
+  const P = perYearOf(cfg);
+  if(cfg.payType==="salary") return cfg.country==="KR" ? (+cfg.salary||0)*12/P : (+cfg.salary||0)/P;
+  const c = cycleStr(cfg), ratio = c==="MF" ? 5/7 : c==="SIX" ? 6/7 : (c.split("W").length-1)/c.length;
+  const wk = ratio*7*paidHours(cfg.shiftStart, cfg.shiftEnd, cfg.breakMin), r = +cfg.rate||0;
+  if(cfg.country==="KR") return (Math.min(wk,40) + (cfg.krJuhyu && wk>=15 ? Math.min(8, wk/40*8) : 0))*r*52/P + Math.max(0,wk-40)*r*(cfg.krSmall?1:1.5)*52/P;
+  return (Math.min(wk,40)*r + Math.max(0,wk-40)*r*(+cfg.otMult||1.5))*52/P + wk*52/P*(+cfg.diff||0);
+}
+
+/* ================= state ================= */
+const PATS = { p223:"WWOOWWWOOWWOOO", p42:"WWWWOO", p44:"WWWWOOOO", p5:"MF", p6:"SIX", custom:"" };
+function defaults(){
+  const ws = TODAY - dowN(TODAY);
+  return { lang:(navigator.language||"en").toLowerCase().startsWith("ko") ? "ko" : "en", setupDone:false,
+    pattern:"p223", customCycle:"WWWOOO", cycleStart:fromNum(ws), sixOff:0,
+    shiftLabel:"day", shiftStart:"06:00", shiftEnd:"18:30", breakMin:30,
+    payType:"hourly", rate:"", diff:0, salary:"",
+    otMult:1.5, dblMult:2, dailyOT:false, seventhDouble:false, holidayPremium:true, holidayMult:2, salaryOtMult:1,
+    freq:"biweekly", weekStart:0, periodAnchor:fromNum(ws), payDow:5, payDelay:0,
+    semiMode:"end", semiLag:5, monthlyMode:"last", monthlyDay:5, weekendAdj:true,
+    taxMode:"auto", state:"GA", filing:"single", kids:0, otherDeps:0, extraWH:0, localPct:0, taxPct:0, country:(()=>{ try{ return Intl.DateTimeFormat().resolvedOptions().timeZone==="Asia/Seoul" ? "KR" : "US"; }catch(e){ return "US"; } })(), krSmall:false, krNight:true, krJuhyu:true, krNonTax:200000, krDeps:1, krKids:0, krWh:100,
+    deds:[], overrides:{}, hours:{}, notes:{}, bonuses:{}, actuals:{}, pto:null, startDate:"" };
+}
+S = defaults();
+
+let store = { db:null, uid:null };
+const LSKEY = "shifttally-v2";
+const loadLocal = () => { try{ const v = localStorage.getItem(LSKEY); return v ? JSON.parse(v) : null; }catch(e){ return null; } };
+const saveLocal = () => { try{ localStorage.setItem(LSKEY, JSON.stringify(S)); }catch(e){} };
+let saveT = null;
+function save(){
+  saveLocal(); clearTimeout(saveT);
+  saveT = setTimeout(async () => {
+    if(store.db && store.uid){ try{ await store.db.doc("data/users/"+store.uid+"/state").set({ json: JSON.stringify(S), at: Date.now() }); }catch(e){} }
+  }, 700);
+}
+const $ = s => document.querySelector(s);
+
+/* ================= schedule engine ================= */
+const paidHours = (st=S.shiftStart, en=S.shiftEnd, br=S.breakMin) => {
+  const [a,b] = String(st||"0:0").split(":").map(Number), [c,d] = String(en||"0:0").split(":").map(Number);
+  let mins = (c*60+d) - (a*60+b); if(mins <= 0) mins += 1440;
+  return Math.max(0, Math.round(((mins - (+br||0))/60)*100)/100);
+};
+const cycleStr = (st=S) => st.pattern==="custom" ? ((st.customCycle||"").toUpperCase().replace(/[^WO]/g,"") || "WO") : PATS[st.pattern];
+function baseAt(n, st=S){
+  const c = cycleStr(st);
+  if(c==="MF"){ const w = dowN(n); return (w===0||w===6) ? "O" : "W"; }
+  if(c==="SIX") return dowN(n)===+st.sixOff ? "O" : "W";
+  const i = ((n - dayNum(st.cycleStart)) % c.length + c.length) % c.length;
+  return c[i]==="W" ? "W" : "O";
+}
+const statusAt = n => S.overrides[fromNum(n)] || baseAt(n);
+const isWork = s => s==="W"||s==="OT"||s==="H";
+const hoursAt = n => { const h = S.hours[fromNum(n)]; return h != null ? +h : paidHours(); };
+function streakAt(n){ let c = 0; while(c < 8 && isWork(statusAt(n - c))) c++; return c; }
+const wkStart = n => n - ((dowN(n) - S.weekStart + 7) % 7);
+
+const wkCache = new Map();
+function weekBuckets(ws){
+  if(wkCache.has(ws)) return wkCache.get(ws);
+  const out = {}; let pool = 0;
+  for(let i=0;i<7;i++){
+    const n = ws+i, st = statusAt(n), h = hoursAt(n);
+    const b = { st, reg:0, ot:0, dbl:0, hol:0, pto:0, extra:0, worked:0, night:0, juhyu:0 };
+    if(st==="PTO") b.pto = h;
+    else if(KR() && isWork(st)){
+      b.worked = h;
+      if(S.payType==="salary"){ if(st==="OT") b.extra = h; }
+      else if(st==="H" || holidayOf(n)){ b.hol = Math.min(h,8); b.dbl = Math.max(h-8,0); }
+      else { const dr = Math.min(h,8), reg = Math.max(0, Math.min(dr, 40 - pool)); pool += reg; b.reg = reg; b.ot = (h - dr) + (dr - reg); }
+      if(S.krNight && !S.krSmall && S.payType==="hourly") b.night = Math.min(h, nightHours(S.shiftStart, S.shiftEnd, S.breakMin) * (h / (paidHours()||h)));
+    }
+    else if(isWork(st)){
+      b.worked = h;
+      if(S.payType==="salary"){ if(st==="OT") b.extra = h; }
+      else if(st==="H" || (S.holidayPremium && holidayOf(n))) b.hol = h;
+      else if(S.seventhDouble && streakAt(n)===7) b.dbl = h;
+      else {
+        let dr = h, dot = 0, dd = 0;
+        if(S.dailyOT){ dr = Math.min(h,8); dot = Math.min(Math.max(h-8,0),4); dd = Math.max(h-12,0); }
+        const reg = Math.max(0, Math.min(dr, 40 - pool)); pool += reg;
+        b.reg = reg; b.ot = dot + (dr - reg); b.dbl = dd;
+      }
+    }
+    out[n] = b;
+  }
+  if(KR() && S.krJuhyu && S.payType==="hourly"){
+    let sched = 0, missed = false;
+    for(let i=0;i<7;i++){ const n = ws+i; if(baseAt(n)==="W") sched += paidHours(); if(statusAt(n)==="UN") missed = true; }
+    if(sched >= 15 && !missed) out[ws+6].juhyu = Math.min(8, sched/40*8);
+  }
+  wkCache.set(ws, out); return out;
+}
+const dayB = n => weekBuckets(wkStart(n))[n];
+function sumDays(s, e){
+  const r = { reg:0, ot:0, dbl:0, hol:0, pto:0, extra:0, worked:0, night:0, juhyu:0, days:0 };
+  for(let n=s; n<=e; n++){ const b = dayB(n); for(const k in r) if(k!=="days") r[k] += b[k]; if(isWork(b.st)) r.days++; }
+  return r;
+}
+
+/* pay periods */
+const adjWeekend = (n, st=S) => !st.weekendAdj ? n : dowN(n)===6 ? n-1 : dowN(n)===0 ? n-2 : n;
+function periodFor(n, st=S){
+  if(st.freq==="weekly" || st.freq==="biweekly"){
+    const len = st.freq==="weekly" ? 7 : 14, a = dayNum(st.periodAnchor);
+    const s = a + Math.floor((n - a)/len)*len, e = s + len - 1;
+    const p = e + 1 + ((+st.payDow - dowN(e+1) + 7) % 7) + 7*(+st.payDelay||0);
+    return { s, e, pay:p };
+  }
+  const [y,m,d] = ymdN(n);
+  if(st.freq==="semimonthly"){
+    const first = d <= 15, s = Date.UTC(y,m-1, first?1:16)/864e5, e = first ? Date.UTC(y,m-1,15)/864e5 : lastDayN(y,m);
+    const p = st.semiMode==="end" ? e : e + (+st.semiLag||0);
+    return { s, e, pay: adjWeekend(p, st) };
+  }
+  const s = Date.UTC(y,m-1,1)/864e5, e = lastDayN(y,m);
+  let p = e;
+  if(st.monthlyMode==="same"){ p = Math.min(Date.UTC(y,m-1,+st.monthlyDay||25)/864e5, e); }
+  else if(st.monthlyMode==="day"){ const ny = m===12?y+1:y, nm = m===12?1:m+1; p = Math.min(Date.UTC(ny,nm-1,+st.monthlyDay||1)/864e5, lastDayN(ny,nm)); }
+  return { s, e, pay: adjWeekend(p, st) };
+}
+const shiftPeriod = (p, k) => { let q = p; while(k>0){ q = periodFor(q.e+1); k--; } while(k<0){ q = periodFor(q.s-1); k++; } return q; };
+function nextPayPeriod(st=S){ let p = periodFor(TODAY - 70, st), g = 0; while(p.pay < TODAY && g++ < 60) p = periodFor(p.e+1, st); return p; }
+const perYear = () => ({ weekly:52, biweekly:26, semimonthly:24, monthly:12 })[S.freq];
+
+function paycheck(p){
+  const x = sumDays(p.s, p.e), lines = [];
+  let gross = 0;
+  if(KR()){
+    const r = +S.rate||0, prem = S.krSmall ? 1 : 1.5, dprem = S.krSmall ? 1 : 2;
+    const add = (key, h, mult, color) => { if(h>0){ const v = h*r*mult; gross += v; lines.push({ key, h, rate:r*mult, v, color }); } };
+    if(S.payType==="hourly"){
+      add("regular", x.reg, 1, "var(--work)"); add("overtime", x.ot, prem, "var(--ot)"); add("holiday", x.hol, prem, "var(--hol)");
+      add("double", x.dbl, dprem, "var(--hol)"); add("night", x.night, 0.5, "var(--muted)"); add("pto", x.pto, 1, "var(--pto)"); add("juhyu", x.juhyu, 1, "var(--pay)");
+    } else {
+      const base = (+S.salary||0)*12/perYear(), he = (+S.salary||0)/209, om = +S.salaryOtMult||0;
+      gross = base; lines.push({ key:"basePay", v:base, color:"var(--work)" });
+      if(x.extra>0 && om>0){ const v = x.extra*he*om; gross += v; lines.push({ key:"extraOT", h:x.extra, rate:he*om, v, color:"var(--ot)" }); }
+    }
+  } else if(S.payType==="hourly"){
+    const r = +S.rate||0, diff = +S.diff||0;
+    const add = (key, h, mult, color) => { if(h>0){ const v = h*r*mult; gross += v; lines.push({ key, h, rate:r*mult, v, color }); } };
+    add("regular", x.reg, 1, "var(--work)"); add("overtime", x.ot, +S.otMult||1.5, "var(--ot)");
+    add("double", x.dbl, +S.dblMult||2, "var(--hol)"); add("holiday", x.hol, +S.holidayMult||2, "var(--hol)");
+    add("pto", x.pto, 1, "var(--pto)");
+    if(diff>0 && x.worked>0){ const v = x.worked*diff; gross += v; lines.push({ key:"diff", h:x.worked, rate:diff, v, color:"var(--muted)" }); }
+  } else {
+    const base = (+S.salary||0)/perYear(), he = (+S.salary||0)/2080, om = +S.salaryOtMult||0;
+    gross = base; lines.push({ key:"basePay", v:base, color:"var(--work)" });
+    if(x.extra>0 && om>0){ const v = x.extra*he*om; gross += v; lines.push({ key:"extraOT", h:x.extra, rate:he*om, v, color:"var(--ot)" }); }
+  }
+  (S.bonuses[fromNum(p.s)]||[]).forEach(b => { const v = +b.amt||0; if(v){ gross += v; lines.push({ key:"bonus", label:b.name||t("bonus"), v, color:"var(--pay)" }); } });
+  const tc = taxCalc(gross, S);
+  return { x, lines, gross, tc, net: tc.net };
+}
+
+/* ================= extras ================= */
+function withOverride(k, st, fn){ const had = S.overrides[k]; S.overrides[k] = st; wkCache.clear(); try{ return fn(); } finally { if(had===undefined) delete S.overrides[k]; else S.overrides[k] = had; wkCache.clear(); } }
+function shiftValue(n, st){ const k = fromNum(n), p = periodFor(n); wkCache.clear(); const a = paycheck(p); const b = withOverride(k, st, () => paycheck(p)); return { gross: b.gross - a.gross, net: b.net - a.net }; }
+function ptoBalance(){
+  if(!S.pto || S.pto.balance === "" || S.pto.balance == null) return null;
+  const as = dayNum(S.pto.asOf || fromNum(TODAY)); let bal = +S.pto.balance || 0, p = periodFor(as), g = 0;
+  while(p.e < TODAY && g++ < 400){ if(p.e >= as) bal += +S.pto.accrual || 0; p = periodFor(p.e+1); }
+  let used = 0, future = 0;
+  for(const k in S.overrides){ if(S.overrides[k] !== "PTO") continue; const n = dayNum(k); if(n < as) continue; const h = hoursAt(n); if(n <= TODAY) used += h; else future += h; }
+  return { now: bal - used, after: bal - used - future };
+}
+function yearTotals(){
+  const y = ymdN(TODAY)[0], jan1 = Date.UTC(y,0,1)/864e5, start = S.startDate ? Math.max(jan1, dayNum(S.startDate)) : jan1;
+  const r = { gross:0, pre:0, tax:0, post:0, net:0, hours:0, ot:0, checks:0, first:null, last:null };
+  let p = periodFor(jan1 - 40), g = 0;
+  while(p.pay <= TODAY && g++ < 80){
+    if(p.pay >= jan1 && p.e >= start){
+      const pc = paycheck(p); r.gross += pc.gross; r.pre += pc.tc.preTotal; r.tax += pc.tc.taxTotal; r.post += pc.tc.postTotal; r.net += pc.net;
+      r.hours += pc.x.worked; r.ot += pc.x.ot + pc.x.dbl + pc.x.extra; r.checks++; if(r.first==null) r.first = p.pay; r.last = p.pay;
+    }
+    p = periodFor(p.e+1);
+  }
+  return r;
+}
+
+/* ================= render ================= */
+let periodOffset = 0, viewY = NOW.getFullYear(), viewM = NOW.getMonth()+1;
+function renderHero(){
+  const p = nextPayPeriod(), pc = paycheck(p), days = p.pay - TODAY;
+  const cur = periodFor(TODAY), len = cur.e - cur.s + 1, dIn = Math.min(len, Math.max(0, TODAY - cur.s + 1));
+  const showNet = taxesOn();
+  $("#hero").innerHTML = `
+    <div class="eyebrow">${t("nextPayday")}</div>
+    <div class="when"><span class="date">${fDateW(p.pay)}</span><span class="count">${t("inDays", days)}</span></div>
+    <div><div class="amt num">${money(showNet ? pc.net : pc.gross)}</div>
+      <div class="amt-cap">${showNet ? t("estNet") : t("estGross")} · ${t("forPeriod", fDate(p.s), fDate(p.e))}</div></div>
+    <div><div class="bar"><i style="width:${Math.round(dIn/len*100)}%"></i></div>
+      <div class="barcap"><span>${t("payPeriod")} ${fDate(cur.s)} – ${fDate(cur.e)}</span><span>${t("periodProgress", dIn, len)}</span></div></div>`;
+}
+function renderToday(){
+  const st = statusAt(TODAY), ws = wkStart(TODAY), wk = sumDays(ws, ws+6);
+  const lab = S.shiftLabel==="night" ? t("nightShift") : t("dayShift");
+  const top = isWork(st) ? t("todayShift", lab, fTime(S.shiftStart), fTime(S.shiftEnd)) : st==="O" ? t("todayOff") : t("stLong")[st];
+  const sub = st==="O" ? t("todayOffSub") : t("thisWeek", hrs(wk.worked), (wk.ot+wk.dbl) ? hrs(wk.ot+wk.dbl) : 0);
+  $("#today").innerHTML = `<div class="dot s-${st}" style="${st==="O"||st==="UN"?"background:var(--chip)":""}">${t("st")[st]}</div>
+    <div><div class="t1">${t("todayLbl")} · ${top}</div><div class="t2">${sub}</div></div>`;
+}
+function renderStub(){
+  const p = shiftPeriod(nextPayPeriod(), periodOffset), pc = paycheck(p);
+  const ln = (cls, l, d, v, color) => `<div class="ln ${cls}"><span class="l">${color?`<i class="sw" style="background:${color}"></i>`:""}${l}</span>${d?`<span class="d">${d}</span>`:""}<span class="v">${v}</span></div>`;
+  const sec = l => `<div class="ln sec"><span class="l">${l}</span></div>`, tc = pc.tc;
+  let rows = sec(t("secEarn")) + (pc.lines.length ? pc.lines.map(x => ln("", x.label || t(x.key), x.h!=null ? `${hrs(x.h)} × ${money(x.rate)}` : "", money(x.v), x.color)).join("") : ln("", t("regular"), "", money(0), "var(--work)"));
+  rows += ln("gross", t("gross"), "", money(pc.gross));
+  if(tc.pre.length) rows += sec(t("secPre")) + tc.pre.map(r => ln("sub", r.name, r.d, "−" + money(r.v))).join("");
+  if(tc.taxes.length) rows += sec(t("secTax")) + tc.taxes.map(r => ln("sub", r.name, r.d||"", "−" + money(r.v))).join("");
+  if(tc.post.length) rows += sec(t("secPost")) + tc.post.map(r => ln("sub", r.name, r.d, "−" + money(r.v))).join("");
+  rows += ln("total", (taxesOn() ? t("takeHome") : t("afterDed")), "", money(pc.net));
+  $("#stubCard").innerHTML = `
+    <div class="stub-head"><button class="nav-btn" id="pPrev" aria-label="Previous pay period">‹</button><h2>${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)}</h2><button class="nav-btn" id="pNext" aria-label="Next pay period">›</button></div>
+    <div class="stub-sub">${t("payday")} ${fDateW(p.pay)} · ${hrs(pc.x.worked)}</div>
+    <div class="stub">${rows}</div>
+    ${(() => {
+      let off = null; for(let n=Math.max(p.s, TODAY); n<=p.e; n++){ if(statusAt(n)==="O"){ off = n; break; } }
+      if(off==null || (S.payType==="salary" && !(+S.salaryOtMult>0))) return "";
+      const v = shiftValue(off, "OT"); if(!(v.gross>0)) return "";
+      return `<div class="tipbox"><span>${taxesOn() ? t("pickupTip", money0(v.net)) : t("pickupTipGross", money0(v.gross))}</span></div>`;
+    })()}
+    ${p.pay <= TODAY ? `<div class="actual"><span class="lbl" style="font-size:13px;font-weight:700">${t("actualLbl")}</span><div class="row"><input id="actIn" type="number" inputmode="decimal" step="0.01" placeholder="${t("actualPh")}" value="${S.actuals[fromNum(p.s)] ?? ""}"></div><span class="diff" id="actDiff"></span></div>` : ""}
+    <button class="linkbtn" id="addBonus">${t("addBonus")}</button>
+    <p class="note">${S.taxMode==="kr" ? t("krTaxNote") : S.taxMode==="auto" ? t("taxNoteAuto", (ST[S.state]||["—"])[0]) : taxesOn() ? t("taxNote", +S.taxPct) : t("noTaxNote")}</p>`;
+  const ai = $("#actIn"), showDiff = () => { const d = $("#actDiff"); if(!d) return; const v = S.actuals[fromNum(p.s)];
+    if(v == null || v === ""){ d.textContent = ""; return; } const diff = Math.round((+v - pc.net)*100)/100; d.textContent = t("actualDiff", diff, pc.net ? Math.abs(Math.round(diff/pc.net*1000)/10) : 0); d.style.color = Math.abs(diff) <= pc.net*0.02 ? "var(--pay)" : "var(--ot)"; };
+  if(ai){ ai.oninput = () => { if(ai.value==="") delete S.actuals[fromNum(p.s)]; else S.actuals[fromNum(p.s)] = +ai.value; save(); showDiff(); }; showDiff(); }
+  $("#addBonus").onclick = () => openBonus(p);
+  $("#pPrev").onclick = () => { periodOffset--; renderStub(); renderCal(); };
+  $("#pNext").onclick = () => { periodOffset++; renderStub(); renderCal(); };
+}
+function renderCal(){
+  const first = Date.UTC(viewY, viewM-1, 1)/864e5, last = lastDayN(viewY, viewM);
+  const lead = (dowN(first) - S.weekStart + 7) % 7, cells = Math.ceil((lead + (last-first+1))/7)*7;
+  const sel = shiftPeriod(nextPayPeriod(), periodOffset);
+  const pays = new Set(); let p = periodFor(first - 75), g = 0; while(p.s <= last + 40 && g++ < 60){ pays.add(p.pay); p = periodFor(p.e+1); }
+  let h = "";
+  for(let i=0;i<7;i++) h += `<div class="dow">${fDow((S.weekStart+i)%7)}</div>`;
+  for(let i=0;i<cells;i++){
+    const n = first - lead + i, st = statusAt(n), dd = ymdN(n)[2], hol = holidayOf(n), k = fromNum(n);
+    const cls = ["day"]; if(n<first||n>last) cls.push("out"); if(n>=sel.s && n<=sel.e) cls.push("inper"); if(n===TODAY) cls.push("is-today");
+    const changed = S.overrides[k] || S.hours[k] != null;
+    h += `<button class="${cls.join(" ")}" data-n="${n}" aria-label="${fDateW(n)} ${t("stLong")[st]}${pays.has(n)?" · "+t("payday"):""}${hol?" · "+hol[S.lang]:""}">${changed?'<span class="chg"></span>':""}${pays.has(n)?'<span class="pd">$</span>':""}<span class="d num">${dd}</span><span class="s s-${st}">${t("st")[st]}</span>${hol?`<span class="hl">${hol[S.lang]}</span>`:""}${S.notes[k]?'<span class="nt"></span>':""}</button>`;
+  }
+  $("#calCard").innerHTML = `
+    <div class="cal-head"><button class="nav-btn" id="mPrev" aria-label="Previous month">‹</button><h2>${fmt(first,{year:"numeric",month:"long"})}</h2><button class="tbtn" id="mToday">${t("today")}</button><button class="nav-btn" id="mNext" aria-label="Next month">›</button></div>
+    <div class="grid" id="cal">${h}</div>
+    <div class="legend"><span><span class="pd">$</span>${t("legendPay")}</span><span class="s s-OT">OT</span><span class="s s-PTO">PTO</span><span class="s s-H">${t("st").H}</span><span>${t("tapHint")}</span></div>`;
+  $("#mPrev").onclick = () => { viewM--; if(viewM<1){viewM=12;viewY--;} renderCal(); };
+  $("#mNext").onclick = () => { viewM++; if(viewM>12){viewM=1;viewY++;} renderCal(); };
+  $("#mToday").onclick = () => { viewY = NOW.getFullYear(); viewM = NOW.getMonth()+1; periodOffset = 0; renderStub(); renderCal(); };
+  $("#cal").onclick = e => { const b = e.target.closest("[data-n]"); if(b) openDay(+b.dataset.n); };
+}
+function renderOutlook(){
+  const y = ymdN(TODAY)[0], dec31 = Date.UTC(y,11,31)/864e5;
+  let rest = 0, next = 0, cnt = 0, p = nextPayPeriod(), g = 0;
+  while(p.pay <= TODAY + 365 && g++ < 60){
+    const pc = paycheck(p), v = taxesOn() ? pc.net : pc.gross;
+    next += v; cnt++; if(p.pay <= dec31) rest += v;
+    p = periodFor(p.e+1);
+  }
+  $("#outlookCard").innerHTML = `<div class="cal-head" style="margin-bottom:10px"><h2 style="font-size:16px">${t("outlook")}</h2></div>
+    <div class="outlook">
+      <div class="ok"><span class="v num">${money0(rest)}</span><span class="k">${t("restYear", y)}</span></div>
+      <div class="ok"><span class="v num">${money0(next)}</span><span class="k">${t("next12")}</span></div>
+      <div class="ok"><span class="v num">${money0(cnt ? next/cnt : 0)}</span><span class="k">${t("avgCheck")}</span></div>
+      ${(() => { const b = ptoBalance(); return b ? `<div class="ok" role="button" tabindex="0" id="ptoTile" style="cursor:pointer"><span class="v num">${hrs(b.now)}</span><span class="k">${t("ptoTile")}${b.after!==b.now?" · "+t("ptoAfter", hrs(b.after)):""}</span></div>`
+        : `<button class="ok" id="ptoTile" style="border:1px dashed var(--line);text-align:left;cursor:pointer"><span class="v" style="font-size:14px">${t("ptoSet")}</span><span class="k">${t("ptoTile")}</span></button>`; })()}
+    </div><button class="linkbtn" id="yearBtn">${KR() ? t("krYearBtn", y) : t("yearBtn", y)}</button><p class="note">${t("outlookNote")}</p>`;
+  $("#ptoTile").onclick = openPto; $("#yearBtn").onclick = openYear;
+}
+function render(){
+  wkCache.clear(); document.documentElement.lang = S.lang;
+  $("#tagline").textContent = t("tagline"); $("#openSettings").textContent = t("settings");
+  renderHero(); renderToday(); renderStub(); renderCal(); renderOutlook();
+}
+
+/* ================= sheets ================= */
+function openSheet(html){ $("#sheet").innerHTML = `<div class="sheet-in">${html}</div>`; $("#sheet").hidden = false; $("#shade").hidden = false; document.body.style.overflow = "hidden"; }
+function closeSheet(){ $("#sheet").hidden = true; $("#shade").hidden = true; document.body.style.overflow = ""; }
+$("#shade").onclick = closeSheet;
+document.addEventListener("keydown", e => { if(e.key==="Escape") closeSheet(); });
+
+function openDay(n){
+  const k = fromNum(n), base = baseAt(n), hol = holidayOf(n);
+  const opts = base==="W" ? ["W","PTO","H","UN","O"] : ["O","OT","H","PTO"];
+  const draw = () => {
+    const cur = statusAt(n), h = hoursAt(n);
+    openSheet(`<div class="sheet-head"><h2>${fDateW(n)}${hol?` · ${hol[S.lang]}`:""}</h2><button class="x" id="dX" aria-label="Close">✕</button></div>
+      <p class="lead">${t("original", t("stLong")[base])}${(S.overrides[k]||S.hours[k]!=null)?` · ${t("changed")}`:""}</p>
+      <div class="picks two">${opts.map(o => `<button class="pick" data-s="${o}" aria-pressed="${o===cur}"><b>${t("stLong")[o]}</b><span>${t("stDesc")[o]}</span></button>`).join("")}</div>
+      ${(() => {
+        if(cur==="O" && !(S.payType==="salary" && !(+S.salaryOtMult>0))){ const v = shiftValue(n, "OT"); if(v.gross>0) return `<div class="gain">${t("pickupTitle")}<b>${taxesOn() ? t("pickupNet", money(v.net)) : t("pickupGross", money(v.gross))}</b>${taxesOn()?`<span class="hint">${t("pickupGross", money(v.gross))}</span>`:""}</div>`; }
+        if(isWork(cur) && S.payType==="hourly"){ const a = shiftValue(n, "O"); return `<p class="hint">${t("dayValue", money(-(taxesOn()?a.net:a.gross)))}</p>`; }
+        return "";
+      })()}
+      ${(isWork(cur)||cur==="PTO") ? `<div class="field"><span class="lbl">${t("hoursLbl")}</span><div class="hours"><button id="hM" aria-label="minus half hour">−</button><output class="num">${h}</output><button id="hP" aria-label="plus half hour">+</button></div></div>` : ""}
+      <div class="field"><label for="dNote">${t("noteLbl")}</label><textarea class="note-in" id="dNote" placeholder="${t("notePh")}">${(S.notes[k]||"").replace(/</g,"&lt;")}</textarea></div>
+      <div class="wiz-nav"><button class="btn ghost" id="dReset">${t("reset")}</button><button class="btn" id="dDone">${t("done")}</button></div>`);
+    const dn = $("#dNote"); dn.oninput = () => { if(dn.value.trim()) S.notes[k] = dn.value; else delete S.notes[k]; save(); };
+    dn.onblur = () => renderCal();
+    $("#dX").onclick = closeSheet; $("#dDone").onclick = closeSheet;
+    $("#sheet").querySelectorAll("[data-s]").forEach(b => b.onclick = () => { const s = b.dataset.s; if(s===base) delete S.overrides[k]; else S.overrides[k] = s; save(); render(); draw(); });
+    const step = d => { const v = Math.max(0, Math.min(24, Math.round((hoursAt(n)+d)*2)/2)); if(v===paidHours()) delete S.hours[k]; else S.hours[k] = v; save(); render(); draw(); };
+    const hm = $("#hM"), hp = $("#hP"); if(hm){ hm.onclick = () => step(-0.5); hp.onclick = () => step(0.5); }
+    $("#dReset").onclick = () => { delete S.overrides[k]; delete S.hours[k]; save(); render(); draw(); };
+  };
+  draw();
+}
+
+function openBonus(p){
+  const key = fromNum(p.s);
+  const draw = () => {
+    const list = S.bonuses[key] || [];
+    openSheet(`<div class="sheet-head"><h2>${t("bonusTitle")}</h2><button class="x" id="bX" aria-label="Close">✕</button></div>
+      <p class="lead">${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)} · ${t("payday")} ${fDateW(p.pay)}</p>
+      ${list.length ? `<div class="yr">${list.map((b,i) => `<div><span>${(b.name||t("bonus")).replace(/</g,"&lt;")}</span><span style="display:flex;gap:10px;align-items:center"><b>${money(+b.amt)}</b><button class="x" data-rm="${i}" style="width:28px;height:28px;font-size:12px" aria-label="Remove">✕</button></span></div>`).join("")}</div>` : ""}
+      <div class="row2"><div class="field"><label for="bN">${t("bonusName")}</label><input id="bN" placeholder="${t("bonusPh")}"></div>
+        <div class="field"><label for="bA">${t("bonusAmt")}</label><input id="bA" type="number" inputmode="decimal" step="0.01"></div></div>
+      <span class="hint">${t("bonusHint")}</span>
+      <div class="wiz-nav"><button class="btn ghost" id="bDone">${t("done")}</button><button class="btn" id="bAdd">${t("add")}</button></div>`);
+    $("#bX").onclick = $("#bDone").onclick = closeSheet;
+    $("#bAdd").onclick = () => { const a = +$("#bA").value; if(!a) return; (S.bonuses[key] = S.bonuses[key] || []).push({ name:$("#bN").value.trim(), amt:a }); save(); render(); draw(); };
+    $("#sheet").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { S.bonuses[key].splice(+b.dataset.rm,1); if(!S.bonuses[key].length) delete S.bonuses[key]; save(); render(); draw(); });
+  };
+  draw();
+}
+function openPto(){
+  const c = S.pto || { balance:"", asOf:fromNum(TODAY), accrual:"" };
+  openSheet(`<div class="sheet-head"><h2>${t("ptoTitle")}</h2><button class="x" id="pX" aria-label="Close">✕</button></div>
+    <div class="row2"><div class="field"><label for="pB">${t("ptoBal")}</label><input id="pB" type="number" inputmode="decimal" step="0.5" value="${c.balance}"></div>
+      <div class="field"><label for="pD">${t("ptoAsOf")}</label><input id="pD" type="date" value="${c.asOf}"></div></div>
+    <div class="field"><label for="pA">${t("ptoAcc")}</label><input id="pA" type="number" inputmode="decimal" step="0.01" value="${c.accrual}" placeholder="4.62"></div>
+    <span class="hint">${t("ptoHint")}</span>
+    <button class="btn" id="pSave">${t("saveBtn")}</button>`);
+  $("#pX").onclick = closeSheet;
+  $("#pSave").onclick = () => { const b = $("#pB").value; S.pto = b==="" ? null : { balance:+b, asOf:$("#pD").value || fromNum(TODAY), accrual:+$("#pA").value || 0 }; save(); render(); closeSheet(); };
+}
+function openStart(){
+  openSheet(`<div class="sheet-head"><h2>${t("startLbl2")}</h2><button class="x" id="jX" aria-label="Close">✕</button></div>
+    <div class="field"><input id="jD" type="date" value="${S.startDate||""}"><span class="hint">${t("startHint")}</span></div>
+    <button class="btn" id="jSave">${t("saveBtn")}</button>`);
+  $("#jX").onclick = closeSheet;
+  $("#jSave").onclick = () => { S.startDate = $("#jD").value; save(); render(); closeSheet(); };
+}
+function openYear(){
+  const y = ymdN(TODAY)[0], r = yearTotals();
+  const row = (k, v, cls="") => `<div class="${cls}"><span>${k}</span><b>${v}</b></div>`;
+  openSheet(`<div class="sheet-head"><h2>${t("yearTitle", y)}</h2><button class="x" id="yX" aria-label="Close">✕</button></div>
+    ${r.checks ? `<p class="lead">${t("yearSub", fDate(r.first), fDate(r.last))}</p>` : ""}
+    <div class="yr">${row(t("yGross"), money(r.gross))}${row(t("yPre"), "−"+money(r.pre))}${row(t("yTax"), "−"+money(r.tax))}${row(t("yPost"), "−"+money(r.post))}${row(t("yNet"), money(r.net), "tot")}
+      ${row(t("yHours"), hrs(r.hours))}${row(t("yOt"), hrs(r.ot))}${row(t("yChecks"), r.checks)}</div>
+    <button class="linkbtn" id="yStart">${t("set_start")}: ${S.startDate ? fDateW(dayNum(S.startDate)) : "—"}</button>`);
+  $("#yX").onclick = closeSheet; $("#yStart").onclick = openStart;
+}
+function openSettings(){
+  const p = nextPayPeriod();
+  const rows = [
+    ["language", t("set_language"), S.lang==="ko"?"한국어":"English"],
+    ["country", t("set_country"), KR() ? t("cKR") : t("cUS")],
+    ["pattern", t("set_rotation"), t("pat")[S.pattern][0]],
+    ["shift", t("set_shift"), `${fTime(S.shiftStart)} – ${fTime(S.shiftEnd)}`],
+    ["pay", t("set_pay"), S.payType==="hourly" ? `${money(+S.rate||0)}${t("perHr")}` : `${money0(+S.salary||0)}${t("perYr")}`],
+    ["ot", t("set_ot"), S.payType==="hourly" ? `${S.otMult}×` : `${S.salaryOtMult}×`],
+    ["freq", t("set_freq"), `${t("freq")[S.freq][0]} · ${fDate(p.pay)}`],
+    ["tax", t("set_tax"), S.taxMode==="kr" ? t("krTaxAuto")[0] : S.taxMode==="auto" ? `${(ST[S.state]||[""])[0]} · ${t("filing")[S.filing]}` : S.taxMode==="manual" ? `${+S.taxPct}%` : t("none")],
+    ["pto", t("set_pto"), (() => { const b = ptoBalance(); return b ? hrs(b.now) : t("none"); })()],
+    ["start", t("set_start"), S.startDate ? fDate(dayNum(S.startDate)) : "—"],
+    ["ded", t("set_ded"), (S.deds||[]).length ? S.deds.map(d => d.type==="other"&&d.name ? d.name : t("dedNames")[d.type]).join(", ") : t("none")]
+  ];
+  const nEdits = Object.keys(S.overrides).length + Object.keys(S.hours).length;
+  openSheet(`<div class="sheet-head"><h2>${t("settings")}</h2><button class="x" id="sX" aria-label="Close">✕</button></div>
+    <div class="setlist">${rows.map(([k,l,v]) => `<button data-k="${k}"><b>${l}</b><span>${v}</span></button>`).join("")}</div>
+    <div class="setlist"><button id="sClear"><b>${t("set_clear")}</b><span>${nEdits || ""}</span></button><button id="sRedo"><b>${t("set_redo")}</b><span></span></button></div>`);
+  $("#sX").onclick = closeSheet;
+  $("#sheet").querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
+    if(b.dataset.k==="language"){ S.lang = S.lang==="ko" ? "en" : "ko"; save(); render(); openSettings(); return; }
+    if(b.dataset.k==="pto"){ openPto(); return; }
+    if(b.dataset.k==="country"){ closeSheet(); openWizard(); return; }
+    if(b.dataset.k==="start"){ openStart(); return; }
+    closeSheet(); openWizard(b.dataset.k);
+  });
+  const cl = $("#sClear"); cl.onclick = () => {
+    if(!nEdits) return;
+    if(cl.dataset.armed){ S.overrides = {}; S.hours = {}; save(); render(); cl.querySelector("b").textContent = t("cleared"); cl.querySelector("span").textContent = ""; delete cl.dataset.armed; }
+    else { cl.dataset.armed = "1"; cl.querySelector("b").textContent = t("clearConfirm", nEdits); }
+  };
+  $("#sRedo").onclick = () => { closeSheet(); openWizard(); };
+}
+$("#openSettings").onclick = openSettings;
+
+/* ================= setup wizard ================= */
+const STEPS = ["welcome","pattern","shift","days","pay","ot","freq","payday","tax","ded","done"];
+const CHAINS = { pattern:["pattern","days"], shift:["shift"], pay:["pay","ot"], ot:["ot"], freq:["freq","payday"], tax:["tax"], ded:["ded"] };
+function openWizard(only){
+  W = JSON.parse(JSON.stringify(S));
+  W._chain = only ? CHAINS[only] : null; W._step = only ? STEPS.indexOf(W._chain[0]) : 0;
+  W._tapped = []; W._err = ""; W._stripStart = TODAY - dowN(TODAY);
+  renderWiz(); $("#wiz").hidden = false; $("#wiz").scrollTop = 0; document.body.style.overflow = "hidden";
+}
+function closeWiz(){ $("#wiz").hidden = true; document.body.style.overflow = ""; W = null; }
+function wDetect(){
+  const c = cycleStr(W); if(c==="MF"||c==="SIX") return null;
+  const tap = new Set(W._tapped), len = c.length; let best = 0, bs = -1;
+  for(let o=0;o<len;o++){ let sc = 0; for(let i=0;i<14;i++){ if((c[(i+o)%len]==="W") === tap.has(W._stripStart+i)) sc++; } if(sc > bs){ bs = sc; best = o; } }
+  return { start: fromNum(W._stripStart - best), score: bs };
+}
+function stripHtml(mode){
+  let h = "";
+  for(let wk=0; wk<2; wk++){
+    h += `<div class="wk">${wk ? t("nextWk") : t("thisWk")}</div><div class="strip">`;
+    for(let i=0;i<7;i++) h += `<div class="dw">${fDow(dowN(W._stripStart + wk*7 + i))}</div>`;
+    for(let i=0;i<7;i++){
+      const n = W._stripStart + wk*7 + i, on = mode==="tap" ? W._tapped.includes(n) : baseAt(n, W)==="W";
+      h += `<button ${mode==="tap"?`data-n="${n}"`:"disabled"} class="${n===TODAY?"td":""}" aria-pressed="${on}"><b>${ymdN(n)[2]}</b><span>${on?t("work"):t("off")}</span></button>`;
+    }
+    h += `</div>`;
+  }
+  return h;
+}
+const pickH = (attr, cur, items) => items.map(([v,a,b]) => `<button class="pick" data-${attr}="${v}" aria-pressed="${String(v)===String(cur)}"><b>${a}</b>${b?`<span>${b}</span>`:""}</button>`).join("");
+const quickH = (attr, cur, items) => items.map(([v,l]) => `<button data-${attr}="${v}" aria-pressed="${String(v)===String(cur)}">${l}</button>`).join("");
+const togH = (id, on, [a,b]) => `<label class="toggle"><input type="checkbox" id="${id}" ${on?"checked":""}><span><b>${a}</b><small>${b}</small></span></label>`;
+
+function renderWiz(){
+  const step = STEPS[W._step], el = $("#wiz"), editing = !!W._chain;
+  let body = "", nextL = t("next"), skip = false;
+  if(step==="welcome"){
+    body = `<div class="lang">${quickH("lang", W.lang, [["en","English"],["ko","한국어"]])}</div>
+      <div class="field"><span class="lbl">${t("countryLbl")}</span><div class="picks two">${pickH("cty", W.country, [["US", t("cUS"), "USD $"],["KR", t("cKR"), "KRW ₩"]])}</div></div>
+      <div class="welcome"><div class="big">${t("welcomeBig")}</div><p class="lead">${t("welcomeLead")}</p>
+      <ul class="feat"><li><i class="s-W">1</i>${t("feat1")}</li><li><i class="s-OT">2</i>${t("feat2")}</li><li><i style="background:var(--pay-soft);color:var(--pay)">$</i>${t("feat3")}</li></ul></div>`;
+    nextL = t("getStarted");
+  } else if(step==="pattern"){
+    body = `<h2>${t("q_pattern")}</h2><p class="lead">${t("q_patternLead")}</p>
+      <div class="picks">${pickH("pat", W.pattern, Object.keys(PATS).map(k => [k, ...t("pat")[k]]))}</div>
+      ${W.pattern==="custom" ? `<div class="field"><label for="wCustom">${t("customLbl")}</label><input id="wCustom" value="${W.customCycle}" autocapitalize="characters"><span class="hint">${t("customHint")}</span></div>` : ""}`;
+  } else if(step==="shift"){
+    body = `<h2>${t("q_shift")}</h2>
+      <div class="quick">${quickH("lab", W.shiftLabel, [["day",t("dayShift")],["night",t("nightShift")]])}</div>
+      <div class="row3">
+        <div class="field"><label for="wS">${t("startLbl")}</label><input id="wS" type="time" value="${W.shiftStart}"></div>
+        <div class="field"><label for="wE">${t("endLbl")}</label><input id="wE" type="time" value="${W.shiftEnd}"></div>
+        <div class="field"><label for="wB">${t("breakLbl")}</label><select id="wB">${[0,15,30,45,60].map(m=>`<option value="${m}" ${+W.breakMin===m?"selected":""}>${m} ${t("min")}</option>`).join("")}</select></div>
+      </div>
+      <div class="calc" id="wCalc">${t("paidHours", paidHours(W.shiftStart, W.shiftEnd, W.breakMin))}</div>`;
+  } else if(step==="days"){
+    if(W.pattern==="p5") body = `<h2>${t("q_days")}</h2><div class="result">${t("fixedMF")}</div>${stripHtml("preview")}`;
+    else if(W.pattern==="p6") body = `<h2>${t("fixed6")}</h2><div class="quick">${quickH("six", W.sixOff, [0,1,2,3,4,5,6].map(d=>[d, fDowLong(d)]))}</div>${stripHtml("preview")}`;
+    else {
+      const det = W._tapped.length ? wDetect() : null;
+      body = `<h2>${t("q_days")}</h2><p class="lead">${t("q_daysLead", t("pat")[W.pattern][0])}</p>${stripHtml("tap")}
+        ${det ? `<div class="result"><b>${det.score===14 ? t("matchPerfect") : t("matchClose", det.score)}</b></div>` : ""}`;
+    }
+  } else if(step==="pay"){
+    body = `<h2>${t("q_pay")}</h2>
+      <div class="picks two">${pickH("pt", W.payType, [["hourly",...t("hourly")],["salary",...t("salary")]])}</div>
+      ${W.country==="KR" ? (W.payType==="hourly"
+        ? `<div class="field"><label for="wRate">${t("krRate")}</label><input id="wRate" type="number" inputmode="numeric" step="10" min="0" value="${W.rate}" placeholder="10320"><span class="hint">${t("krRateHint")}</span></div>`
+        : `<div class="field"><label for="wSal">${t("krMonthly")}</label><input id="wSal" type="number" inputmode="numeric" step="10000" min="0" value="${W.salary}" placeholder="3000000"></div>`) :
+      W.payType==="hourly" ? `
+        <div class="field"><label for="wRate">${t("rateLbl")} ($)</label><input id="wRate" type="number" inputmode="decimal" step="0.01" min="0" value="${W.rate}" placeholder="25.00"></div>
+        <div class="field"><label for="wDiff">${t("diffLbl")} ($${t("perHr")})</label><input id="wDiff" type="number" inputmode="decimal" step="0.25" min="0" value="${W.diff}"><span class="hint">${t("diffHint")}</span></div>`
+      : `<div class="field"><label for="wSal">${t("salaryLbl")} ($)</label><input id="wSal" type="number" inputmode="numeric" step="500" min="0" value="${W.salary}" placeholder="65000"></div>`}`;
+  } else if(step==="ot" && W.country==="KR"){
+    body = `<h2>${t("krOtTitle")}</h2><p class="lead">${t("krOtLead")}</p>
+      ${W.payType==="hourly" ? `${togH("wKs", W.krSmall, t("krSmall"))}${togH("wKn", W.krNight, t("krNight"))}${togH("wKj", W.krJuhyu, t("krJuhyu"))}`
+        : `<div class="field"><span class="lbl">${t("krSalOt")}</span><div class="quick">${quickH("som", W.salaryOtMult, [[1,"1×"],[1.5,"1.5×"],[2,"2×"]])}</div><span class="hint">${t("krSalOtHint")}</span></div>`}`;
+  } else if(step==="ot"){
+    if(W.payType==="hourly"){
+      body = `<h2>${t("q_ot")}</h2><p class="lead">${t("q_otLead")}</p>
+        <div class="field"><span class="lbl">${t("otMultLbl")}</span><div class="quick">${quickH("otm", W.otMult, [[1.5,"1.5×"],[2,"2×"]])}</div></div>
+        ${togH("wDaily", W.dailyOT, t("dailyOT"))}${togH("w7", W.seventhDouble, t("seventh"))}${togH("wHol", W.holidayPremium, t("holPrem"))}
+        ${W.holidayPremium ? `<div class="field"><span class="lbl">${t("holMultLbl")}</span><div class="quick">${quickH("hm", W.holidayMult, [[1.5,"1.5×"],[2,"2×"],[2.5,"2.5×"],[3,"3×"]])}</div></div>` : ""}`;
+    } else {
+      body = `<h2>${t("q_ot")}</h2><p class="lead">${t("salOtLead")}</p>
+        <div class="field"><span class="lbl">${t("salOtMult")}</span><div class="quick">${quickH("som", W.salaryOtMult, [[0,"0×"],[1,"1×"],[1.5,"1.5×"],[2,"2×"]])}</div><span class="hint">${t("salOtHint")}</span></div>`;
+    }
+  } else if(step==="freq"){
+    body = `<h2>${t("q_freq")}</h2><div class="picks">${pickH("fq", W.freq, ["weekly","biweekly","semimonthly","monthly"].map(k => [k, ...t("freq")[k]]))}</div>`;
+  } else if(step==="payday"){
+    const np = nextPayPeriod(W), wsQ = `<div class="field"><span class="lbl">${t("weekStartLbl")}</span><div class="quick">${quickH("ws", W.weekStart, [[0,fDowLong(0)],[1,fDowLong(1)]])}</div></div>`;
+    if(W.freq==="weekly" || W.freq==="biweekly"){
+      body = `<h2>${t("q_payday")}</h2>${wsQ}
+        <div class="field"><label for="wAnchor">${t("periodStartLbl")}</label><input id="wAnchor" type="date" value="${W.periodAnchor}"><span class="hint">${t("periodStartHint")}</span></div>
+        <div class="field"><span class="lbl">${t("paydayDowLbl")}</span><div class="quick">${quickH("pd", W.payDow, [1,2,3,4,5].map(d=>[d, fDowLong(d)]))}</div></div>
+        <div class="field"><span class="lbl">${t("delayLbl")}</span><div class="quick">${quickH("dl", W.payDelay, [[0,t("delay0")],[1,t("delay1")],[2,t("delay2")]])}</div></div>`;
+    } else if(W.freq==="semimonthly"){
+      body = `<h2>${t("q_payday")}</h2><p class="lead">${t("semiLbl")}</p>
+        <div class="picks">${pickH("sm", W.semiMode, [["end",t("semiEnd")],["lag",t("semiLag")]])}</div>
+        ${W.semiMode==="lag" ? `<div class="field"><label for="wLag">${t("lagDays")}</label><input id="wLag" type="number" min="0" max="20" value="${W.semiLag}"></div>` : ""}
+        ${togH("wWk", W.weekendAdj, t("weekendAdj"))}${wsQ}`;
+    } else {
+      body = `<h2>${t("q_payday")}</h2>
+        <div class="picks">${pickH("mm", W.monthlyMode, [["same",t("monthlySame")],["last",t("monthlyLast")],["day",t("monthlyDay")]])}</div>
+        ${W.monthlyMode==="day" || W.monthlyMode==="same" ? `<div class="field"><label for="wMd">${W.monthlyMode==="same" ? t("monthlySame") : t("dayOfMonth")}</label><input id="wMd" type="number" min="1" max="31" value="${W.monthlyDay}"></div>` : ""}
+        ${togH("wWk", W.weekendAdj, t("weekendAdj"))}${wsQ}`;
+    }
+    body += `<div class="calc" id="wPayPrev">${t("paydayPreview", fDate(np.s), fDate(np.e), fDateW(np.pay))}</div>`;
+  } else if(step==="tax" && W.country==="KR"){
+    if(W.taxMode==="auto") W.taxMode = "kr";
+    body = `<h2>${t("q_tax")}</h2><div class="picks two">${pickH("tm", W.taxMode, [["kr",...t("krTaxAuto")],["manual",...t("taxManual")]])}</div>`;
+    body += W.taxMode==="kr" ? `<div class="row2">
+        <div class="field"><label for="wKd">${t("krDeps")}</label><input id="wKd" type="number" min="1" max="12" value="${W.krDeps||1}"></div>
+        <div class="field"><label for="wKk">${t("krKids")}</label><input id="wKk" type="number" min="0" max="12" value="${W.krKids||0}"></div></div>
+      <div class="field"><span class="lbl">${t("krWh")}</span><div class="quick">${quickH("kw", W.krWh, [[80,"80%"],[100,"100%"],[120,"120%"]])}</div></div>
+      <div class="field"><label for="wKnt">${t("krNonTax")}</label><input id="wKnt" type="number" inputmode="numeric" step="10000" min="0" value="${W.krNonTax}"><span class="hint">${t("krNonTaxHint")}</span></div>`
+      : `<div class="field"><label for="wTax">${t("taxLbl")}</label><input id="wTax" type="number" inputmode="decimal" step="0.5" min="0" max="60" value="${W.taxPct||""}" placeholder="10"></div>`;
+    body += `<div class="calc" id="wTaxPrev"></div>`;
+  } else if(step==="tax"){
+    if(W.taxMode==="kr") W.taxMode = "auto";
+    body = `<h2>${t("q_tax")}</h2>
+      <div class="picks two">${pickH("tm", W.taxMode, [["auto",...t("taxAuto")],["manual",...t("taxManual")]])}</div>`;
+    if(W.taxMode==="auto"){
+      const st = ST[W.state];
+      body += `<div class="field"><label for="wState">${t("stateLbl")}</label><select id="wState">${Object.entries(ST).sort((a,b)=>a[1][0].localeCompare(b[1][0])).map(([k,v])=>`<option value="${k}" ${k===W.state?"selected":""}>${v[0]}</option>`).join("")}</select>
+          ${st && !st[4].length ? `<span class="hint">${t("noStateTax", st[0])}</span>` : ""}</div>
+        <div class="field"><span class="lbl">${t("filingLbl")}</span><div class="quick">${quickH("fs", W.filing, Object.entries(t("filing")))}</div></div>
+        <div class="row2">
+          <div class="field"><label for="wKids">${t("kidsLbl")}</label><input id="wKids" type="number" min="0" max="12" value="${W.kids||0}"></div>
+          <div class="field"><label for="wDeps">${t("depsLbl")}</label><input id="wDeps" type="number" min="0" max="12" value="${W.otherDeps||0}"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="wXwh">${t("extraWHLbl")}</label><input id="wXwh" type="number" inputmode="decimal" min="0" step="5" value="${W.extraWH||""}" placeholder="0"></div>
+          <div class="field"><label for="wLocal">${t("localLbl")}</label><input id="wLocal" type="number" inputmode="decimal" min="0" max="5" step="0.1" value="${W.localPct||""}" placeholder="0"></div>
+        </div><span class="hint">${t("localHint")}</span>`;
+    } else {
+      body += `<div class="field"><label for="wTax">${t("taxLbl")}</label><input id="wTax" type="number" inputmode="decimal" step="0.5" min="0" max="60" value="${W.taxPct||""}" placeholder="18">
+        <div class="quick">${quickH("tx", W.taxPct, [[15,"15%"],[18,"18%"],[20,"20%"],[25,"25%"]])}</div><span class="hint">${t("taxHint")}</span></div>`;
+    }
+    body += `<div class="calc" id="wTaxPrev"></div>`;
+  } else if(step==="ded"){
+    skip = !editing;
+    const have = new Set((W.deds||[]).filter(d=>d.type!=="other").map(d=>d.type));
+    body = `<h2>${t("q_ded")}</h2><p class="lead">${t("q_dedLead")}</p>
+      <div class="dedlist">${(W.deds||[]).length ? W.deds.map((d,i) => {
+        const def = DEDS[d.type]||DEDS.other, pre = d.type==="other" ? !!d.pre : def.tax!=="post";
+        return `<div class="ded"><div class="ded-top"><b>${d.type==="other" ? t("dedNames").other : t("dedNames")[d.type]}</b><span class="tag ${pre?"pre":""}">${pre?t("preTax"):t("postTax")}</span><button class="rm" data-rm="${i}" aria-label="Remove">✕</button></div>
+          ${d.type==="other" ? `<div class="ded-row"><input data-name="${i}" value="${(d.name||"").replace(/"/g,"&quot;")}" placeholder="${t("otherName")}"></div>
+            <div class="quick">${quickH("op"+i, d.pre?1:0, [[1,t("preTax")],[0,t("postTax")]])}</div>` : ""}
+          <div class="ded-row"><input data-amt="${i}" type="number" inputmode="decimal" min="0" step="${def.unit==="%"?0.5:1}" value="${d.amt||""}" placeholder="0"><span>${def.unit==="%"?t("pctGross"):t("perCheck")}</span></div></div>`;
+      }).join("") : `<p class="hint">${t("noDeds")}</p>`}</div>
+      <div class="field"><span class="lbl">${t("addDed")}</span><div class="addchips">${Object.keys(DEDS).filter(k => (W.country!=="KR" || ["union","life","other"].includes(k)) && (k==="other" || !have.has(k))).map(k => `<button data-add="${k}">+ ${t("dedNames")[k]}</button>`).join("")}</div></div>
+      <div class="calc" id="wTaxPrev"></div>`;
+  } else {
+    const np = nextPayPeriod(W);
+    body = `<h2>${t("q_done")}</h2>
+      <ul class="done-list">
+        <li><span>${t("sumRot")}</span><b>${t("pat")[W.pattern][0]}</b></li>
+        <li><span>${t("sumShift")}</span><b>${W.shiftLabel==="night"?t("nightShift"):t("dayShift")} · ${fTime(W.shiftStart)} – ${fTime(W.shiftEnd)}</b></li>
+        <li><span>${t("sumPay")}</span><b>${W.payType==="hourly" ? money(+W.rate||0)+t("perHr") : money0(+W.salary||0)+t("perYr")}</b></li>
+        <li><span>${t("sumFreq")}</span><b>${t("freq")[W.freq][0]}</b></li>
+        <li><span>${t("sumNext")}</span><b>${fDateW(np.pay)}</b></li>
+      </ul>${stripHtml("preview")}<p class="lead">${t("doneNote")}</p>`;
+    nextL = t("start");
+  }
+  if(editing && W._chain.indexOf(step) === W._chain.length-1) nextL = t("save");
+  const bar = editing ? "" : `<div class="steps">${STEPS.map((_,i)=>`<i class="${i<=W._step?"on":""}"></i>`).join("")}</div>`;
+  const leftBtn = editing ? `<button class="btn ghost" id="wCancel">${t("cancel")}</button>` : (W._step>0 ? `<button class="btn ghost" id="wBack">${t("back")}</button>` : "");
+  el.innerHTML = `<div class="wiz-in">${bar}${body}<p class="err">${W._err||""}</p>
+    <div class="wiz-nav">${leftBtn}${skip?`<button class="btn ghost" id="wSkip">${t("skip")}</button>`:""}<button class="btn" id="wNext">${nextL}</button></div></div>`;
+  W._err = "";
+  wireWiz();
+}
+function wireWiz(){
+  const el = $("#wiz");
+  const setv = (attr, key, num) => el.querySelectorAll(`[data-${attr}]`).forEach(b => b.onclick = () => { W[key] = num ? Number(b.dataset[attr]) : b.dataset[attr]; renderWiz(); });
+  el.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { W.lang = b.dataset.lang; S.lang = W.lang; render(); renderWiz(); });
+  setv("pat","pattern"); setv("lab","shiftLabel"); setv("six","sixOff",true); setv("pt","payType"); setv("otm","otMult",true); setv("hm","holidayMult",true);
+  setv("som","salaryOtMult",true); setv("fq","freq"); setv("ws","weekStart",true); setv("pd","payDow",true); setv("dl","payDelay",true);
+  setv("sm","semiMode"); setv("mm","monthlyMode"); setv("tx","taxPct",true);
+  el.querySelectorAll(".strip [data-n]").forEach(b => b.onclick = () => { const n = +b.dataset.n, i = W._tapped.indexOf(n); i>=0 ? W._tapped.splice(i,1) : W._tapped.push(n); renderWiz(); });
+  const payPrev = () => { const c = $("#wPayPrev"); if(!c) return; try{ const np = nextPayPeriod(W); c.innerHTML = t("paydayPreview", fDate(np.s), fDate(np.e), fDateW(np.pay)); }catch(e){} };
+  const calc = () => { const c = $("#wCalc"); if(c) c.innerHTML = t("paidHours", paidHours(W.shiftStart, W.shiftEnd, W.breakMin)); };
+  const inp = (id, key, num, live) => { const x = $("#"+id); if(!x) return; x.oninput = x.onchange = () => { W[key] = num ? (x.value===""?"":Number(x.value)) : x.value; if(live) live(); }; };
+  inp("wCustom","customCycle"); inp("wS","shiftStart",false,calc); inp("wE","shiftEnd",false,calc); inp("wB","breakMin",true,calc);
+  inp("wRate","rate",true); inp("wDiff","diff",true); inp("wSal","salary",true);
+  inp("wAnchor","periodAnchor",false,() => { if(/^\d{4}-\d{2}-\d{2}$/.test(W.periodAnchor)) payPrev(); });
+  inp("wLag","semiLag",true,payPrev); inp("wMd","monthlyDay",true,payPrev);
+  inp("w401","k401",true); inp("wIns","insurance",true); inp("wTax","taxPct",true);
+  const cb = (id, key) => { const x = $("#"+id); if(x) x.onchange = () => { W[key] = x.checked; renderWiz(); }; };
+  cb("wDaily","dailyOT"); cb("w7","seventhDouble"); cb("wHol","holidayPremium"); cb("wWk","weekendAdj");
+  setv("tm","taxMode"); setv("fs","filing"); setv("kw","krWh",true);
+  el.querySelectorAll("[data-cty]").forEach(b => b.onclick = () => { const c = b.dataset.cty; if(c===W.country) return; W.country = c;
+    if(c==="KR"){ Object.assign(W, { freq:"monthly", monthlyMode:"same", monthlyDay:25, weekStart:1, taxMode:"kr", salaryOtMult:1.5, rate:"", salary:"", deds:[] }); }
+    else { Object.assign(W, { freq:"biweekly", weekStart:0, payDow:5, payDelay:0, taxMode:"auto", salaryOtMult:1, rate:"", salary:"", deds:[] }); }
+    S.country = c; render(); renderWiz(); });
+  const cbk = (id, key) => { const x = $("#"+id); if(x) x.onchange = () => { W[key] = x.checked; renderWiz(); }; };
+  cbk("wKs","krSmall"); cbk("wKn","krNight"); cbk("wKj","krJuhyu");
+  const taxPrev = () => { const c = $("#wTaxPrev"); if(!c) return; const g = typicalGross(W); if(!(g>0)){ c.hidden = true; return; } c.hidden = false;
+    const keep = S.country; S.country = W.country; const r = taxCalc(g, W); S.country = keep; c.innerHTML = taxesOn(W) ? t("taxPreview", money(r.taxTotal), money(r.net)) : `${t("gross")} ${money(g)} → ${money(r.net)}`; };
+  const stSel = $("#wState"); if(stSel) stSel.onchange = () => { W.state = stSel.value; renderWiz(); };
+  inp("wKd","krDeps",true,taxPrev); inp("wKk","krKids",true,taxPrev); inp("wKnt","krNonTax",true,taxPrev);
+  inp("wKids","kids",true,taxPrev); inp("wDeps","otherDeps",true,taxPrev); inp("wXwh","extraWH",true,taxPrev); inp("wLocal","localPct",true,taxPrev);
+  const wt = $("#wTax"); if(wt) wt.addEventListener("input", taxPrev);
+  el.querySelectorAll("[data-add]").forEach(b => b.onclick = () => { W.deds = W.deds||[]; W.deds.push({ type:b.dataset.add, amt:"", name:"", pre:false }); renderWiz(); const ins = el.querySelectorAll("[data-amt]"); if(ins.length) ins[ins.length-1].focus(); });
+  el.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { W.deds.splice(+b.dataset.rm,1); renderWiz(); });
+  el.querySelectorAll("[data-amt]").forEach(x => x.oninput = () => { W.deds[+x.dataset.amt].amt = x.value===""?"":Number(x.value); taxPrev(); });
+  el.querySelectorAll("[data-name]").forEach(x => x.oninput = () => { W.deds[+x.dataset.name].name = x.value; });
+  (W.deds||[]).forEach((d,i) => el.querySelectorAll(`[data-op${i}]`).forEach(b => b.onclick = () => { d.pre = b.dataset["op"+i]==="1"; renderWiz(); }));
+  taxPrev();
+  const back = $("#wBack"); if(back) back.onclick = () => { W._step--; renderWiz(); el.scrollTop = 0; };
+  const cancel = $("#wCancel"); if(cancel) cancel.onclick = closeWiz;
+  const sk = $("#wSkip"); if(sk) sk.onclick = () => { W.deds = []; W._step++; renderWiz(); el.scrollTop = 0; };
+  $("#wNext").onclick = wizNext;
+}
+function wizNext(){
+  const step = STEPS[W._step], fail = m => { W._err = t(m); renderWiz(); };
+  if(step==="pattern" && W.pattern==="custom" && !/W/.test((W.customCycle||"").toUpperCase())) return fail("err_custom");
+  if(step==="shift" && !(paidHours(W.shiftStart, W.shiftEnd, W.breakMin) > 0)) return fail("err_time");
+  if(step==="days" && !["p5","p6"].includes(W.pattern)){
+    if(!W._tapped.length) return fail("err_tap");
+    W.cycleStart = wDetect().start;
+  }
+  if(step==="pay"){ if(W.payType==="hourly" && !(+W.rate > 0)) return fail("err_rate"); if(W.payType==="salary" && !(+W.salary > 0)) return fail("err_salary"); }
+  if(step==="payday" && (W.freq==="weekly"||W.freq==="biweekly") && !/^\d{4}-\d{2}-\d{2}$/.test(W.periodAnchor||"")) return fail("err_date");
+  if(W._chain){
+    const i = W._chain.indexOf(step);
+    if(i < W._chain.length-1){ W._step = STEPS.indexOf(W._chain[i+1]); renderWiz(); $("#wiz").scrollTop = 0; return; }
+    return commitWiz();
+  }
+  if(step==="done") return commitWiz();
+  W._step++; renderWiz(); $("#wiz").scrollTop = 0;
+}
+function commitWiz(){
+  const next = {};
+  for(const k in W){ if(k[0] !== "_") next[k] = W[k]; }
+  next.overrides = S.overrides; next.hours = S.hours; next.notes = S.notes; next.bonuses = S.bonuses; next.actuals = S.actuals; next.pto = S.pto;
+  if(!next.startDate) next.startDate = fromNum(periodFor(TODAY, next).s);
+  ["rate","diff","salary","taxPct","semiLag","monthlyDay","breakMin","kids","otherDeps","extraWH","localPct","krDeps","krKids","krNonTax","krWh"].forEach(k => next[k] = next[k]===""?0:+next[k]);
+  next.deds = (next.deds||[]).filter(d => +d.amt > 0).map(d => ({ ...d, amt:+d.amt }));
+  next.setupDone = true;
+  S = next; save(); periodOffset = 0; render(); closeWiz();
+}
+
+function migrate(o){
+  if(!Array.isArray(o.deds)) o.deds = [];
+  ["notes","bonuses","actuals","overrides","hours"].forEach(k => { if(!o[k] || typeof o[k] !== "object") o[k] = {}; });
+  if(o.k401 > 0 && !o.deds.some(d=>d.type==="k401")) o.deds.push({ type:"k401", amt:+o.k401 });
+  if(o.insurance > 0 && !o.deds.some(d=>d.type==="health")) o.deds.push({ type:"health", amt:+o.insurance });
+  delete o.k401; delete o.insurance;
+  if(!o.taxMode) o.taxMode = +o.taxPct > 0 ? "manual" : "auto";
+  return o;
+}
+/* ================= boot ================= */
+(function(){
+  const local = loadLocal(); if(local) S = migrate(Object.assign(defaults(), local));
+  render();
+  if(!S.setupDone) openWizard();
+  (async () => {
+    if(!window.claude) return;
+    const [db, user] = await Promise.all([claude.use("db").catch(()=>null), claude.use("user").catch(()=>null)]);
+    if(!db || !user) return;
+    let uid = null; try{ uid = await user.id(); }catch(e){}
+    if(!uid) return;
+    store = { db, uid };
+    try{
+      const snap = await db.doc("data/users/"+uid+"/state").get();
+      if(snap.exists){
+        const remote = JSON.parse(snap.data().json || "{}");
+        if(remote.setupDone){ S = migrate(Object.assign(defaults(), remote)); saveLocal(); render(); if(W && !W._chain) closeWiz(); }
+      } else if(S.setupDone){ save(); }
+    }catch(e){}
+  })();
+})();
+</script>
+
+</body></html>
