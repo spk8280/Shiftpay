@@ -524,9 +524,144 @@ Object.assign(L.ko, {
   night:"야간 가산", juhyu:"주휴수당", krTaxNote:"4대보험은 2026년 요율, 소득세는 국세청 간이세액표를 근사한 예상치예요.",
   monthlySame:"그달 정해진 날", krYearBtn:y=>`${y}년 누적 보기`
 });
+L.es = {
+  tagline:"Turnos · horas extra · cheques", settings:"Ajustes",
+  estNet:"pago neto estimado", estGross:"pago bruto estimado",
+  periodProgress:(d,tt)=>`Día ${d} de ${tt}`,
+  todayShift:(lab,a,b)=>`${lab} · ${a} – ${b}`, todayOff:"Día libre", todayOffSub:"Disfrútalo. ¿Fuiste a trabajar? Toca la fecha en el calendario.",
+  todayLbl:"Hoy", thisWeek:(h,o)=>`Esta semana: ${h} trabajadas/programadas${o?` · ${o} extra`:""}`,
+  payPeriod:"Periodo de pago", payday:"Día de pago",
+  regular:"Normal", overtime:"Horas extra", double:"Tiempo doble", holiday:"Pago de día festivo", pto:"PTO", diff:"Prima de turno",
+  basePay:"Salario base", extraOT:"Horas extra (adicionales)", gross:"Pago bruto", k401:"401(k)", insurance:"Seguro médico",
+  taxes:"Impuestos (est.)", takeHome:"Pago neto (est.)", afterDed:"Después de deducciones",
+  noTaxNote:"Los impuestos están apagados. Actívalos en Ajustes → Impuestos para ver tu pago neto.",
+  taxNote:p=>`Impuestos estimados al ${p}% del pago gravable. Tu talón de pago real puede variar.`,
+  today:"Hoy",
+  st:{W:"Trab.",O:"Libre",OT:"Extra",PTO:"PTO",H:"Fest.",UN:"Sin pago"},
+  stLong:{W:"Turno programado",O:"Día libre",OT:"Turno extra (OT)",PTO:"Tiempo libre pagado",H:"Festivo trabajado",UN:"Sin pago / falta"},
+  stDesc:{W:"Día normal de trabajo",O:"No trabajas",OT:"Trabajaste en tu día libre",PTO:"Usar horas de PTO",H:"Se paga a tarifa de festivo",UN:"Sin pago este día"},
+  tapHint:"Toca una fecha para cambiarla",
+  outlook:"Pronóstico", restYear:y=>`Resto de ${y}`, next12:"Próximos 12 meses", avgCheck:"Cheque promedio",
+  outlookNote:"Según tu rotación y ajustes. Los cambios del calendario se reflejan al instante.",
+  original:s=>`Programado: ${s}`, changed:"Editado", hoursLbl:"Horas pagadas este día", reset:"Restablecer día", done:"Listo",
+  back:"Atrás", next:"Siguiente", skip:"Omitir", start:"Empezar a usar ShiftPay", save:"Guardar", cancel:"Cancelar",
+  welcomeBig:"Conoce tu cheque antes del día de pago.", welcomeLead:"Responde unas preguntas rápidas. ShiftPay arma tu calendario de turnos y calcula cada cheque, con horas extra incluidas.",
+  feat1:"Tu rotación, llenada automáticamente", feat2:"Horas extra, tiempo doble y festivos incluidos", feat3:"El estimado de este periodo, siempre al día",
+  getStarted:"Vamos a configurarlo",
+  q_pattern:"¿Cuál es tu rotación de trabajo?", q_patternLead:"Elige la que coincide con tu horario.",
+  pat:{p223:["2-2-3 (Panamá)","2 sí, 2 no, 3 sí, 2 no, 2 sí, 3 no — 14 días"],p42:["4 sí, 2 no","Ciclo de 6 días"],p44:["4 sí, 4 no","Ciclo de 8 días"],p5:["Lunes a viernes","Fines de semana libres"],p6:["6 días a la semana","Un día libre por semana"],custom:["Personalizado","Arma tu propio ciclo"]},
+  customLbl:"Tu ciclo (W = trabajo, O = libre)", customHint:"Ejemplo: 3 sí, 3 no → WWWOOO",
+  q_shift:"¿Cuál es tu horario de turno?", dayShift:"Turno de día", nightShift:"Turno de noche", startLbl:"Inicio", endLbl:"Fin", breakLbl:"Almuerzo / descanso sin pago",
+  min:"min", paidHours:h=>`Son <b>${h} horas pagadas</b> por turno.`,
+  q_days:"Toca los días que trabajas en estas dos semanas", q_daysLead:p=>`Vamos a ubicarte en la rotación ${p}. Revisa tu calendario de trabajo.`,
+  thisWk:"Esta semana", nextWk:"Próxima semana", work:"Trab.", off:"Libre",
+  matchPerfect:"Encontramos tu rotación: coincide perfecto.", matchClose:n=>`Lo más parecido: coinciden ${n} de 14 días. Puedes corregir días sueltos después.`,
+  fixedMF:"Lunes a viernes listo. No hay que tocar nada.", fixed6:"¿Qué día descansas cada semana?",
+  q_pay:"¿Cómo te pagan?", hourly:["Por hora","Te pagan cada hora trabajada"], salary:["Salario fijo","Una cantidad anual fija"],
+  rateLbl:"Pago por hora", diffLbl:"Prima de turno (opcional)", diffHint:"Pago extra por hora, como prima nocturna. Deja 0 si no aplica.",
+  salaryLbl:"Salario anual",
+  q_ot:"¿Cómo te pagan las horas extra?", q_otLead:"Regla federal: las horas arriba de 40 en una semana se pagan a 1.5×. Algunas empresas pagan más.",
+  otMultLbl:"Tarifa de horas extra",
+  dailyOT:["Horas extra diarias (regla de California)","Más de 8 h en un día es extra, más de 12 h es tiempo doble"],
+  seventh:["El 7.º día seguido se paga doble","El séptimo día consecutivo trabajado se paga a tiempo doble"],
+  holPrem:["Los festivos cuentan como extra (pago de festivo)","Trabajar un festivo federal de EE. UU. se paga a tarifa de festivo"], holMultLbl:"Tarifa de festivo",
+  salOtLead:"Si trabajas en tu día libre, ¿cómo te lo pagan?", salOtMult:"Tarifa de día extra",
+  salOtHint:"Basado en tu equivalente por hora (salario ÷ 2,080 h).",
+  q_freq:"¿Cada cuándo te pagan?",
+  freq:{weekly:["Semanal","Cada semana · 52 cheques al año"],biweekly:["Cada dos semanas","Quincenal (catorcenal) · 26 cheques al año"],semimonthly:["Dos veces al mes","Del 1 al 15 y del 16 a fin de mes · 24 cheques"],monthly:["Mensual","12 cheques al año"]},
+  weekStartLbl:"Tu semana laboral empieza el", periodStartLbl:"Primer día de un periodo de pago reciente", periodStartHint:"Aparece en tu talón de pago como \"Period start\" o \"Period begin\".",
+  semiLbl:"Los periodos van del 1 al 15 y del 16 al último día del mes.",
+  q_ded:"¿Qué te descuentan del cheque?", q_dedLead:"Agrega todo lo que aparece en tu talón. Lo que es antes de impuestos baja tus impuestos.",
+  taxLbl:"Tasa de impuestos estimada (%)", taxHint:"Total de impuestos ÷ pago bruto en tu último talón. Casi todos quedan entre 15% y 25%.",
+  q_done:"¡Todo listo!", sumRot:"Rotación", sumShift:"Turno", sumPay:"Pago", sumFreq:"Te pagan",
+  doneNote:"¿Hiciste un turno extra o tomaste PTO? Solo toca esa fecha en el calendario.",
+  err_custom:"Usa W para días de trabajo y O para días libres.", err_tap:"Toca al menos un día de trabajo.", err_rate:"Escribe tu pago por hora.",
+  err_salary:"Escribe tu salario.", err_time:"Revisa tu horario de turno.", err_date:"Elige una fecha.",
+  set_language:"Idioma", set_rotation:"Rotación y días", set_shift:"Horario", set_pay:"Pago", set_ot:"Reglas de horas extra",
+  set_freq:"Periodo de pago", set_ded:"Deducciones", set_clear:"Restablecer fechas editadas", set_redo:"Repetir la configuración",
+  clearConfirm:n=>`¿Restablecer ${n} fechas editadas? Toca otra vez para confirmar.`, cleared:"Fechas restablecidas.",
+  perHr:"/h", perYr:"/año",
+  q_tax:"¿Cómo calculamos tus impuestos?",
+  taxAuto:["Calcúlalo por mí","Federal, Seguro Social, Medicare e impuesto estatal (tasas 2026)"], taxManual:["Usar mi propia tasa","Un porcentaje de tu talón de pago"],
+  stateLbl:"Estado donde trabajas", filingLbl:"Estado civil para impuestos (W-4)", filing:{single:"Soltero",mfj:"Casado, declaración conjunta",hoh:"Cabeza de familia"},
+  kidsLbl:"Hijos menores de 17", depsLbl:"Otros dependientes", extraWHLbl:"Retención federal adicional ($ por cheque)",
+  localLbl:"Impuesto local / de ciudad (%)", localHint:"Solo si tu ciudad o condado cobra impuesto sobre salarios (NYC, varias ciudades de Ohio y Pensilvania).",
+  noStateTax:s=>`${s} no cobra impuesto sobre salarios.`, taxPreview:(a,b)=>`En un cheque típico: unos <b>${a}</b> de impuestos, <b>${b}</b> de pago neto.`,
+  fedTax:"Impuesto federal sobre la renta", ss:"Seguro Social", medicare:"Medicare", stateTax:s=>`Impuesto estatal (${s})`, localTax:"Impuesto local",
+  secEarn:"Ingresos", secPre:"Deducciones antes de impuestos", secTax:"Impuestos", secPost:"Deducciones después de impuestos",
+  dedNames:{k401:"401(k)",roth:"Roth 401(k)",health:"Seguro médico",dental:"Dental",vision:"Visión",hsa:"HSA",fsa:"FSA",life:"Seguro de vida",union:"Cuota sindical",other:"Otra deducción"},
+  preTax:"Antes de imp.", postTax:"Después de imp.", perCheck:"$ por cheque", pctGross:"% del bruto", addDed:"Toca para agregar", otherName:"Nombre", noDeds:"Aún no hay deducciones. Toca una abajo.",
+  set_tax:"Impuestos", none:"Ninguno",
+  taxNoteAuto:s=>`Estimado con las tasas federales 2026 y las de ${s}, anualizando este cheque. La retención de tu empleador puede variar un poco.`,
+  salDayOT:["Las horas de más en días de trabajo cuentan como extra","Si te quedas después de tu turno, esas horas se pagan a tarifa de extra"],
+  example:"Ejemplo", langLbl:"Idioma",
+  shareTitle:"Compartir ShiftPay", shareLead:"Manda este enlace a tus compañeros. El horario y el pago de cada quien se quedan en su propio teléfono.", copy:"Copiar", copied:"¡Copiado!",
+  shareSteps:["Abre el enlace en Safari (iPhone) o Chrome (Android).","Toca Compartir → Agregar a pantalla de inicio.","Abre ShiftPay desde el ícono y responde las preguntas.","Toca cualquier fecha del calendario para registrar horas extra, PTO o horas de más."],
+  sharePrivacy:"Sin registro. No se manda nada a un servidor, así que nadie más ve tus datos.",
+  shareMsg:u=>`ShiftPay — calendario de turnos y calculadora de cheque\n${u}\n\n1) Ábrelo en Safari/Chrome 2) Compartir → Agregar a pantalla de inicio 3) Abre el ícono y termina la configuración. Tus datos se quedan en tu teléfono.`,
+  holidayOT:["Trabajar en festivo es todo extra","Las horas en un festivo federal de EE. UU. cuentan como extra"],
+  otDayLbl:"Cuando haces un turno extra, ¿cuántas horas trabajas?", otDaySame:"Igual que mi turno",
+  otBasisLbl:"¿Desde cuándo cuentan las horas extra?",
+  obExtra:["Turnos extra y horas de más","Trabajar en día libre o quedarte después del turno"],
+  obWeekly:["Después de cierto número de horas por semana","Las horas arriba del límite semanal son extra"],
+  obCount:["Desde el turno N del periodo de pago","Ej.: desde el 7.º turno en dos semanas, todo es extra"],
+  otWeeklyLbl:"Las horas extra empiezan después de (horas por semana)", otCountLbl:"Las horas extra empiezan desde el turno n.º",
+  weekendOT:["Trabajar en fin de semana es todo extra","Las horas de sábado o domingo cuentan como extra"],
+  otCapLbl:"Máximo de horas extra por periodo", otCapHint:"Déjalo vacío si no hay límite. Las horas arriba del límite no cuentan como extra.",
+  capNote:(c,h)=>`Las horas extra tienen tope de ${c} h por periodo, así que ${h} no contaron como extra.`,
+  pastPeriod:"Periodo pasado", futurePeriod:"Próximo", backToNow:"Volver a hoy",
+  thisPeriod:"Este periodo de pago", daysLeft:n=> n<=0 ? "Termina hoy" : n===1 ? "Queda 1 día" : `Quedan ${n} días`,
+  q_period:"¿Cómo es tu periodo de pago?", monthlyLbl:"Los periodos mensuales van del día 1 al último día del mes.", periodPreview:(a,b)=>`Periodo de pago actual: <b>${a} – ${b}</b>.`,
+  bonus:"Bono / propinas", addBonus:"+ Agregar bono, propinas o ajuste", bonusTitle:"Pago adicional en este periodo", bonusName:"¿Qué es?", bonusAmt:"Cantidad ($)",
+  bonusPh:"Bono de contratación, propinas, pago atrasado…", add:"Agregar", bonusHint:"Se suma al pago bruto de este cheque y paga impuestos con él. Usa un número negativo para un descuento.",
+  pickupTip:v=>`Si haces un turno más en este periodo, recibirías unos <b>+${v}</b> netos.`, pickupTipGross:v=>`Un turno más en este periodo suma unos <b>+${v}</b> brutos.`,
+  pickupTitle:"Si trabajas este turno", pickupNet:v=>`+${v} netos`, pickupGross:v=>`+${v} brutos`,
+  dayValue:v=>`Este turno vale unos ${v} netos.`,
+  noteLbl:"Nota", notePh:"Cambio con Miguel, capacitación, extra obligatoria…",
+  actualLbl:"¿Cuánto te pagaron de verdad?", actualPh:"Pago neto en tu talón", actualDiff:(d,p)=> d===0 ? "Exacto." : `Recibiste ${money(Math.abs(d))} ${d>0?"más":"menos"} de lo estimado (${p}%).`,
+  ptoTile:"Saldo de PTO", ptoAfter:h=>`${h} después del PTO apartado`, ptoSet:"Configurar PTO",
+  ptoTitle:"Saldo de PTO", ptoBal:"Saldo actual (horas)", ptoAsOf:"Al día", ptoAcc:"Horas ganadas por cheque", ptoHint:"Los días de PTO en tu calendario se restan solos.",
+  startLbl2:"Fecha de inicio en el trabajo", startHint:"Se usa para los totales del año.",
+  yearBtn:y=>`Ver ${y} hasta hoy (vista previa W-2)`, yearTitle:y=>`${y} hasta hoy`, yearSub:(a,b)=>`Periodos que terminan del ${a} al ${b}`,
+  yGross:"Pago bruto", yPre:"Deducciones antes de impuestos", yTax:"Impuestos totales", yPost:"Deducciones después de impuestos", yNet:"Pago neto", yHours:"Horas trabajadas", yOt:"Horas extra", yChecks:"Cheques",
+  set_pto:"Saldo de PTO", set_start:"Fecha de inicio", saveBtn:"Guardar",
+  // Mexican workers
+  q_mx:"Tu situación de trabajo en EE. UU.", q_mxLead:"Algunas visas cambian los impuestos que te descuentan. Elige la tuya.",
+  mxSt:{ resident:["Ciudadano, residente o permiso de trabajo","Green card, ciudadanía, EAD u otro estatus de residente fiscal"],
+    tn:["Visa TN (T-MEC / USMCA)","Profesionistas mexicanos con TN"], h2b:["Visa H-2B","Trabajo temporal no agrícola"], h2a:["Visa H-2A","Trabajo agrícola temporal"] },
+  mx183:["Ya pasé la prueba de presencia sustancial","En general: 183 días o más en EE. UU. contando este año y parte de los 2 anteriores. Si sí, pagas impuestos como residente."],
+  mxNraNote:"Como no residente: tu empleador calcula la retención sin la deducción estándar y como soltero, así que te descuentan más impuesto federal. Seguro Social y Medicare sí se pagan.",
+  mxResNote:"Pagas impuestos como cualquier trabajador residente: federal, Seguro Social, Medicare y estatal.",
+  mxH2aNote:"Las horas de trabajo con visa H-2A no pagan Seguro Social ni Medicare, y la retención federal es voluntaria.",
+  mxH2aWH:["Pedí retención federal voluntaria (W-4)","Si no la pediste, no te descuentan impuesto federal, pero podrías deberlo al declarar."],
+  mxSendLbl:"¿Cuánto mandas a México por periodo? ($)", mxSendHint:"Opcional. Solo para ver cuánto te queda después del envío.",
+  mxMethodLbl:"¿Cómo lo mandas?", mxMethods:{ bank:"Cuenta bancaria o tarjeta", cash:"Efectivo o giro (money order)" },
+  mxMethodHint:"Desde 2026, los envíos pagados en efectivo, giro o cheque de caja pagan un impuesto federal de 1%.",
+  mxFxLbl:"Tipo de cambio (pesos por dólar, opcional)", mxFxHint:"Escríbelo para ver cuántos pesos recibe tu familia.",
+  mxSend:"Envío a México", mxSent:"Monto enviado", mxRemitTax:"Impuesto a remesas (1%)", mxLeft:"Te queda", mxPesos:v=>`≈ ${v} pesos`,
+  mxInfo:"El acuerdo de Seguro Social entre México y EE. UU. no está vigente, así que lo que pagas aquí no cuenta para el IMSS. Si sigues siendo residente fiscal en México, consulta a un contador.",
+  set_mx:"Visa y envíos a México", mxStatusShort:{ resident:"Residente", tn:"TN", h2b:"H-2B", h2a:"H-2A" }, nra:"no residente"
+};
+Object.assign(L.en, {
+  q_mx:"Your work status in the US", q_mxLead:"Some visas change which taxes come out of your pay.",
+  mxSt:{ resident:["Citizen, resident or work permit","Green card, citizenship, EAD or other resident status"], tn:["TN visa (USMCA)","Mexican professionals on TN"], h2b:["H-2B visa","Temporary non-farm work"], h2a:["H-2A visa","Temporary farm work"] },
+  mx183:["I pass the substantial presence test","Roughly 183+ days in the US counting this year and part of the prior two. If yes, you're taxed as a resident."],
+  mxNraNote:"As a nonresident, withholding is figured as Single without the standard deduction, so more federal tax comes out. Social Security and Medicare still apply.",
+  mxResNote:"You're taxed like any resident worker: federal, Social Security, Medicare and state.",
+  mxH2aNote:"H-2A farm work wages are exempt from Social Security and Medicare, and federal withholding is voluntary.",
+  mxH2aWH:["I asked for voluntary federal withholding (W-4)","If not, no federal tax is withheld, but you may owe it when you file."],
+  mxSendLbl:"How much do you send to Mexico per pay period? ($)", mxSendHint:"Optional. Shows what's left after sending.",
+  mxMethodLbl:"How do you send it?", mxMethods:{ bank:"Bank account or card", cash:"Cash or money order" },
+  mxMethodHint:"Since 2026, transfers paid with cash, money order or cashier's check carry a 1% federal tax.",
+  mxFxLbl:"Exchange rate (pesos per dollar, optional)", mxFxHint:"Enter it to see how many pesos your family gets.",
+  mxSend:"Sent to Mexico", mxSent:"Amount sent", mxRemitTax:"Remittance tax (1%)", mxLeft:"Left for you", mxPesos:v=>`≈ ${v} pesos`,
+  mxInfo:"The US–Mexico Social Security agreement isn't in force, so what you pay here doesn't count toward IMSS. If you're still a Mexican tax resident, talk to an accountant.",
+  set_mx:"Visa & sending money", mxStatusShort:{ resident:"Resident", tn:"TN", h2b:"H-2B", h2a:"H-2A" }, nra:"nonresident"
+});
+
 let S, W = null;
 const t = (k, ...a) => { const v = (L[S.lang]||L.en)[k] ?? L.en[k]; return typeof v === "function" ? v(...a) : v; };
-const LOC = () => S.lang==="ko" ? "ko-KR" : "en-US";
+const LOC = () => S.lang==="ko" ? "ko-KR" : S.lang==="es" ? "es-MX" : "en-US";
 
 /* ================= dates ================= */
 const pad = n => String(n).padStart(2,"0");
@@ -546,7 +681,7 @@ const fTime = hm => { const [h,m] = String(hm||"0:0").split(":").map(Number); re
 const KR = () => S && S.country==="KR";
 const money = v => KR() ? (v<0?"-":"") + "₩" + Math.round(Math.abs(v)).toLocaleString("ko-KR") : "$" + (Math.round(v*100)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const money0 = v => KR() ? "₩" + Math.round(v).toLocaleString("ko-KR") : "$" + Math.round(v).toLocaleString("en-US");
-const hrs = v => (Math.round(v*100)/100).toLocaleString("en-US") + (S.lang==="ko"?"시간":" hrs");
+const hrs = v => (Math.round(v*100)/100).toLocaleString("en-US") + (S.lang==="ko"?"시간":S.lang==="es"?" h":" hrs");
 
 /* US federal holidays (observed dates) */
 const holCache = {};
@@ -676,11 +811,16 @@ function taxCalc(gross, cfg){
   if(cfg.taxMode==="manual"){
     const v = fedWages * (+cfg.taxPct||0)/100; if(v>0) out.taxes.push({ name:t("taxes"), v, d:`${+cfg.taxPct}%` }); taxTotal = v;
   } else if(cfg.taxMode==="auto"){
-    const f = FED[cfg.filing] || FED.single, A = fedWages*P;
+    const mx = cfg.lang==="es" ? (cfg.mxStatus||"resident") : "resident";
+    const nra = (mx==="tn" || mx==="h2b" || mx==="h2a") && !cfg.mx183;
+    const f = nra ? FED.single : (FED[cfg.filing] || FED.single), A = fedWages*P;
     const credits = (+cfg.kids||0)*2200 + (+cfg.otherDeps||0)*500;
-    const fed = Math.max(0, bracketTax(Math.max(0, A - f.std), f.b) - credits)/P + (+cfg.extraWH||0);
-    const ss = Math.min(ficaWages, SS_BASE/P) * 0.062;
-    const med = ficaWages*0.0145 + Math.max(0, ficaWages*P - (cfg.filing==="mfj"?250000:200000))/P*0.009;
+    // nonresident aliens: withholding is figured as Single with no standard deduction (IRS Pub. 15-T)
+    let fed = Math.max(0, bracketTax(Math.max(0, A - (nra ? 0 : f.std)), f.b) - credits)/P + (+cfg.extraWH||0);
+    if(mx==="h2a" && !cfg.mxH2aWH) fed = 0;
+    const noFica = mx==="h2a";
+    const ss = noFica ? 0 : Math.min(ficaWages, SS_BASE/P) * 0.062;
+    const med = noFica ? 0 : ficaWages*0.0145 + Math.max(0, ficaWages*P - (cfg.filing==="mfj"?250000:200000))/P*0.009;
     out.taxes.push({ name:t("fedTax"), v:fed }, { name:t("ss"), v:ss, d:"6.2%" }, { name:t("medicare"), v:med, d:"1.45%" });
     taxTotal = fed + ss + med;
     const st = ST[cfg.state];
@@ -710,14 +850,15 @@ function typicalGross(cfg){
 const PATS = { p223:"WWOOWWWOOWWOOO", p42:"WWWWOO", p44:"WWWWOOOO", p5:"MF", p6:"SIX", custom:"" };
 function defaults(){
   const ws = TODAY - dowN(TODAY);
-  return { lang:(navigator.language||"en").toLowerCase().startsWith("ko") ? "ko" : "en", setupDone:false,
+  const nl = (navigator.language||"en").toLowerCase();
+  return { lang: nl.startsWith("ko") ? "ko" : nl.startsWith("es") ? "es" : "en", setupDone:false, mxStatus:"resident", mx183:true, mxH2aWH:false, mxSend:0, mxMethod:"bank", mxFx:0,
     pattern:"p223", customCycle:"WWWOOO", cycleStart:fromNum(ws), sixOff:0,
     shiftLabel:"day", shiftStart:"06:00", shiftEnd:"18:30", breakMin:30,
     payType:"hourly", rate:"", diff:0, salary:"",
     otMult:1.5, dblMult:2, dailyOT:false, seventhDouble:false, holidayPremium:true, holidayMult:2, salaryOtMult:1,
     freq:"biweekly", weekStart:0, periodAnchor:fromNum(ws), payDow:5, payDelay:0,
     semiMode:"end", semiLag:5, monthlyMode:"last", monthlyDay:5, weekendAdj:true,
-    taxMode:"auto", state:"GA", filing:"single", kids:0, otherDeps:0, extraWH:0, localPct:0, taxPct:0, country:(()=>{ try{ return Intl.DateTimeFormat().resolvedOptions().timeZone==="Asia/Seoul" ? "KR" : "US"; }catch(e){ return "US"; } })(), salaryDayOT:true, salaryOtBasis:"extra", salOtWeekly:40, salOtCount:7, weekendOT:false, holidayOT:false, otCap:0, otShiftHours:0, krSmall:false, krNight:true, krJuhyu:true, krNonTax:200000, krDeps:1, krKids:0, krWh:100,
+    taxMode:"auto", state:"GA", filing:"single", kids:0, otherDeps:0, extraWH:0, localPct:0, taxPct:0, country:"US", salaryDayOT:true, salaryOtBasis:"extra", salOtWeekly:40, salOtCount:7, weekendOT:false, holidayOT:false, otCap:0, otShiftHours:0, krSmall:false, krNight:true, krJuhyu:true, krNonTax:200000, krDeps:1, krKids:0, krWh:100,
     deds:[], overrides:{}, hours:{}, notes:{}, bonuses:{}, actuals:{}, pto:null, startDate:"" };
 }
 S = defaults();
@@ -940,6 +1081,12 @@ function renderStub(){
   if(tc.taxes.length) rows += sec(t("secTax")) + tc.taxes.map(r => ln("sub", r.name, r.d||"", "−" + money(r.v))).join("");
   if(tc.post.length) rows += sec(t("secPost")) + tc.post.map(r => ln("sub", r.name, r.d, "−" + money(r.v))).join("");
   rows += ln("total", (taxesOn() ? t("takeHome") : t("afterDed")), "", money(pc.net));
+  if(S.lang==="es" && +S.mxSend > 0){
+    const sendAmt = +S.mxSend, rt = S.mxMethod==="cash" ? sendAmt*0.01 : 0, fx = +S.mxFx;
+    rows += `<div class="ln sec"><span class="l">${t("mxSend")}</span></div>` + ln("sub", t("mxSent"), fx>0 ? t("mxPesos", Math.round(sendAmt*fx).toLocaleString("es-MX")) : "", "−" + money(sendAmt));
+    if(rt) rows += ln("sub", t("mxRemitTax"), "", "−" + money(rt));
+    rows += ln("gross", t("mxLeft"), "", money(pc.net - sendAmt - rt));
+  }
   $("#stubCard").innerHTML = `
     <div class="stub-head"><button class="nav-btn" id="pPrev" aria-label="Previous pay period">‹</button><h2>${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)}</h2><button class="nav-btn" id="pNext" aria-label="Next pay period">›</button></div>
     <div class="stub-sub">${t("freq")[S.freq][0]} · ${hrs(pc.x.worked)}</div>
@@ -1099,11 +1246,17 @@ function openShare(){
   $("#shCopy").onclick = async () => { try{ await navigator.clipboard.writeText(t("shareMsg", APP_URL)); $("#shCopy").textContent = t("copied"); }
     catch(e){ const r = document.createRange(); r.selectNodeContents($("#shUrl")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); } };
 }
+function openLang(){
+  openSheet(`<div class="sheet-head"><h2>Language · 언어 · Idioma</h2><button class="x" id="lX" aria-label="Close">✕</button></div>
+    <div class="picks">${[["en","English"],["ko","한국어"],["es","Español"]].map(([k,n]) => `<button class="pick" data-lg="${k}" aria-pressed="${S.lang===k}"><b>${n}</b></button>`).join("")}</div>`);
+  $("#lX").onclick = closeSheet;
+  $("#sheet").querySelectorAll("[data-lg]").forEach(b => b.onclick = () => { S.lang = b.dataset.lg; save(); render(); openSettings(); });
+}
 function openSettings(){
   const p = nextPayPeriod();
   const rows = [
-    ["language", t("set_language"), S.lang==="ko"?"한국어":"English"],
-    ["country", t("set_country"), KR() ? t("cKR") : t("cUS")],
+    ["language", t("set_language"), ({en:"English",ko:"한국어",es:"Español"})[S.lang]],
+    ...(S.lang==="es" ? [["mx", t("set_mx"), t("mxStatusShort")[S.mxStatus||"resident"] + ((S.mxStatus||"resident")!=="resident" && !S.mx183 ? " · " + t("nra") : "")]] : []),
     ["pattern", t("set_rotation"), t("pat")[S.pattern][0]],
     ["shift", t("set_shift"), `${fTime(S.shiftStart)} – ${fTime(S.shiftEnd)}`],
     ["pay", t("set_pay"), S.payType==="hourly" ? `${money(+S.rate||0)}${t("perHr")}` : `${money0(+S.salary||0)}${t("perYr")}`],
@@ -1121,9 +1274,9 @@ function openSettings(){
     <div class="setlist"><button id="sClear"><b>${t("set_clear")}</b><span>${nEdits || ""}</span></button><button id="sRedo"><b>${t("set_redo")}</b><span></span></button></div>`);
   $("#sX").onclick = closeSheet;
   $("#sheet").querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
-    if(b.dataset.k==="language"){ S.lang = S.lang==="ko" ? "en" : "ko"; save(); render(); openSettings(); return; }
+    if(b.dataset.k==="language"){ openLang(); return; }
     if(b.dataset.k==="pto"){ openPto(); return; }
-    if(b.dataset.k==="country"){ closeSheet(); openWizard(); return; }
+
     if(b.dataset.k==="start"){ openStart(); return; }
     closeSheet(); openWizard(b.dataset.k);
   });
@@ -1138,8 +1291,9 @@ function openSettings(){
 $("#openSettings").onclick = openSettings;
 
 /* ================= setup wizard ================= */
-const STEPS = ["welcome","pattern","shift","days","pay","ot","freq","payday","tax","ded","done"];
-const CHAINS = { pattern:["pattern","days"], shift:["shift"], pay:["pay","ot"], ot:["ot"], freq:["freq","payday"], tax:["tax"], ded:["ded"] };
+const STEPS = ["welcome","pattern","shift","days","pay","ot","freq","payday","tax","mx","ded","done"];
+const stepShown = i => STEPS[i] !== "mx" || (W && W.lang==="es");
+const CHAINS = { pattern:["pattern","days"], shift:["shift"], pay:["pay","ot"], ot:["ot"], freq:["freq","payday"], tax:["tax"], mx:["mx"], ded:["ded"] };
 function openWizard(only){
   W = JSON.parse(JSON.stringify(S));
   W._chain = only ? CHAINS[only] : null; W._step = only ? STEPS.indexOf(W._chain[0]) : 0;
@@ -1174,7 +1328,7 @@ function renderWiz(){
   const step = STEPS[W._step], el = $("#wiz"), editing = !!W._chain;
   let body = "", nextL = t("next"), skip = false;
   if(step==="welcome"){
-    const kr = W.country==="KR", amt = kr ? "₩2,655,810" : "$2,117.88", ot = kr ? "+₩185,760" : "+$294.33";
+    const amt = "$2,117.88", ot = "+$294.33";
     body = `<div class="wel-hero">
         <div class="wel-brand"><div class="wel-logo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></div><b>ShiftPay</b></div>
         <div class="wel-card"><div class="wc-eye"><span>${t("thisPeriod")}</span><span>${t("example")}</span></div><div class="wc-amt">${amt}</div><div class="wc-bar"><i></i></div><div class="wc-row"><span>${t("pickupTitle")}</span><b>${ot}</b></div></div>
@@ -1182,8 +1336,7 @@ function renderWiz(){
       </div>
       <div class="welcome"><div class="big">${t("welcomeBig")}</div><p class="lead">${t("welcomeLead")}</p>
       <ul class="feat"><li><i class="s-W">1</i>${t("feat1")}</li><li><i class="s-OT">2</i>${t("feat2")}</li><li><i style="background:var(--pay-soft);color:var(--pay)">$</i>${t("feat3")}</li></ul></div>
-      <div class="field"><span class="lbl">${t("langLbl")}</span><div class="quick">${quickH("lang", W.lang, [["en","English"],["ko","한국어"]])}</div></div>
-      <div class="field"><span class="lbl">${t("countryLbl")}</span><div class="picks two">${pickH("cty", W.country, [["US", t("cUS"), "USD $"],["KR", t("cKR"), "KRW ₩"]])}</div></div>`;
+      <div class="field"><span class="lbl">Language · 언어 · Idioma</span><div class="quick">${quickH("lang", W.lang, [["en","English"],["ko","한국어"],["es","Español"]])}</div></div>`;
     nextL = t("getStarted");
   } else if(step==="pattern"){
     body = `<h2>${t("q_pattern")}</h2><p class="lead">${t("q_patternLead")}</p>
@@ -1254,6 +1407,18 @@ function renderWiz(){
       body += `<div class="field"><label for="wAnchor">${t("periodStartLbl")}</label><input id="wAnchor" type="date" value="${W.periodAnchor}"><span class="hint">${t("periodStartHint")}</span></div>`;
     else body += `<p class="lead">${W.freq==="semimonthly" ? t("semiLbl") : t("monthlyLbl")}</p>`;
     body += `<div class="calc" id="wPayPrev">${t("periodPreview", fDate(np.s), fDate(np.e))}</div>`;
+  } else if(step==="mx"){
+    const ms = W.mxStatus || "resident", nraNow = ms!=="resident" && !W.mx183;
+    body = `<h2>${t("q_mx")}</h2><p class="lead">${t("q_mxLead")}</p>
+      <div class="picks">${pickH("mxs", ms, ["resident","tn","h2b","h2a"].map(k => [k, ...t("mxSt")[k]]))}</div>
+      ${ms!=="resident" ? togH("wMx183", W.mx183, t("mx183")) : ""}
+      ${ms==="h2a" ? `<div class="result">${t("mxH2aNote")}</div>${togH("wMxWh", W.mxH2aWH, t("mxH2aWH"))}` : ""}
+      <div class="result">${nraNow ? t("mxNraNote") : t("mxResNote")}</div>
+      <div class="field"><label for="wMxSend">${t("mxSendLbl")}</label><input id="wMxSend" type="number" inputmode="decimal" min="0" step="10" value="${+W.mxSend||""}" placeholder="0"><span class="hint">${t("mxSendHint")}</span></div>
+      ${+W.mxSend > 0 ? `<div class="field"><span class="lbl">${t("mxMethodLbl")}</span><div class="quick">${quickH("mxm", W.mxMethod||"bank", Object.entries(t("mxMethods")))}</div><span class="hint">${t("mxMethodHint")}</span></div>
+        <div class="field"><label for="wFx">${t("mxFxLbl")}</label><input id="wFx" type="number" inputmode="decimal" min="0" step="0.01" value="${+W.mxFx||""}" placeholder="—"><span class="hint">${t("mxFxHint")}</span></div>` : ""}
+      <p class="note">${t("mxInfo")}</p>
+      <div class="calc" id="wTaxPrev"></div>`;
   } else if(step==="tax" && W.country==="KR"){
     if(W.taxMode==="auto") W.taxMode = "kr";
     body = `<h2>${t("q_tax")}</h2><div class="picks two">${pickH("tm", W.taxMode, [["kr",...t("krTaxAuto")],["manual",...t("taxManual")]])}</div>`;
@@ -1343,13 +1508,14 @@ function wireWiz(){
     else { Object.assign(W, { freq:"biweekly", weekStart:0, payDow:5, payDelay:0, taxMode:"auto", salaryOtMult:1, rate:"", salary:"", deds:[] }); }
     S.country = c; render(); renderWiz(); });
   const cbk = (id, key) => { const x = $("#"+id); if(x) x.onchange = () => { W[key] = x.checked; renderWiz(); }; };
-  cbk("wSdo","salaryDayOT"); cbk("wWkOT","weekendOT"); cbk("wHolOT","holidayOT"); setv("ob","salaryOtBasis"); setv("oth","otShiftHours",true);
+  cbk("wSdo","salaryDayOT"); cbk("wMx183","mx183"); cbk("wMxWh","mxH2aWH"); setv("mxs","mxStatus"); setv("mxm","mxMethod"); cbk("wWkOT","weekendOT"); cbk("wHolOT","holidayOT"); setv("ob","salaryOtBasis"); setv("oth","otShiftHours",true);
   inp("wOw","salOtWeekly",true); inp("wOc","salOtCount",true); inp("wCap","otCap",true); inp("wOth","otShiftHours",true); cbk("wKs","krSmall"); cbk("wKn","krNight"); cbk("wKj","krJuhyu");
   const taxPrev = () => { const c = $("#wTaxPrev"); if(!c) return; const g = typicalGross(W); if(!(g>0)){ c.hidden = true; return; } c.hidden = false;
     const keep = S.country; S.country = W.country; const r = taxCalc(g, W); S.country = keep; c.innerHTML = taxesOn(W) ? t("taxPreview", money(r.taxTotal), money(r.net)) : `${t("gross")} ${money(g)} → ${money(r.net)}`; };
   const stSel = $("#wState"); if(stSel) stSel.onchange = () => { W.state = stSel.value; renderWiz(); };
   inp("wKd","krDeps",true,taxPrev); inp("wKk","krKids",true,taxPrev); inp("wKnt","krNonTax",true,taxPrev);
-  inp("wKids","kids",true,taxPrev); inp("wDeps","otherDeps",true,taxPrev); inp("wXwh","extraWH",true,taxPrev); inp("wLocal","localPct",true,taxPrev);
+  inp("wKids","kids",true,taxPrev); inp("wFx","mxFx",true);
+  const ms = $("#wMxSend"); if(ms){ ms.oninput = () => { W.mxSend = ms.value===""?0:Number(ms.value); taxPrev(); }; ms.onchange = () => renderWiz(); } inp("wDeps","otherDeps",true,taxPrev); inp("wXwh","extraWH",true,taxPrev); inp("wLocal","localPct",true,taxPrev);
   const wt = $("#wTax"); if(wt) wt.addEventListener("input", taxPrev);
   el.querySelectorAll("[data-add]").forEach(b => b.onclick = () => { W.deds = W.deds||[]; W.deds.push({ type:b.dataset.add, amt:"", name:"", pre:false }); renderWiz(); const ins = el.querySelectorAll("[data-amt]"); if(ins.length) ins[ins.length-1].focus(); });
   el.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { W.deds.splice(+b.dataset.rm,1); renderWiz(); });
@@ -1357,9 +1523,9 @@ function wireWiz(){
   el.querySelectorAll("[data-name]").forEach(x => x.oninput = () => { W.deds[+x.dataset.name].name = x.value; });
   (W.deds||[]).forEach((d,i) => el.querySelectorAll(`[data-op${i}]`).forEach(b => b.onclick = () => { d.pre = b.dataset["op"+i]==="1"; renderWiz(); }));
   taxPrev();
-  const back = $("#wBack"); if(back) back.onclick = () => { W._step--; renderWiz(); el.scrollTop = 0; };
+  const back = $("#wBack"); if(back) back.onclick = () => { W._step--; while(W._step>0 && !stepShown(W._step)) W._step--; renderWiz(); el.scrollTop = 0; };
   const cancel = $("#wCancel"); if(cancel) cancel.onclick = closeWiz;
-  const sk = $("#wSkip"); if(sk) sk.onclick = () => { W.deds = []; W._step++; renderWiz(); el.scrollTop = 0; };
+  const sk = $("#wSkip"); if(sk) sk.onclick = () => { W.deds = []; W._step++; while(W._step < STEPS.length-1 && !stepShown(W._step)) W._step++; renderWiz(); el.scrollTop = 0; };
   $("#wNext").onclick = wizNext;
 }
 function wizNext(){
@@ -1378,14 +1544,14 @@ function wizNext(){
     return commitWiz();
   }
   if(step==="done") return commitWiz();
-  W._step++; renderWiz(); $("#wiz").scrollTop = 0;
+  W._step++; while(W._step < STEPS.length-1 && !stepShown(W._step)) W._step++; renderWiz(); $("#wiz").scrollTop = 0;
 }
 function commitWiz(){
   const next = {};
   for(const k in W){ if(k[0] !== "_") next[k] = W[k]; }
   next.overrides = S.overrides; next.hours = S.hours; next.notes = S.notes; next.bonuses = S.bonuses; next.actuals = S.actuals; next.pto = S.pto;
   if(!next.startDate) next.startDate = fromNum(periodFor(TODAY, next).s);
-  ["rate","diff","salary","taxPct","semiLag","monthlyDay","breakMin","kids","otherDeps","extraWH","localPct","krDeps","krKids","krNonTax","krWh","salOtWeekly","salOtCount","otCap","otShiftHours"].forEach(k => next[k] = next[k]===""?0:+next[k]);
+  ["rate","diff","salary","taxPct","semiLag","monthlyDay","breakMin","kids","otherDeps","extraWH","localPct","krDeps","krKids","krNonTax","krWh","salOtWeekly","salOtCount","otCap","otShiftHours","mxSend","mxFx"].forEach(k => next[k] = next[k]===""?0:+next[k]);
   next.deds = (next.deds||[]).filter(d => +d.amt > 0).map(d => ({ ...d, amt:+d.amt }));
   next.setupDone = true;
   S = next; save(); periodOffset = 0; render(); closeWiz();
@@ -1393,6 +1559,8 @@ function commitWiz(){
 
 function migrate(o){
   if(!Array.isArray(o.deds)) o.deds = [];
+  o.country = "US"; if(o.taxMode==="kr") o.taxMode = "auto";
+  if(o.freq==="monthly" && o.monthlyMode==="same") o.monthlyMode = "last";
   ["notes","bonuses","actuals","overrides","hours"].forEach(k => { if(!o[k] || typeof o[k] !== "object") o[k] = {}; });
   if(o.k401 > 0 && !o.deds.some(d=>d.type==="k401")) o.deds.push({ type:"k401", amt:+o.k401 });
   if(o.insurance > 0 && !o.deds.some(d=>d.type==="health")) o.deds.push({ type:"health", amt:+o.insurance });
