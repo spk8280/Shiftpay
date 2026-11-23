@@ -177,6 +177,25 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .done-list li{display:flex;justify-content:space-between;gap:12px;font-size:14px}
 .done-list li span{color:var(--muted);flex:none}
 .done-list li b{text-align:right}
+.adtabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--chip);padding:4px;border-radius:12px;margin-bottom:14px}
+.adtabs button{border:0;background:none;padding:9px;border-radius:9px;font:inherit;font-weight:700;font-size:14px;color:var(--muted)}
+.adtabs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.adstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.adstats div{background:var(--chip);border-radius:12px;padding:10px;display:grid;gap:2px;text-align:center}
+.adstats b{font-family:var(--f-mono);font-size:22px}
+.adstats span{font-size:11.5px;color:var(--muted)}
+.adsearch{display:flex;gap:8px;align-items:center;margin:10px 0}
+.adsearch input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:11px 10px;font:inherit}
+.adlist{display:grid;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.adlist button{border:0;border-bottom:1px solid var(--line);background:var(--surface);text-align:left;padding:11px 13px;display:grid;gap:3px;font:inherit;color:var(--ink)}
+.adlist button:last-child{border-bottom:0}
+.adn{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.adn small{color:var(--muted);font-size:12px}
+.adm{font-size:12px;color:var(--muted)}
+.adbadge{font-style:normal;font-size:10.5px;font-weight:800;background:var(--ot-soft);color:var(--ot);padding:1px 6px;border-radius:6px}
+.adlive{font-size:13px;font-weight:700;color:var(--muted)}
+.adlive.on{color:var(--pay)}
+#adBody textarea{margin-top:6px;width:100%;font:inherit;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
 .setlist{display:grid;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .setlist button{border:0;border-bottom:1px solid var(--line);background:var(--surface);text-align:left;padding:13px 14px;display:flex;align-items:center;gap:10px}
 .setlist button:last-child{border-bottom:0}
@@ -686,12 +705,22 @@ Object.assign(L.en, { acTitle:"Account", acNone:"Not signed in (optional)", acSi
   acForgot:"There's no email, so a forgotten password can't be recovered. Keep it somewhere safe.", acSignupBtn:"Create account", acLoginBtn:"Sign in",
   acHaveAcct:"Already have an account? Sign in", acNoAcct:"New here? Create an account", acTaken:"That username is taken. Try another.", acWrong:"Wrong username or password.",
   acPwShort:"Password is too short.", acNet:"Couldn't reach the server. Check your connection and try again.", acSynced:"Saved to your account", acLogout:"Sign out",
+  adTitle:"Master admin", adUsers:"Members", adNotice:"Announcement", adTotal:"Members", adNew7:"New this week", adActive7:"Active this week", adSearch:"Search name or username",
+  adJoined:"Joined", adLast:"Last used", adNever:"never", adNoData:"no setup yet", adIsAdmin:"Admin", adResetPw:"Set new password", adPwPh:"New password (6+)", adPwDone:"Password changed. Tell them the new one.",
+  adMake:"Make admin", adUnmake:"Remove admin", adDel:"Delete this member", adDelConfirm:"Tap again to delete for good", adDone:"Done", adErr:"Didn't work. Check the connection and try again.", adLoading:"Loading…",
+  adLang:"Languages", adStates:"Top states", adNoticeLead:"Shows a banner at the top of everyone's app. Leave a language blank to use English.", adNTitle:"Title", adNBody:"Message",
+  adIos:"App Store link (optional)", adAndroid:"Google Play link (optional)", adPublish:"Publish to everyone", adUnpublish:"Take down", adLive:"Live now", adOff:"No announcement showing", adBack:"Back", adRefresh:"Refresh",
   acDelete:"Delete account", acDeleteConfirm:"Delete account and cloud data? Tap again", acDoneHint:"Tip: create a free account in Settings so your data is never lost." });
 Object.assign(L.ko, { acTitle:"계정", acNone:"로그인 안 함 (선택)", acSignup:"회원가입", acLogin:"로그인", acLead:"선택이에요. 로그인하면 근무 기록이 안전하게 보관되고, 폰을 바꿔도 그대로 쓸 수 있어요. 이메일은 필요 없어요.",
   acId:"아이디", acIdHint:"영문·숫자·_ 3~20자", acPw:"비밀번호", acPwHint:"6자 이상", acNick:"닉네임", acNickPh:"앱에서 부를 이름", acNickNeed:"닉네임을 적어 주세요.",
   acForgot:"이메일이 없어서 비밀번호를 잊으면 찾을 수 없어요. 잘 적어 두세요.", acSignupBtn:"가입하기", acLoginBtn:"로그인",
   acHaveAcct:"이미 계정이 있어요 → 로그인", acNoAcct:"처음이에요 → 회원가입", acTaken:"이미 있는 아이디예요. 다른 아이디를 써 주세요.", acWrong:"아이디나 비밀번호가 맞지 않아요.",
   acPwShort:"비밀번호가 너무 짧아요.", acNet:"서버에 연결하지 못했어요. 인터넷을 확인하고 다시 해 주세요.", acSynced:"계정에 저장 중", acLogout:"로그아웃",
+  adTitle:"마스터 관리자", adUsers:"회원 관리", adNotice:"공지", adTotal:"전체 회원", adNew7:"이번 주 가입", adActive7:"이번 주 사용", adSearch:"닉네임·아이디 검색",
+  adJoined:"가입", adLast:"마지막 사용", adNever:"없음", adNoData:"설정 전", adIsAdmin:"관리자", adResetPw:"새 비밀번호로 바꾸기", adPwPh:"새 비밀번호 (6자 이상)", adPwDone:"비밀번호를 바꿨어요. 본인에게 새 비밀번호를 알려 주세요.",
+  adMake:"관리자로 지정", adUnmake:"관리자 해제", adDel:"이 회원 삭제", adDelConfirm:"한 번 더 누르면 완전히 삭제돼요", adDone:"완료", adErr:"실패했어요. 인터넷 연결을 확인하고 다시 해 보세요.", adLoading:"불러오는 중…",
+  adLang:"사용 언어", adStates:"많은 주(State)", adNoticeLead:"모든 사용자 앱 맨 위에 배너로 보여요. 비워 둔 언어는 영어로 나가요.", adNTitle:"제목", adNBody:"내용",
+  adIos:"앱스토어 링크 (선택)", adAndroid:"구글 플레이 링크 (선택)", adPublish:"모두에게 게시", adUnpublish:"공지 내리기", adLive:"게시 중", adOff:"게시된 공지 없음", adBack:"뒤로", adRefresh:"새로고침",
   acDelete:"계정 삭제", acDeleteConfirm:"계정과 저장된 데이터를 지울까요? 한 번 더 누르세요", acDoneHint:"팁: 설정에서 무료 계정을 만들면 데이터가 사라지지 않아요." });
 Object.assign(L.es, { acTitle:"Cuenta", acNone:"Sin sesión (opcional)", acSignup:"Crear cuenta", acLogin:"Iniciar sesión", acLead:"Opcional. Inicia sesión para guardar tu horario y usarlo en cualquier teléfono. No necesitas correo.",
   acId:"Usuario", acIdHint:"3–20 letras, números o _", acPw:"Contraseña", acPwHint:"Mínimo 6 caracteres", acNick:"Apodo", acNickPh:"¿Cómo te llamamos?", acNickNeed:"Escribe un apodo.",
@@ -1014,6 +1043,11 @@ async function logIn(u, pw, fresh){
   const cloud = await cloudPull();
   if(cloud && !fresh){ S = migrate(Object.assign(defaults(), cloud)); saveLocal(); periodOffset = 0; render(); if(W && !W._chain) closeWiz(); }
   else await cloudPush(true);
+  await checkAdmin();
+}
+async function checkAdmin(){
+  if(!CLOUD_OK() || !auth) return false;
+  try{ const a = await sb("/rest/v1/rpc/is_admin", { method:"POST", body:"{}" }, true); if(auth){ auth.user.admin = a===true; saveAuth(); } return a===true; }catch(e){ return !!(auth && auth.user.admin); }
 }
 async function logOut(){ try{ await sb("/auth/v1/logout", { method:"POST" }, true); }catch(e){} auth = null; saveAuth(); }
 async function cloudPull(){
@@ -1029,6 +1063,7 @@ async function cloudPush(now){
 }
 async function cloudSyncOnOpen(){
   if(!CLOUD_OK() || !auth) return;
+  checkAdmin();
   try{ const cloud = await cloudPull(); if(cloud && (cloud._savedAt||0) > (S._savedAt||0)){ S = migrate(Object.assign(defaults(), cloud)); saveLocal(); render(); if(W && !W._chain) closeWiz(); } else if(!cloud) cloudPush(true); }catch(e){}
 }
 async function deleteAccount(){ await sb("/rest/v1/rpc/delete_my_account", { method:"POST", body:"{}" }, true); auth = null; saveAuth(); }
@@ -1041,10 +1076,12 @@ function openAccount(mode){
   if(auth){
     openSheet(`<div class="sheet-head"><h2>${t("acTitle")}</h2><button class="x" id="aX" aria-label="Close">✕</button></div>
       <div class="result"><b>${(auth.user.nickname||auth.user.username).replace(/</g,"&lt;")}</b><span>@${auth.user.username} · ${t("acSynced")}</span></div>
+      ${auth.user.admin ? `<button class="btn" id="aAdm">${t("adTitle")}</button>` : ""}
       <button class="btn ghost" id="aOut">${t("acLogout")}</button>
       <button class="btn ghost" id="aDel" style="color:var(--err)">${t("acDelete")}</button><p class="err" id="aErr"></p>`);
     $("#aX").onclick = closeSheet;
     $("#aOut").onclick = async () => { await logOut(); closeSheet(); openSettings(); };
+    if($("#aAdm")) $("#aAdm").onclick = () => openAdmin();
     const d = $("#aDel"); d.onclick = async () => { if(!d.dataset.armed){ d.dataset.armed = "1"; d.textContent = t("acDeleteConfirm"); return; }
       try{ await deleteAccount(); closeSheet(); openSettings(); }catch(e){ $("#aErr").textContent = t("acNet"); } };
     return;
@@ -1499,12 +1536,86 @@ function openLang(){
   $("#lX").onclick = closeSheet;
   $("#sheet").querySelectorAll("[data-lg]").forEach(b => b.onclick = () => { S.lang = b.dataset.lg; save(); render(); openSettings(); });
 }
+
+/* ================= master admin ================= */
+const esc = v => String(v ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" })[c]);
+let adTab = "users", adRows = null, adQ = "";
+const rpc = (fn, args) => sb("/rest/v1/rpc/" + fn, { method:"POST", body: JSON.stringify(args||{}) }, true);
+const fWhen = iso => { if(!iso) return t("adNever"); const d = new Date(iso); return d.toLocaleDateString(LOC(), { month:"short", day:"numeric", year: d.getFullYear()===new Date().getFullYear() ? undefined : "numeric" }); };
+async function openAdmin(){
+  openSheet(`<div class="sheet-head"><h2>👑 ${t("adTitle")}</h2><button class="x" id="adX" aria-label="Close">✕</button></div>
+    <div class="adtabs"><button data-adt="users" aria-pressed="${adTab==="users"}">${t("adUsers")}</button><button data-adt="notice" aria-pressed="${adTab==="notice"}">${t("adNotice")}</button></div>
+    <div id="adBody"><p class="hint">${t("adLoading")}</p></div>`);
+  $("#adX").onclick = closeSheet;
+  $("#sheet").querySelectorAll("[data-adt]").forEach(b => b.onclick = () => { adTab = b.dataset.adt; openAdmin(); });
+  adTab === "users" ? adUsers() : adNotice();
+}
+async function adUsers(force){
+  const el = $("#adBody");
+  if(!adRows || force){ try{ adRows = await rpc("admin_users"); }catch(e){ el.innerHTML = `<p class="err">${t("adErr")}</p>`; return; } }
+  const wk = Date.now() - 7*864e5, rows = adRows;
+  const cnt = (f) => { const m = {}; rows.forEach(r => { const k = f(r); if(k) m[k] = (m[k]||0)+1; }); return Object.entries(m).sort((a,b) => b[1]-a[1]); };
+  const langs = cnt(r => ({ en:"English", ko:"한국어", es:"Español" })[r.lang]), states = cnt(r => r.state).slice(0,5);
+  const q = adQ.toLowerCase(), list = rows.filter(r => !q || (r.username||"").toLowerCase().includes(q) || (r.nickname||"").toLowerCase().includes(q));
+  el.innerHTML = `<div class="adstats">
+      <div><b>${rows.length}</b><span>${t("adTotal")}</span></div>
+      <div><b>${rows.filter(r => new Date(r.created_at) > wk).length}</b><span>${t("adNew7")}</span></div>
+      <div><b>${rows.filter(r => r.updated_at && new Date(r.updated_at) > wk).length}</b><span>${t("adActive7")}</span></div></div>
+    <p class="hint">${t("adLang")}: ${langs.map(([k,v]) => `${k} ${v}`).join(" · ") || "—"}<br>${t("adStates")}: ${states.map(([k,v]) => `${k} ${v}`).join(" · ") || "—"}</p>
+    <div class="adsearch"><input id="adQ" placeholder="${t("adSearch")}" value="${esc(adQ)}" autocapitalize="none"><button class="linkbtn" id="adRef">${t("adRefresh")}</button></div>
+    <div class="adlist">${list.map(r => `<button data-uid="${r.user_id}"><span class="adn"><b>${esc(r.nickname || r.username)}</b>${r.admin ? `<i class="adbadge">${t("adIsAdmin")}</i>` : ""}<small>@${esc(r.username)}</small></span>
+      <span class="adm">${t("adJoined")} ${fWhen(r.created_at)} · ${t("adLast")} ${fWhen(r.updated_at || r.last_sign_in)}<br>${r.pay_type ? [r.lang, r.state, r.pay_type, r.freq].filter(Boolean).join(" · ") : t("adNoData")}</span></button>`).join("")}</div>`;
+  const qi = $("#adQ"); qi.oninput = () => { adQ = qi.value; const pos = qi.selectionStart; adUsers(); const n = $("#adQ"); n.focus(); n.setSelectionRange(pos, pos); };
+  $("#adRef").onclick = () => { el.innerHTML = `<p class="hint">${t("adLoading")}</p>`; adUsers(true); };
+  el.querySelectorAll("[data-uid]").forEach(b => b.onclick = () => adUser(adRows.find(r => r.user_id === b.dataset.uid)));
+}
+function adUser(r){
+  const me = auth && r.user_id === auth.user.id, el = $("#adBody");
+  el.innerHTML = `<button class="linkbtn" id="adBk">‹ ${t("adBack")}</button>
+    <div class="result"><b>${esc(r.nickname || r.username)}${r.admin ? ` <i class="adbadge">${t("adIsAdmin")}</i>` : ""}</b><span>@${esc(r.username)} · ${t("adJoined")} ${fWhen(r.created_at)} · ${t("adLast")} ${fWhen(r.updated_at || r.last_sign_in)}</span></div>
+    <div class="field"><span class="lbl">${t("adResetPw")}</span><div class="adsearch"><input id="adPw" type="text" autocapitalize="none" placeholder="${t("adPwPh")}"><button class="btn" id="adPwGo" style="width:auto">${t("adDone")}</button></div></div>
+    ${me ? "" : `<button class="btn ghost" id="adMk">${r.admin ? t("adUnmake") : t("adMake")}</button>
+    <button class="btn ghost" id="adDel" style="color:var(--err)">${t("adDel")}</button>`}
+    <p class="err" id="adMsg"></p>`;
+  const msg = (txt, ok) => { const m = $("#adMsg"); m.textContent = txt; m.style.color = ok ? "var(--pay)" : "var(--err)"; };
+  $("#adBk").onclick = () => adUsers();
+  $("#adPwGo").onclick = async () => { const pw = $("#adPw").value; if(pw.length < 6) return msg(t("adPwPh"));
+    try{ await rpc("admin_reset_password", { target:r.user_id, new_password:pw }); msg(t("adPwDone"), true); }catch(e){ msg(t("adErr")); } };
+  if(me) return;
+  $("#adMk").onclick = async () => { try{ await rpc("admin_set_admin", { target:r.user_id, make:!r.admin }); r.admin = !r.admin; adUser(r); msg(t("adDone"), true); }catch(e){ msg(t("adErr")); } };
+  const d = $("#adDel"); d.onclick = async () => { if(!d.dataset.armed){ d.dataset.armed = "1"; d.textContent = t("adDelConfirm"); return; }
+    try{ await rpc("admin_delete_user", { target:r.user_id }); adRows = adRows.filter(x => x.user_id !== r.user_id); adUsers(); }catch(e){ msg(t("adErr")); } };
+}
+async function adNotice(){
+  const el = $("#adBody"); let n = {};
+  try{ const rows = await sb("/rest/v1/shiftpay_notice?id=eq.1&select=data"); n = (rows && rows[0] && rows[0].data) || {}; }catch(e){ el.innerHTML = `<p class="err">${t("adErr")}</p>`; return; }
+  const live = !!n.id, L3 = [["ko","한국어"],["en","English"],["es","Español"]];
+  el.innerHTML = `<p class="lead">${t("adNoticeLead")}</p>
+    <p class="adlive ${live ? "on" : ""}">${live ? "● " + t("adLive") : t("adOff")}</p>
+    ${L3.map(([k,nm]) => `<div class="field"><span class="lbl">${nm}</span><input data-nt="${k}" placeholder="${t("adNTitle")}" value="${esc((n[k]||{}).title)}"><textarea data-nb="${k}" rows="2" placeholder="${t("adNBody")}">${esc((n[k]||{}).body)}</textarea></div>`).join("")}
+    <div class="field"><label for="adIos">${t("adIos")}</label><input id="adIos" type="url" placeholder="https://apps.apple.com/..." value="${esc(n.ios)}"></div>
+    <div class="field"><label for="adAnd">${t("adAndroid")}</label><input id="adAnd" type="url" placeholder="https://play.google.com/..." value="${esc(n.android)}"></div>
+    <button class="btn" id="adPub">${t("adPublish")}</button>
+    ${live ? `<button class="btn ghost" id="adOffBtn">${t("adUnpublish")}</button>` : ""}
+    <p class="err" id="adMsg"></p>`;
+  const msg = (txt, ok) => { const m = $("#adMsg"); m.textContent = txt; m.style.color = ok ? "var(--pay)" : "var(--err)"; };
+  $("#adPub").onclick = async () => {
+    const d = { id: "n" + Date.now() };
+    L3.forEach(([k]) => { const ti = el.querySelector(`[data-nt="${k}"]`).value.trim(), bo = el.querySelector(`[data-nb="${k}"]`).value.trim(); if(ti) d[k] = { title:ti, body:bo }; });
+    if(!d.en){ const f = d.ko || d.es; if(!f) return msg(t("adNTitle") + "?"); d.en = f; }
+    const io = $("#adIos").value.trim(), an = $("#adAnd").value.trim(); if(io) d.ios = io; if(an) d.android = an;
+    try{ await rpc("admin_set_notice", { d }); try{ localStorage.removeItem("shiftpay-notice"); }catch(e){} adNotice(); loadNotice(); }catch(e){ msg(t("adErr")); }
+  };
+  if($("#adOffBtn")) $("#adOffBtn").onclick = async () => { try{ await rpc("admin_set_notice", { d:{} }); $("#notice").hidden = true; adNotice(); }catch(e){ msg(t("adErr")); } };
+}
 // Announcements: edit notice.json in the repo to show a banner to everyone (e.g. "now on the App Store")
 async function loadNotice(){
   if(!/^https?:/.test(location.protocol) || location.hostname.endsWith("claude.ai") || location.hostname.endsWith("claudeusercontent.com")) return;
   try{
-    const r = await fetch("notice.json", { cache:"no-store" }); if(!r.ok) return;
-    const n = await r.json(); if(!n || !n.id) return;
+    let n = null;
+    try{ const rows = await sb("/rest/v1/shiftpay_notice?id=eq.1&select=data"); n = rows && rows[0] && rows[0].data; }catch(e){}
+    if(!n || !n.id){ const r = await fetch("notice.json", { cache:"no-store" }); if(r.ok) n = await r.json(); }
+    if(!n || !n.id) return;
     let seen = null; try{ seen = localStorage.getItem("shiftpay-notice"); }catch(e){}
     if(seen === n.id) return;
     const msg = n[S.lang] || n.en || {}; if(!msg.title) return;
@@ -1540,6 +1651,7 @@ function openBackup(){
 function openSettings(){
   const p = nextPayPeriod();
   const rows = [
+    ...(CLOUD_OK() && auth && auth.user.admin ? [["admin", "👑 " + t("adTitle"), ""]] : []),
     ...(CLOUD_OK() ? [["account", t("acTitle"), auth ? (auth.user.nickname || auth.user.username) : t("acNone")]] : []),
     ["language", t("set_language"), ({en:"English",ko:"한국어",es:"Español"})[S.lang]],
     ...(S.lang==="es" ? [["mx", t("set_mx"), t("mxStatusShort")[S.mxStatus||"resident"] + ((S.mxStatus||"resident")!=="resident" && !S.mx183 ? " · " + t("nra") : "")]] : []),
@@ -1562,6 +1674,7 @@ function openSettings(){
   $("#sheet").querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
     if(b.dataset.k==="language"){ openLang(); return; }
     if(b.dataset.k==="account"){ openAccount(); return; }
+    if(b.dataset.k==="admin"){ openAdmin(); return; }
     if(b.dataset.k==="pto"){ openPto(); return; }
 
     if(b.dataset.k==="start"){ openStart(); return; }
