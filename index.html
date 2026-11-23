@@ -724,6 +724,18 @@ Object.assign(L.es, { exFor:"Ej.:", mostCommon:"lo más común", unsure:"No esto
   q2_wknd:"¿El fin de semana se paga extra?", q2_wkndLead:"Algunos trabajos pagan todo sábado y domingo como extra.", wkNormal:"No, igual que entre semana", wkNormald:"El fin de semana cuenta como cualquier día", wkOt:"Sí, el fin de semana es todo extra",
   q2_more:"¿Algo más?", q2_moreLead:"Actívalo solo si aplica. Si no, toca Siguiente.", noLimit:"Sin límite",
   holShort:{ normal:"festivo normal", ot:"festivo extra", premium:"tarifa festivo" } });
+Object.assign(L.en, { dayOt:(h,r)=>`This day: <b>${h} overtime</b> — ${r}.`, dayNoOt:"This day is paid as regular time.", holAsNormal:"holiday counted as a normal day",
+  whyHol:"holiday rule", whyWknd:"weekend rule", whyCount:(c,n)=>`it's shift #${c} this pay period (overtime from shift #${n})`, whyWeekly:n=>`over ${n} hours this week`,
+  whyDayOff:"worked on a day off", whyExtraHrs:"hours past your shift", why7:"7th day in a row", whyDaily:"over 8 hours in a day" });
+Object.assign(L.ko, { dayOt:(h,r)=>`이 날: <b>OT ${h}</b> — ${r}`, dayNoOt:"이 날은 정규 근무로 계산돼요.", holAsNormal:"공휴일은 평소 근무처럼",
+  whyHol:"공휴일 규칙", whyWknd:"주말 규칙", whyCount:(c,n)=>`이번 급여 기간 ${c}번째 근무라서 (${n}번째부터 OT)`, whyWeekly:n=>`이번 주 ${n}시간을 넘어서`,
+  whyDayOff:"휴무일에 출근해서", whyExtraHrs:"정해진 시간보다 더 일해서", why7:"7일 연속 근무라서", whyDaily:"하루 8시간을 넘어서" });
+Object.assign(L.es, { dayOt:(h,r)=>`Este día: <b>${h} extra</b> — ${r}.`, dayNoOt:"Este día se paga como tiempo normal.", holAsNormal:"festivo como día normal",
+  whyHol:"regla de festivo", whyWknd:"regla de fin de semana", whyCount:(c,n)=>`es el turno n.º ${c} del periodo (extra desde el n.º ${n})`, whyWeekly:n=>`más de ${n} horas esta semana`,
+  whyDayOff:"trabajaste en tu día libre", whyExtraHrs:"horas después de tu turno", why7:"7.º día seguido", whyDaily:"más de 8 horas en el día" });
+Object.assign(L.en, { holDesc:{ normal:"Paid like a normal day", ot:"Paid as overtime", premium:"Paid at holiday rate" } });
+Object.assign(L.ko, { holDesc:{ normal:"평소 근무처럼 계산", ot:"OT로 계산", premium:"공휴일 배율로 계산" } });
+Object.assign(L.es, { holDesc:{ normal:"Se paga como día normal", ot:"Se paga como extra", premium:"Se paga a tarifa de festivo" } });
 let S, W = null;
 const t = (k, ...a) => { const v = (L[S.lang]||L.en)[k] ?? L.en[k]; return typeof v === "function" ? v(...a) : v; };
 const LOC = () => S.lang==="ko" ? "ko-KR" : S.lang==="es" ? "es-MX" : "en-US";
@@ -1050,6 +1062,23 @@ function baseAt(n, st=S){
 }
 const statusAt = n => S.overrides[fromNum(n)] || baseAt(n);
 const isWork = s => s==="W"||s==="OT"||s==="H";
+const otHoursOn = n => { const b = dayB(n); return (b.ot||0) + (b.extra||0) + (b.dbl||0) + (b.holx||0) + (b.hol||0); };
+function otReason(n){
+  const st = statusAt(n), hol = st==="H" || holidayOf(n);
+  if(hol && S.holWork!=="normal") return t("whyHol");
+  if(S.weekendOT && (dowN(n)===0 || dowN(n)===6)) return t("whyWknd");
+  if(S.payType==="salary"){
+    const basis = S.salaryOtBasis || "extra";
+    if(basis==="count"){ const p = periodFor(n); let c = 0; for(let d=p.s; d<=n; d++) if(isWork(statusAt(d))) c++; return t("whyCount", c, +S.salOtCount||7); }
+    if(basis==="weekly") return t("whyWeekly", +S.salOtWeekly||40);
+    return st==="OT" ? t("whyDayOff") : t("whyExtraHrs");
+  }
+  if(st==="OT") return t("whyDayOff");
+  if(S.seventhDouble && streakAt(n)===7) return t("why7");
+  if(S.dailyOT && hoursAt(n) > 8) return t("whyDaily");
+  return t("whyWeekly", 40);
+}
+function otDaysIn(p){ const out = []; for(let n=p.s; n<=p.e; n++) if(otHoursOn(n) > 0) out.push(n); return out; }
 const hoursAt = n => { const h = S.hours[fromNum(n)]; if(h != null) return +h; if(+S.otShiftHours > 0 && statusAt(n)==="OT") return +S.otShiftHours; return paidHours(); };
 function streakAt(n){ let c = 0; while(c < 8 && isWork(statusAt(n - c))) c++; return c; }
 const wkStart = n => n - ((dowN(n) - S.weekStart + 7) % 7);
@@ -1237,7 +1266,8 @@ function renderStub(){
   const p = selPeriod(), pc = paycheck(p);
   const ln = (cls, l, d, v, color) => `<div class="ln ${cls}"><span class="l">${color?`<i class="sw" style="background:${color}"></i>`:""}${l}</span>${d?`<span class="d">${d}</span>`:""}<span class="v">${v}</span></div>`;
   const sec = l => `<div class="ln sec"><span class="l">${l}</span></div>`, tc = pc.tc;
-  let rows = sec(t("secEarn")) + (pc.lines.length ? pc.lines.map(x => ln("", x.label || t(x.key), x.h!=null ? `${hrs(x.h)} × ${money(x.rate)}` : "", money(x.v), x.color)).join("") : ln("", t("regular"), "", money(0), "var(--work)"));
+  let rows = sec(t("secEarn")) + (pc.lines.length ? pc.lines.map(x => { const od = /^(overtime|extraOT|double|holiday)$/.test(x.key) ? otDaysIn(p).map(n => fDate(n)).join(", ") : "";
+      return ln("", x.label || t(x.key), x.h!=null ? `${hrs(x.h)} × ${money(x.rate)}${od ? " · " + od : ""}` : "", money(x.v), x.color); }).join("") : ln("", t("regular"), "", money(0), "var(--work)"));
   rows += ln("gross", t("gross"), "", money(pc.gross));
   if(tc.pre.length) rows += sec(t("secPre")) + tc.pre.map(r => ln("sub", r.name, r.d, "−" + money(r.v))).join("");
   if(tc.taxes.length) rows += sec(t("secTax")) + tc.taxes.map(r => ln("sub", r.name, r.d||"", "−" + money(r.v))).join("");
@@ -1281,7 +1311,7 @@ function renderCal(){
     const n = first - lead + i, st = statusAt(n), dd = ymdN(n)[2], hol = holidayOf(n), k = fromNum(n);
     const cls = ["day"]; if(n<first||n>last) cls.push("out"); if(n>=sel.s && n<=sel.e) cls.push("inper"); if(n===TODAY) cls.push("is-today");
     const changed = S.overrides[k] || S.hours[k] != null;
-    h += `<button class="${cls.join(" ")}" data-n="${n}" aria-label="${fDateW(n)} ${t("stLong")[st]}${pays.has(n)?" · "+t("payday"):""}${hol?" · "+hol[S.lang]:""}">${changed?'<span class="chg"></span>':""}${pays.has(n)?'<span class="pd">$</span>':""}<span class="d num">${dd}</span><span class="s s-${st}">${t("st")[st]}</span>${hol?`<span class="hl">${hol[S.lang]}</span>`:""}${S.notes[k]?'<span class="nt"></span>':""}</button>`;
+    h += `<button class="${cls.join(" ")}" data-n="${n}" aria-label="${fDateW(n)} ${t("stLong")[st]}${pays.has(n)?" · "+t("payday"):""}${hol?" · "+hol[S.lang]:""}">${changed?'<span class="chg"></span>':""}${pays.has(n)?'<span class="pd">$</span>':""}<span class="d num">${dd}</span>${st==="W" && otHoursOn(n) > 0 ? `<span class="s s-OT">${t("st").OT}</span>` : `<span class="s s-${st}">${t("st")[st]}</span>`}${hol?`<span class="hl">${hol[S.lang]}</span>`:""}${S.notes[k]?'<span class="nt"></span>':""}</button>`;
   }
   $("#calCard").innerHTML = `
     <div class="cal-head"><button class="nav-btn" id="mPrev" aria-label="Previous month">‹</button><h2>${fmt(first,{year:"numeric",month:"long"})}</h2><button class="tbtn" id="mToday">${t("today")}</button><button class="nav-btn" id="mNext" aria-label="Next month">›</button></div>
@@ -1332,7 +1362,8 @@ function openDay(n){
     const cur = statusAt(n), h = hoursAt(n);
     openSheet(`<div class="sheet-head"><h2>${fDateW(n)}${hol?` · ${hol[S.lang]}`:""}</h2><button class="x" id="dX" aria-label="Close">✕</button></div>
       <p class="lead">${t("original", t("stLong")[base])}${(S.overrides[k]||S.hours[k]!=null)?` · ${t("changed")}`:""}</p>
-      <div class="picks two">${opts.map(o => `<button class="pick" data-s="${o}" aria-pressed="${o===cur}"><b>${t("stLong")[o]}</b><span>${t("stDesc")[o]}</span></button>`).join("")}</div>
+      ${isWork(cur) ? (otHoursOn(n) > 0 ? `<div class="result">${t("dayOt", hrs(otHoursOn(n)), otReason(n))}</div>` : `<div class="result">${t("dayNoOt")}${hol && S.holWork==="normal" ? " · " + t("holAsNormal") : ""}</div>`) : ""}
+      <div class="picks two">${opts.map(o => `<button class="pick" data-s="${o}" aria-pressed="${o===cur}"><b>${t("stLong")[o]}</b><span>${o==="H" ? t("holDesc")[S.holWork||"ot"] : t("stDesc")[o]}</span></button>`).join("")}</div>
       ${(() => {
         if(cur==="O" && !(S.payType==="salary" && !(+S.salaryOtMult>0))){ const v = shiftValue(n, "OT"); if(v.gross>0) return `<div class="gain">${t("pickupTitle")}<b>${taxesOn() ? t("pickupNet", money(v.net)) : t("pickupGross", money(v.gross))}</b>${taxesOn()?`<span class="hint">${t("pickupGross", money(v.gross))}</span>`:""}</div>`; }
         if(isWork(cur) && S.payType==="hourly"){ const a = shiftValue(n, "O"); return `<p class="hint">${t("dayValue", money(-(taxesOn()?a.net:a.gross)))}</p>`; }
