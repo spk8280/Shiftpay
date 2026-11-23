@@ -907,7 +907,7 @@ function save(){
 
 /* ================= accounts (optional) ================= */
 // Fill these from Supabase → Project Settings → API. Empty = accounts hidden.
-const SB_URL = "", SB_KEY = "";
+const SB_URL = "https://zfpcacmkfofncjbmuega.supabase.co", SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmcGNhY21rZm9mbmNqYm11ZWdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzODk4MDIsImV4cCI6MjExMDk2NTgwMn0.mH34W1ZPH1OJu_4lshalte_mbIMz4FcKk2J3yRNm4Mc";
 const ID_DOMAIN = "users.shiftpay.app";
 const CLOUD_OK = () => !!(SB_URL && SB_KEY) && /^https?:/.test(location.protocol) && !/claude(usercontent)?\.(ai|com)$/.test(location.hostname);
 const AKEY = "shiftpay-auth";
