@@ -6,28 +6,28 @@
 <style>
 /* Layout: phone app — payday hero, today strip, paystub-style period card, shift calendar, outlook; setup wizard and day editor as sheets */
 :root{
-  --bg:#f3f4f6; --surface:#ffffff; --ink:#111821; --muted:#5b6574; --line:#e0e4ea; --chip:#edf0f3;
-  --hero:#0e2c42; --hero-ink:#ffffff; --hero-muted:#a6bccd; --hero-line:rgba(255,255,255,.14);
+  --bg:#f7f9fc; --surface:#ffffff; --ink:#18212c; --muted:#5f6b7a; --line:#e4e9f0; --chip:#f0f3f7;
+  --hero:#1f5a8a; --hero-ink:#ffffff; --hero-muted:#cfe0ee; --hero-line:rgba(255,255,255,.2);
   --accent:#1e5fd0; --accent-ink:#ffffff; --accent-soft:#e3ebfa;
   --work:#1e5fd0; --work-soft:#e1e9f9; --ot:#b35f00; --ot-soft:#fcebd6; --pto:#22804f; --pto-soft:#dcf0e4;
-  --hol:#b0306f; --hol-soft:#f8e0ec; --off:#8b95a3; --un:#7a5642; --pay:#14996b; --pay-soft:#d9f3e9; --period:#f5f8fc; --err:#c0362c;
+  --hol:#b0306f; --hol-soft:#f8e0ec; --off:#8b95a3; --un:#7a5642; --pay:#14996b; --pay-soft:#d9f3e9; --period:#f2f7fd; --err:#c0362c;
   --f-display:"Manrope","Noto Sans KR",system-ui,sans-serif;
   --f-body:"Manrope","Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0b0f14; --surface:#151b22; --ink:#e7ecf2; --muted:#98a3b1; --line:#262f39; --chip:#1d242c;
-  --hero:#123a57; --hero-ink:#ffffff; --hero-muted:#a9c3d6; --hero-line:rgba(255,255,255,.14);
+  --bg:#161c24; --surface:#1f2731; --ink:#eef2f7; --muted:#aab4c1; --line:#333e4b; --chip:#28313c;
+  --hero:#22567f; --hero-ink:#ffffff; --hero-muted:#c3d7e6; --hero-line:rgba(255,255,255,.14);
   --accent:#72a6f5; --accent-ink:#06193a; --accent-soft:#172741;
   --work:#72a6f5; --work-soft:#182740; --ot:#f2a75a; --ot-soft:#3b2814; --pto:#69c693; --pto-soft:#14301f;
-  --hol:#ee8abd; --hol-soft:#3b1a2b; --off:#6b7583; --un:#c9a089; --pay:#4fd3a2; --pay-soft:#12352a; --period:#111821; --err:#f28a80;
+  --hol:#ee8abd; --hol-soft:#3b1a2b; --off:#6b7583; --un:#c9a089; --pay:#4fd3a2; --pay-soft:#12352a; --period:#1a222c; --err:#f28a80;
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0b0f14; --surface:#151b22; --ink:#e7ecf2; --muted:#98a3b1; --line:#262f39; --chip:#1d242c;
-  --hero:#123a57; --hero-ink:#ffffff; --hero-muted:#a9c3d6; --hero-line:rgba(255,255,255,.14);
+  --bg:#161c24; --surface:#1f2731; --ink:#eef2f7; --muted:#aab4c1; --line:#333e4b; --chip:#28313c;
+  --hero:#22567f; --hero-ink:#ffffff; --hero-muted:#c3d7e6; --hero-line:rgba(255,255,255,.14);
   --accent:#72a6f5; --accent-ink:#06193a; --accent-soft:#172741;
   --work:#72a6f5; --work-soft:#182740; --ot:#f2a75a; --ot-soft:#3b2814; --pto:#69c693; --pto-soft:#14301f;
-  --hol:#ee8abd; --hol-soft:#3b1a2b; --off:#6b7583; --un:#c9a089; --pay:#4fd3a2; --pay-soft:#12352a; --period:#111821; --err:#f28a80;
+  --hol:#ee8abd; --hol-soft:#3b1a2b; --off:#6b7583; --un:#c9a089; --pay:#4fd3a2; --pay-soft:#12352a; --period:#1a222c; --err:#f28a80;
   color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
@@ -199,6 +199,10 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .addchips{display:flex;flex-wrap:wrap;gap:6px}
 .addchips button{border:1px dashed var(--line);background:transparent;border-radius:999px;padding:7px 12px;font-size:13.5px;font-weight:600}
 .stub .ln.sec{padding:10px 0 2px;border-bottom:0}
+.stub-tog{display:flex;align-items:center;gap:8px;width:100%;padding:11px 2px;background:none;border:0;border-bottom:1px dashed var(--line);color:var(--accent);font:inherit;font-weight:700;font-size:14px;cursor:pointer;text-align:left}
+.stub-tog .stub-sum{flex:1;text-align:right;color:var(--muted);font-family:var(--f-mono);font-weight:500;font-size:12.5px}
+.stub-tog .chev{font-style:normal;transition:transform .2s;line-height:1}
+.stub-tog[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .stub .ln.sec .l{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .tipbox{margin-top:10px;border-radius:14px;padding:10px 12px;background:var(--ot-soft);color:var(--ink);font-size:13.5px;display:flex;gap:8px;align-items:flex-start}
 .tipbox b{color:var(--ot)}
@@ -224,7 +228,7 @@ html[lang="ko"] body{word-break:keep-all;overflow-wrap:anywhere}
 .notice-acts a,.notice-acts button{border:0;border-radius:10px;padding:8px 12px;font-weight:800;font-size:13.5px;text-decoration:none;background:var(--accent);color:var(--accent-ink)}
 .notice-acts button{background:var(--chip);color:var(--ink)}
 textarea.code{width:100%;min-height:90px;border:1px solid var(--line);border-radius:12px;padding:10px;font-family:var(--f-mono);font-size:12px;background:var(--surface);color:var(--ink);resize:vertical}
-.splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(120% 80% at 80% 0%,#1c5a7f 0%,#0e2c42 55%,#0a1f30 100%);color:#fff;transition:opacity .45s ease,visibility .45s}
+.splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(120% 80% at 80% 0%,#3a85b8 0%,#1f5a8a 55%,#173f63 100%);color:#fff;transition:opacity .45s ease,visibility .45s}
 .splash.out{opacity:0;visibility:hidden}
 .splash-in{display:grid;justify-items:center;gap:14px;text-align:center}
 .splash-logo{width:96px;height:96px;border-radius:28px;background:rgba(255,255,255,.08);display:grid;place-items:center;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 18px 40px rgba(0,0,0,.35)}
@@ -233,7 +237,7 @@ textarea.code{width:100%;min-height:90px;border:1px solid var(--line);border-rad
 .splash-tag{font-size:13px;color:#a9c3d6;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
 @media (prefers-reduced-motion:no-preference){.splash-logo{animation:pop .6s cubic-bezier(.2,.9,.3,1.3) both}.splash-name{animation:rise .5s .15s both}.splash-tag{animation:rise .5s .25s both}
  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}} @keyframes rise{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}}
-.wel-hero{position:relative;overflow:hidden;border-radius:28px;padding:22px 20px 20px;background:radial-gradient(120% 90% at 85% 0%,#1c5a7f 0%,#0e2c42 60%,#0a1f30 100%);color:#fff;display:grid;gap:16px;margin-top:4px}
+.wel-hero{position:relative;overflow:hidden;border-radius:28px;padding:22px 20px 20px;background:radial-gradient(120% 90% at 85% 0%,#3a85b8 0%,#1f5a8a 60%,#173f63 100%);color:#fff;display:grid;gap:16px;margin-top:4px}
 .wel-hero::after{content:"";position:absolute;right:-70px;bottom:-90px;width:240px;height:240px;border-radius:50%;border:30px solid rgba(255,255,255,.06)}
 .wel-brand{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
 .wel-logo{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.08);display:grid;place-items:center}
@@ -420,7 +424,7 @@ Object.assign(L.en, {
   secEarn:"Earnings", secPre:"Pre-tax deductions", secTax:"Taxes", secPost:"After-tax deductions",
   q_ded:"What comes out of your paycheck?", q_dedLead:"Add everything on your paystub. Pre-tax items lower your taxes.",
   dedNames:{k401:"401(k)",roth:"Roth 401(k)",health:"Medical insurance",dental:"Dental",vision:"Vision",hsa:"HSA",fsa:"FSA",life:"Life insurance",union:"Union dues",other:"Other deduction"},
-  preTax:"Pre-tax", postTax:"After-tax", perCheck:"$ per check", pctGross:"% of gross", addDed:"Tap to add", otherName:"Name", noDeds:"No deductions yet. Tap one below.",
+  preTax:"Pre-tax", postTax:"After-tax", perCheck:"$ per check", pctGross:"% of gross", pctBase:"% of base pay", basisQ:"Take it from", basisGrossL:"Total gross pay", basisBaseL:"Base pay only", basisGross:"gross", basisBase:"base", basisHint:"Base pay = regular hours (or salary), without OT, holiday premium, differentials or bonuses.", stubShow:"Show details", stubHide:"Hide details", addDed:"Tap to add", otherName:"Name", noDeds:"No deductions yet. Tap one below.",
   set_tax:"Taxes", set_ded:"Deductions", none:"None",
   taxNoteAuto:s=>`Estimated with 2026 federal brackets and ${s} rates, annualized from this check. Your employer's withholding may differ slightly.`,
   noTaxNote:"Taxes are turned off. Turn them on in Settings → Taxes to see take-home pay."
@@ -436,7 +440,7 @@ Object.assign(L.ko, {
   secEarn:"수입", secPre:"세전 공제", secTax:"세금", secPost:"세후 공제",
   q_ded:"급여에서 빠지는 게 있나요?", q_dedLead:"명세서에 있는 항목을 모두 추가하세요. 세전 공제는 세금을 줄여줘요.",
   dedNames:{k401:"401(k)",roth:"Roth 401(k)",health:"의료보험",dental:"치과보험",vision:"안과보험",hsa:"HSA",fsa:"FSA",life:"생명보험",union:"노조비",other:"기타 공제"},
-  preTax:"세전", postTax:"세후", perCheck:"$/1회", pctGross:"세전 급여의 %", addDed:"눌러서 추가", otherName:"이름", noDeds:"아직 공제가 없어요. 아래에서 골라 주세요.",
+  preTax:"세전", postTax:"세후", perCheck:"$/1회", pctGross:"세전 급여의 %", pctBase:"기본급의 %", basisQ:"어디서 떼나요?", basisGrossL:"총 급여(OT 포함)", basisBaseL:"기본급만", basisGross:"총급여", basisBase:"기본급", basisHint:"기본급 = 정규 근무시간(또는 연봉) 급여. OT·공휴일 가산·수당·보너스는 빠져요.", stubShow:"세부 내역 보기", stubHide:"세부 내역 접기", addDed:"눌러서 추가", otherName:"이름", noDeds:"아직 공제가 없어요. 아래에서 골라 주세요.",
   set_tax:"세금", set_ded:"공제", none:"없음",
   taxNoteAuto:s=>`2026년 연방 세율과 ${s} 세율로, 이번 급여를 1년 기준으로 환산해 추정했어요. 회사 원천징수액과 조금 다를 수 있어요.`,
   noTaxNote:"세금 계산이 꺼져 있어요. 설정 → 세금에서 켜면 실수령액을 볼 수 있어요."
@@ -605,7 +609,7 @@ L.es = {
   fedTax:"Impuesto federal sobre la renta", ss:"Seguro Social", medicare:"Medicare", stateTax:s=>`Impuesto estatal (${s})`, localTax:"Impuesto local",
   secEarn:"Ingresos", secPre:"Deducciones antes de impuestos", secTax:"Impuestos", secPost:"Deducciones después de impuestos",
   dedNames:{k401:"401(k)",roth:"Roth 401(k)",health:"Seguro médico",dental:"Dental",vision:"Visión",hsa:"HSA",fsa:"FSA",life:"Seguro de vida",union:"Cuota sindical",other:"Otra deducción"},
-  preTax:"Antes de imp.", postTax:"Después de imp.", perCheck:"$ por cheque", pctGross:"% del bruto", addDed:"Toca para agregar", otherName:"Nombre", noDeds:"Aún no hay deducciones. Toca una abajo.",
+  preTax:"Antes de imp.", postTax:"Después de imp.", perCheck:"$ por cheque", pctGross:"% del bruto", pctBase:"% del salario base", basisQ:"¿De dónde se descuenta?", basisGrossL:"Pago bruto total", basisBaseL:"Solo salario base", basisGross:"bruto", basisBase:"base", basisHint:"Salario base = horas regulares (o sueldo), sin tiempo extra, primas de feriado, diferenciales ni bonos.", stubShow:"Ver detalles", stubHide:"Ocultar detalles", addDed:"Toca para agregar", otherName:"Nombre", noDeds:"Aún no hay deducciones. Toca una abajo.",
   set_tax:"Impuestos", none:"Ninguno",
   taxNoteAuto:s=>`Estimado con las tasas federales 2026 y las de ${s}, anualizando este cheque. La retención de tu empleador puede variar un poco.`,
   salDayOT:["Las horas de más en días de trabajo cuentan como extra","Si te quedas después de tu turno, esas horas se pagan a tarifa de extra"],
@@ -875,14 +879,15 @@ function bracketTax(income, brackets, scale=1){
 }
 const perYearOf = cfg => ({ weekly:52, biweekly:26, semimonthly:24, monthly:12 })[cfg.freq] || 26;
 // one paycheck: gross → deductions → taxes → net
-function taxCalc(gross, cfg){
+function taxCalc(gross, cfg, basePay){
+  const bp = basePay==null ? gross : basePay;
   const P = perYearOf(cfg), out = { pre:[], post:[], taxes:[], gross };
   let pre125 = 0, pre401 = 0, post = 0;
   (cfg.deds||[]).forEach(d => {
     const def = DEDS[d.type] || DEDS.other, tax = d.type==="other" ? (d.pre ? "125" : "post") : def.tax;
-    const v = def.unit==="%" ? gross * (+d.amt||0)/100 : (+d.amt||0); if(!(v>0)) return;
+    const onBase = def.unit==="%" && d.basis==="base", v = def.unit==="%" ? (onBase ? bp : gross) * (+d.amt||0)/100 : (+d.amt||0); if(!(v>0)) return;
     const name = d.type==="other" && d.name ? d.name : t("dedNames")[d.type];
-    const row = { name, v, d: def.unit==="%" ? `${+d.amt}%` : "" };
+    const row = { name, v, d: def.unit==="%" ? `${+d.amt}% · ${onBase ? t("basisBase") : t("basisGross")}` : "" };
     if(tax==="125"){ pre125 += v; out.pre.push(row); } else if(tax==="401"){ pre401 += v; out.pre.push(row); } else { post += v; out.post.push(row); }
   });
   if(cfg.country==="KR" && cfg.taxMode==="kr"){
@@ -1216,7 +1221,8 @@ function paycheck(p, fromN){
     if(x.holx>0){ const hm = +S.holidayMult||2, v = x.holx*he*hm; gross += v; lines.push({ key:"holiday", h:x.holx, rate:he*hm, v, color:"var(--hol)" }); }
   }
   (S.bonuses[fromNum(p.s)]||[]).forEach(b => { const v = +b.amt||0; if(v){ gross += v; lines.push({ key:"bonus", label:b.name||t("bonus"), v, color:"var(--pay)" }); } });
-  const tc = taxCalc(gross, S);
+  const basePay = lines.filter(l => /^(regular|pto|holPaidLine|basePay)$/.test(l.key)).reduce((a,l) => a + l.v, 0);
+  const tc = taxCalc(gross, S, basePay);
   return { x, lines, gross, tc, net: tc.net };
 }
 
@@ -1300,17 +1306,24 @@ function renderStub(){
   if(tc.pre.length) rows += sec(t("secPre")) + tc.pre.map(r => ln("sub", r.name, r.d, "−" + money(r.v))).join("");
   if(tc.taxes.length) rows += sec(t("secTax")) + tc.taxes.map(r => ln("sub", r.name, r.d||"", "−" + money(r.v))).join("");
   if(tc.post.length) rows += sec(t("secPost")) + tc.post.map(r => ln("sub", r.name, r.d, "−" + money(r.v))).join("");
-  rows += ln("total", (taxesOn() ? t("takeHome") : t("afterDed")), "", money(pc.net));
+  const netRow = ln("total", (taxesOn() ? t("takeHome") : t("afterDed")), "", money(pc.net));
+  let mxRows = "";
   if(S.lang==="es" && +S.mxSend > 0){
     const sendAmt = +S.mxSend, rt = S.mxMethod==="cash" ? sendAmt*0.01 : 0, fx = +S.mxFx;
-    rows += `<div class="ln sec"><span class="l">${t("mxSend")}</span></div>` + ln("sub", t("mxSent"), fx>0 ? t("mxPesos", Math.round(sendAmt*fx).toLocaleString("es-MX")) : "", "−" + money(sendAmt));
-    if(rt) rows += ln("sub", t("mxRemitTax"), "", "−" + money(rt));
-    rows += ln("gross", t("mxLeft"), "", money(pc.net - sendAmt - rt));
+    mxRows += `<div class="ln sec"><span class="l">${t("mxSend")}</span></div>` + ln("sub", t("mxSent"), fx>0 ? t("mxPesos", Math.round(sendAmt*fx).toLocaleString("es-MX")) : "", "−" + money(sendAmt));
+    if(rt) mxRows += ln("sub", t("mxRemitTax"), "", "−" + money(rt));
+    mxRows += ln("gross", t("mxLeft"), "", money(pc.net - sendAmt - rt));
   }
+  let open = false; try{ open = localStorage.getItem("shiftpay-stub-open")==="1"; }catch(e){}
+  const dedTot = pc.gross - pc.net;
   $("#stubCard").innerHTML = `
     <div class="stub-head"><button class="nav-btn" id="pPrev" aria-label="Previous pay period">‹</button><h2>${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)}</h2><button class="nav-btn" id="pNext" aria-label="Next pay period">›</button></div>
     <div class="stub-sub">${t("freq")[S.freq][0]} · ${hrs(pc.x.worked)}</div>
-    <div class="stub">${rows}</div>
+    <div class="stub">
+      <button class="stub-tog" id="stubTog" aria-expanded="${open}"><span>${open ? t("stubHide") : t("stubShow")}</span><span class="stub-sum">${money(pc.gross)} − ${money(dedTot)}</span><i class="chev">⌄</i></button>
+      <div class="stub-detail" id="stubDetail"${open ? "" : " hidden"}>${rows}</div>
+      ${netRow}${mxRows}
+    </div>
     ${(() => {
       let off = null; for(let n=Math.max(p.s, TODAY); n<=p.e; n++){ if(statusAt(n)==="O"){ off = n; break; } }
       if(off==null || (S.payType==="salary" && !(+S.salaryOtMult>0))) return "";
@@ -1324,6 +1337,7 @@ function renderStub(){
   const ai = $("#actIn"), showDiff = () => { const d = $("#actDiff"); if(!d) return; const v = S.actuals[fromNum(p.s)];
     if(v == null || v === ""){ d.textContent = ""; return; } const diff = Math.round((+v - pc.net)*100)/100; d.textContent = t("actualDiff", diff, pc.net ? Math.abs(Math.round(diff/pc.net*1000)/10) : 0); d.style.color = Math.abs(diff) <= pc.net*0.02 ? "var(--pay)" : "var(--ot)"; };
   if(ai){ ai.oninput = () => { if(ai.value==="") delete S.actuals[fromNum(p.s)]; else S.actuals[fromNum(p.s)] = +ai.value; save(); showDiff(); }; showDiff(); }
+  $("#stubTog").onclick = () => { const d = $("#stubDetail"), o = d.hidden; d.hidden = !o; const b = $("#stubTog"); b.setAttribute("aria-expanded", o); b.firstElementChild.textContent = o ? t("stubHide") : t("stubShow"); try{ localStorage.setItem("shiftpay-stub-open", o ? "1" : "0"); }catch(e){} };
   $("#addBonus").onclick = () => openBonus(p);
   $("#pPrev").onclick = () => goPeriod(-1);
   $("#pNext").onclick = () => goPeriod(1);
@@ -1746,7 +1760,8 @@ function renderWiz(){
         return `<div class="ded"><div class="ded-top"><b>${d.type==="other" ? t("dedNames").other : t("dedNames")[d.type]}</b><span class="tag ${pre?"pre":""}">${pre?t("preTax"):t("postTax")}</span><button class="rm" data-rm="${i}" aria-label="Remove">✕</button></div>
           ${d.type==="other" ? `<div class="ded-row"><input data-name="${i}" value="${(d.name||"").replace(/"/g,"&quot;")}" placeholder="${t("otherName")}"></div>
             <div class="quick">${quickH("op"+i, d.pre?1:0, [[1,t("preTax")],[0,t("postTax")]])}</div>` : ""}
-          <div class="ded-row"><input data-amt="${i}" type="number" inputmode="decimal" min="0" step="${def.unit==="%"?0.5:1}" value="${d.amt||""}" placeholder="0"><span>${def.unit==="%"?t("pctGross"):t("perCheck")}</span></div></div>`;
+          <div class="ded-row"><input data-amt="${i}" type="number" inputmode="decimal" min="0" step="${def.unit==="%"?0.5:1}" value="${d.amt||""}" placeholder="0"><span>${def.unit==="%"?(d.basis==="base"?t("pctBase"):t("pctGross")):t("perCheck")}</span></div>
+          ${def.unit==="%" ? `<div class="field" style="margin-top:8px"><span class="lbl" style="font-size:12.5px">${t("basisQ")}</span><div class="quick">${quickH("ob"+i, d.basis==="base"?"base":"gross", [["gross",t("basisGrossL")],["base",t("basisBaseL")]])}</div><span class="hint" style="font-size:12px">${t("basisHint")}</span></div>` : ""}</div>`;
       }).join("") : `<p class="hint">${t("noDeds")}</p>`}</div>
       <div class="field"><span class="lbl">${t("addDed")}</span><div class="addchips">${Object.keys(DEDS).filter(k => (W.country!=="KR" || ["union","life","other"].includes(k)) && (k==="other" || !have.has(k))).map(k => `<button data-add="${k}">+ ${t("dedNames")[k]}</button>`).join("")}</div></div>
       <div class="calc" id="wTaxPrev"></div>`;
@@ -1813,6 +1828,7 @@ function wireWiz(){
   el.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { W.deds.splice(+b.dataset.rm,1); renderWiz(); });
   el.querySelectorAll("[data-amt]").forEach(x => x.oninput = () => { W.deds[+x.dataset.amt].amt = x.value===""?"":Number(x.value); taxPrev(); });
   el.querySelectorAll("[data-name]").forEach(x => x.oninput = () => { W.deds[+x.dataset.name].name = x.value; });
+  (W.deds||[]).forEach((d,i) => el.querySelectorAll(`[data-ob${i}]`).forEach(b => b.onclick = () => { d.basis = b.dataset["ob"+i]; renderWiz(); }));
   (W.deds||[]).forEach((d,i) => el.querySelectorAll(`[data-op${i}]`).forEach(b => b.onclick = () => { d.pre = b.dataset["op"+i]==="1"; renderWiz(); }));
   taxPrev();
   const wl = $("#wLogin"); if(wl) wl.onclick = () => openAccount("login");
