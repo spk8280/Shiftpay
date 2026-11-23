@@ -206,7 +206,8 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .setlist button::after{content:"›";color:var(--muted);font-size:18px}
 .hours{display:flex;align-items:center;gap:10px}
 .hours button{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:20px;font-weight:700}
-.hours output{flex:1;text-align:center;font-family:var(--f-mono);font-size:22px;font-weight:600}
+.hours output,.hours input{flex:1;min-width:0;text-align:center;font-family:var(--f-mono);font-size:22px;font-weight:600;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:6px}
+.quick.hq{margin-top:8px;flex-wrap:wrap}
 .dedlist{display:grid;gap:8px}
 .ded{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px;display:grid;gap:8px}
 .ded-top{display:flex;align-items:center;gap:8px}
@@ -322,7 +323,7 @@ const L = {
     legendPay:"Payday", tapHint:"Tap a date to change it",
     outlook:"Outlook", restYear:y=>`Rest of ${y}`, next12:"Next 12 months", avgCheck:"Avg. paycheck",
     outlookNote:"Based on your rotation and settings. Calendar changes update this instantly.",
-    original:s=>`Scheduled: ${s}`, changed:"Edited", hoursLbl:"Paid hours this day", reset:"Reset day", done:"Done",
+    original:s=>`Scheduled: ${s}`, changed:"Edited", hoursLbl:"Paid hours this day", otHoursLbl:"OT hours this day", hoursHintW:h=>`Scheduled ${h}h. Hours above that count toward OT under your rules.`, hoursHintOT:"Type any number, or tap a preset. Changes only this day.", reset:"Reset day", done:"Done",
     back:"Back", next:"Next", skip:"Skip", start:"Start using ShiftPay", save:"Save", cancel:"Cancel",
     welcomeBig:"Know your paycheck before payday.", welcomeLead:"Answer a few quick questions. ShiftPay builds your shift calendar and estimates every paycheck — overtime included.",
     feat1:"Your rotation, filled in automatically", feat2:"Overtime, double time and holidays counted", feat3:"A countdown to your next payday",
@@ -388,7 +389,7 @@ const L = {
     legendPay:"급여일", tapHint:"날짜를 누르면 바꿀 수 있어요",
     outlook:"전망", restYear:y=>`${y}년 남은 기간`, next12:"앞으로 12개월", avgCheck:"평균 급여(1회)",
     outlookNote:"근무 패턴과 설정 기준이에요. 달력을 바꾸면 바로 반영돼요.",
-    original:s=>`원래 일정: ${s}`, changed:"바꾼 날", hoursLbl:"이날 유급 시간", reset:"원래대로", done:"완료",
+    original:s=>`원래 일정: ${s}`, changed:"바꾼 날", hoursLbl:"이날 유급 시간", otHoursLbl:"이날 OT 시간", hoursHintW:h=>`기본 ${h}시간이에요. 더 늘리면 설정한 규칙대로 OT로 계산돼요.`, hoursHintOT:"숫자를 직접 입력하거나 버튼을 누르세요. 이날만 바뀌어요.", reset:"원래대로", done:"완료",
     back:"이전", next:"다음", skip:"건너뛰기", start:"ShiftPay 시작하기", save:"저장", cancel:"취소",
     welcomeBig:"급여일 전에 내 급여를 미리 알아요.", welcomeLead:"몇 가지만 답하면 근무 달력을 만들고, OT까지 포함해서 매번 급여를 계산해 드려요.",
     feat1:"교대 패턴대로 달력 자동 완성", feat2:"OT·2배·공휴일 수당 자동 계산", feat3:"다음 급여일 카운트다운",
@@ -583,7 +584,7 @@ L.es = {
   tapHint:"Toca una fecha para cambiarla",
   outlook:"Pronóstico", restYear:y=>`Resto de ${y}`, next12:"Próximos 12 meses", avgCheck:"Cheque promedio",
   outlookNote:"Según tu rotación y ajustes. Los cambios del calendario se reflejan al instante.",
-  original:s=>`Programado: ${s}`, changed:"Editado", hoursLbl:"Horas pagadas este día", reset:"Restablecer día", done:"Listo",
+  original:s=>`Programado: ${s}`, changed:"Editado", hoursLbl:"Horas pagadas este día", otHoursLbl:"Horas extra este día", hoursHintW:h=>`Programado ${h}h. Las horas de más cuentan como extra según tus reglas.`, hoursHintOT:"Escribe cualquier número o toca un botón. Solo cambia este día.", reset:"Restablecer día", done:"Listo",
   back:"Atrás", next:"Siguiente", skip:"Omitir", start:"Empezar a usar ShiftPay", save:"Guardar", cancel:"Cancelar",
   welcomeBig:"Conoce tu cheque antes del día de pago.", welcomeLead:"Responde unas preguntas rápidas. ShiftPay arma tu calendario de turnos y calcula cada cheque, con horas extra incluidas.",
   feat1:"Tu rotación, llenada automáticamente", feat2:"Horas extra, tiempo doble y festivos incluidos", feat3:"El estimado de este periodo, siempre al día",
@@ -1475,15 +1476,24 @@ function openDay(n){
         if(isWork(cur) && S.payType==="hourly"){ const a = shiftValue(n, "O"); return `<p class="hint">${t("dayValue", money(-(taxesOn()?a.net:a.gross)))}</p>`; }
         return "";
       })()}
-      ${(isWork(cur)||cur==="PTO") ? `<div class="field"><span class="lbl">${t("hoursLbl")}</span><div class="hours"><button id="hM" aria-label="minus half hour">−</button><output class="num">${h}</output><button id="hP" aria-label="plus half hour">+</button></div></div>` : ""}
+      ${(isWork(cur)||cur==="PTO") ? (() => { const ph = paidHours(), isOT = cur==="OT";
+        const pre = [...new Set(isOT ? [2,4,6,8,10,12,ph] : cur==="PTO" ? [4,8,ph] : [ph, ph+1, ph+2, ph+3, ph+4])].filter(v => v>0 && v<=24).sort((a,b)=>a-b);
+        return `<div class="field"><label for="hIn" class="lbl">${isOT ? t("otHoursLbl") : t("hoursLbl")}</label>
+          <div class="hours"><button id="hM" aria-label="minus half hour">−</button><input id="hIn" class="num" type="number" inputmode="decimal" min="0" max="24" step="0.25" value="${h}"><button id="hP" aria-label="plus half hour">+</button></div>
+          <div class="quick hq">${pre.map(v => `<button data-hv="${v}" aria-pressed="${v===h}">${v}h</button>`).join("")}</div>
+          <span class="hint">${isWork(cur) && !isOT ? t("hoursHintW", ph) : t("hoursHintOT")}</span></div>`; })() : ""}
       <div class="field"><label for="dNote">${t("noteLbl")}</label><textarea class="note-in" id="dNote" placeholder="${t("notePh")}">${(S.notes[k]||"").replace(/</g,"&lt;")}</textarea></div>
       <div class="wiz-nav"><button class="btn ghost" id="dReset">${t("reset")}</button><button class="btn" id="dDone">${t("done")}</button></div>`);
     const dn = $("#dNote"); dn.oninput = () => { if(dn.value.trim()) S.notes[k] = dn.value; else delete S.notes[k]; save(); };
     dn.onblur = () => renderCal();
     $("#dX").onclick = closeSheet; $("#dDone").onclick = closeSheet;
     $("#sheet").querySelectorAll("[data-s]").forEach(b => b.onclick = () => { const s = b.dataset.s; if(s===base) delete S.overrides[k]; else S.overrides[k] = s; save(); render(); draw(); });
-    const step = d => { const v = Math.max(0, Math.min(24, Math.round((hoursAt(n)+d)*2)/2)); if(v===paidHours()) delete S.hours[k]; else S.hours[k] = v; save(); render(); draw(); };
-    const hm = $("#hM"), hp = $("#hP"); if(hm){ hm.onclick = () => step(-0.5); hp.onclick = () => step(0.5); }
+    const setH = v => { v = Math.max(0, Math.min(24, Math.round(v*4)/4)); if(!isFinite(v)) return; S.hours[k] = v;
+      if(v===paidHours() && !(statusAt(n)==="OT" && +S.otShiftHours>0)) delete S.hours[k]; save(); render(); draw(); };
+    const hm = $("#hM"), hp = $("#hP"), hi = $("#hIn");
+    if(hm){ hm.onclick = () => setH(hoursAt(n)-0.5); hp.onclick = () => setH(hoursAt(n)+0.5);
+      hi.onchange = () => { if(hi.value!=="") setH(+hi.value); }; hi.onkeydown = e => { if(e.key==="Enter") hi.blur(); }; }
+    $("#sheet").querySelectorAll("[data-hv]").forEach(b => b.onclick = () => setH(+b.dataset.hv));
     $("#dReset").onclick = () => { delete S.overrides[k]; delete S.hours[k]; save(); render(); draw(); };
   };
   draw();
