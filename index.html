@@ -177,7 +177,9 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .done-list li{display:flex;justify-content:space-between;gap:12px;font-size:14px}
 .done-list li span{color:var(--muted);flex:none}
 .done-list li b{text-align:right}
-.adtabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--chip);padding:4px;border-radius:12px;margin-bottom:14px}
+.probadge{font-style:normal;font-size:10.5px;font-weight:800;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:6px;white-space:nowrap}
+.proprice{font-family:var(--f-mono);font-weight:700;font-size:14px;margin:6px 0 0}
+.adtabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:var(--chip);padding:4px;border-radius:12px;margin-bottom:14px}
 .adtabs button{border:0;background:none;padding:9px;border-radius:9px;font:inherit;font-weight:700;font-size:14px;color:var(--muted)}
 .adtabs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .adstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
@@ -705,6 +707,9 @@ Object.assign(L.en, { acTitle:"Account", acNone:"Not signed in (optional)", acSi
   acForgot:"There's no email, so a forgotten password can't be recovered. Keep it somewhere safe.", acSignupBtn:"Create account", acLoginBtn:"Sign in",
   acHaveAcct:"Already have an account? Sign in", acNoAcct:"New here? Create an account", acTaken:"That username is taken. Try another.", acWrong:"Wrong username or password.",
   acPwShort:"Password is too short.", acNet:"Couldn't reach the server. Check your connection and try again.", acSynced:"Saved to your account", acLogout:"Sign out",
+  proTitle:"ShiftPay Pro", proLead:"Everything you need to check your real paycheck.", proFeats:["Full tax & deduction breakdown","Year totals and W-2 preview","Compare estimate vs. what you actually got","Remittance calculator","Cloud sync across phones"],
+  proPrices:"Monthly $2.99 · Yearly $19.99 · Lifetime $39.99", proSoon:"Purchases open when ShiftPay arrives on the App Store and Google Play.", proHave:"Already have Pro? Log in", proActive:"Pro is on ✓", proUntil:d => `Pro until ${d}`, proLocked:"Pro", proSee:"See Pro",
+  adPro:"Pro", adProOn:"Lock Pro features", adProOnLead:"While off, everyone gets every feature free. Turn on when the store version launches.", adProCount:"Pro members", adGiveLife:"Give Pro (lifetime)", adGive30:"Give Pro (30 days)", adTakePro:"Remove Pro", adProOnNow:"Pro features are locked", adProOffNow:"Everything is free right now",
   adTitle:"Master admin", adUsers:"Members", adNotice:"Announcement", adTotal:"Members", adNew7:"New this week", adActive7:"Active this week", adSearch:"Search name or username",
   adJoined:"Joined", adLast:"Last used", adNever:"never", adNoData:"no setup yet", adIsAdmin:"Admin", adResetPw:"Set new password", adPwPh:"New password (6+)", adPwDone:"Password changed. Tell them the new one.",
   adMake:"Make admin", adUnmake:"Remove admin", adDel:"Delete this member", adDelConfirm:"Tap again to delete for good", adDone:"Done", adErr:"Didn't work. Check the connection and try again.", adLoading:"Loading…",
@@ -716,6 +721,9 @@ Object.assign(L.ko, { acTitle:"계정", acNone:"로그인 안 함 (선택)", acS
   acForgot:"이메일이 없어서 비밀번호를 잊으면 찾을 수 없어요. 잘 적어 두세요.", acSignupBtn:"가입하기", acLoginBtn:"로그인",
   acHaveAcct:"이미 계정이 있어요 → 로그인", acNoAcct:"처음이에요 → 회원가입", acTaken:"이미 있는 아이디예요. 다른 아이디를 써 주세요.", acWrong:"아이디나 비밀번호가 맞지 않아요.",
   acPwShort:"비밀번호가 너무 짧아요.", acNet:"서버에 연결하지 못했어요. 인터넷을 확인하고 다시 해 주세요.", acSynced:"계정에 저장 중", acLogout:"로그아웃",
+  proTitle:"ShiftPay Pro", proLead:"실제 급여명세서처럼 꼼꼼하게 확인하세요.", proFeats:["세금·공제 세부 내역","연간 누적과 W-2 미리보기","예상 금액과 실제 받은 금액 비교","송금 계산","여러 폰에서 클라우드 동기화"],
+  proPrices:"월 $2.99 · 연 $19.99 · 평생 $39.99", proSoon:"앱스토어·구글 플레이 출시 후 구매할 수 있어요.", proHave:"이미 Pro인가요? 로그인", proActive:"Pro 사용 중 ✓", proUntil:d => `${d}까지 Pro`, proLocked:"Pro", proSee:"Pro 보기",
+  adPro:"Pro", adProOn:"Pro 기능 잠그기", adProOnLead:"꺼져 있으면 모든 사람이 모든 기능을 무료로 써요. 스토어 앱 출시 때 켜세요.", adProCount:"Pro 회원", adGiveLife:"Pro 주기 (평생)", adGive30:"Pro 주기 (30일)", adTakePro:"Pro 해제", adProOnNow:"Pro 기능 잠금 중", adProOffNow:"지금은 전부 무료",
   adTitle:"마스터 관리자", adUsers:"회원 관리", adNotice:"공지", adTotal:"전체 회원", adNew7:"이번 주 가입", adActive7:"이번 주 사용", adSearch:"닉네임·아이디 검색",
   adJoined:"가입", adLast:"마지막 사용", adNever:"없음", adNoData:"설정 전", adIsAdmin:"관리자", adResetPw:"새 비밀번호로 바꾸기", adPwPh:"새 비밀번호 (6자 이상)", adPwDone:"비밀번호를 바꿨어요. 본인에게 새 비밀번호를 알려 주세요.",
   adMake:"관리자로 지정", adUnmake:"관리자 해제", adDel:"이 회원 삭제", adDelConfirm:"한 번 더 누르면 완전히 삭제돼요", adDone:"완료", adErr:"실패했어요. 인터넷 연결을 확인하고 다시 해 보세요.", adLoading:"불러오는 중…",
@@ -727,6 +735,8 @@ Object.assign(L.es, { acTitle:"Cuenta", acNone:"Sin sesión (opcional)", acSignu
   acForgot:"No hay correo, así que una contraseña olvidada no se puede recuperar. Guárdala bien.", acSignupBtn:"Crear cuenta", acLoginBtn:"Entrar",
   acHaveAcct:"¿Ya tienes cuenta? Inicia sesión", acNoAcct:"¿Eres nuevo? Crea una cuenta", acTaken:"Ese usuario ya existe. Prueba otro.", acWrong:"Usuario o contraseña incorrectos.",
   acPwShort:"La contraseña es muy corta.", acNet:"No se pudo conectar. Revisa tu internet e inténtalo otra vez.", acSynced:"Guardado en tu cuenta", acLogout:"Cerrar sesión",
+  proTitle:"ShiftPay Pro", proLead:"Revisa tu cheque real con todo detalle.", proFeats:["Detalle completo de impuestos y deducciones","Totales del año y vista previa del W-2","Compara lo estimado con lo que recibiste","Calculadora de envíos","Sincroniza en varios teléfonos"],
+  proPrices:"Mensual $2.99 · Anual $19.99 · De por vida $39.99", proSoon:"Podrás comprar cuando ShiftPay llegue a App Store y Google Play.", proHave:"¿Ya tienes Pro? Inicia sesión", proActive:"Pro activo ✓", proUntil:d => `Pro hasta ${d}`, proLocked:"Pro", proSee:"Ver Pro",
   acDelete:"Eliminar cuenta", acDeleteConfirm:"¿Eliminar cuenta y datos? Toca otra vez", acDoneHint:"Consejo: crea una cuenta gratis en Ajustes para no perder tus datos." });
 Object.assign(L.en, { exFor:"e.g.", mostCommon:"most common", unsure:"Not sure — use the usual setting",
   q2_rate:"How much is overtime paid?", q2_rateLead:"Check your offer letter or paystub. If you're not sure, most jobs pay 1.5×.", q2_rateLeadSal:"When you're paid for extra hours, what rate do you get?",
@@ -1043,7 +1053,19 @@ async function logIn(u, pw, fresh){
   const cloud = await cloudPull();
   if(cloud && !fresh){ S = migrate(Object.assign(defaults(), cloud)); saveLocal(); periodOffset = 0; render(); if(W && !W._chain) closeWiz(); }
   else await cloudPush(true);
-  await checkAdmin();
+  await checkAdmin(); await checkPro(); render();
+}
+let CFG = { pro_enforced:false };
+try{ Object.assign(CFG, JSON.parse(localStorage.getItem("shiftpay-cfg") || "{}")); }catch(e){}
+const isPro = () => !CLOUD_OK() || !CFG.pro_enforced || !!(auth && (auth.user.pro || auth.user.admin));
+async function loadConfig(){
+  if(!CLOUD_OK()) return;
+  try{ const rows = await sb("/rest/v1/shiftpay_config?id=eq.1&select=data"); const d = rows && rows[0] && rows[0].data; if(!d) return;
+    const was = isPro(); Object.assign(CFG, d); try{ localStorage.setItem("shiftpay-cfg", JSON.stringify(CFG)); }catch(e){} if(was !== isPro()) render(); }catch(e){}
+}
+async function checkPro(){
+  if(!CLOUD_OK() || !auth) return;
+  try{ const v = await sb("/rest/v1/rpc/my_pro", { method:"POST", body:"{}" }, true); if(auth){ const was = isPro(); auth.user.pro = v===true; saveAuth(); if(was !== isPro()) render(); } }catch(e){}
 }
 async function checkAdmin(){
   if(!CLOUD_OK() || !auth) return false;
@@ -1063,7 +1085,7 @@ async function cloudPush(now){
 }
 async function cloudSyncOnOpen(){
   if(!CLOUD_OK() || !auth) return;
-  checkAdmin();
+  checkAdmin(); checkPro();
   try{ const cloud = await cloudPull(); if(cloud && (cloud._savedAt||0) > (S._savedAt||0)){ S = migrate(Object.assign(defaults(), cloud)); saveLocal(); render(); if(W && !W._chain) closeWiz(); } else if(!cloud) cloudPush(true); }catch(e){}
 }
 async function deleteAccount(){ await sb("/rest/v1/rpc/delete_my_account", { method:"POST", body:"{}" }, true); auth = null; saveAuth(); }
@@ -1351,13 +1373,14 @@ function renderStub(){
     if(rt) mxRows += ln("sub", t("mxRemitTax"), "", "−" + money(rt));
     mxRows += ln("gross", t("mxLeft"), "", money(pc.net - sendAmt - rt));
   }
-  let open = false; try{ open = localStorage.getItem("shiftpay-stub-open")==="1"; }catch(e){}
+  const pro = isPro(); if(!pro) mxRows = "";
+  let open = false; try{ open = pro && localStorage.getItem("shiftpay-stub-open")==="1"; }catch(e){}
   const dedTot = pc.gross - pc.net;
   $("#stubCard").innerHTML = `
     <div class="stub-head"><button class="nav-btn" id="pPrev" aria-label="Previous pay period">‹</button><h2>${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)}</h2><button class="nav-btn" id="pNext" aria-label="Next pay period">›</button></div>
     <div class="stub-sub">${t("freq")[S.freq][0]} · ${hrs(pc.x.worked)}</div>
     <div class="stub">
-      <button class="stub-tog" id="stubTog" aria-expanded="${open}"><span>${open ? t("stubHide") : t("stubShow")}</span><span class="stub-sum">${money(pc.gross)} − ${money(dedTot)}</span><i class="chev">⌄</i></button>
+      <button class="stub-tog" id="stubTog" aria-expanded="${open}"><span>${open ? t("stubHide") : t("stubShow")}</span>${pro ? "" : `<i class="probadge">🔒 ${t("proLocked")}</i>`}<span class="stub-sum">${money(pc.gross)} − ${money(dedTot)}</span><i class="chev">⌄</i></button>
       <div class="stub-detail" id="stubDetail"${open ? "" : " hidden"}>${rows}</div>
       ${netRow}${mxRows}
     </div>
@@ -1367,14 +1390,14 @@ function renderStub(){
       const v = shiftValue(off, "OT"); if(!(v.gross>0)) return "";
       return `<div class="tipbox"><span>${taxesOn() ? t("pickupTip", money0(v.net)) : t("pickupTipGross", money0(v.gross))}</span></div>`;
     })()}
-    ${p.pay <= TODAY ? `<div class="actual"><span class="lbl" style="font-size:13px;font-weight:700">${t("actualLbl")}</span><div class="row"><input id="actIn" type="number" inputmode="decimal" step="0.01" placeholder="${t("actualPh")}" value="${S.actuals[fromNum(p.s)] ?? ""}"></div><span class="diff" id="actDiff"></span></div>` : ""}
+    ${p.pay <= TODAY && pro ? `<div class="actual"><span class="lbl" style="font-size:13px;font-weight:700">${t("actualLbl")}</span><div class="row"><input id="actIn" type="number" inputmode="decimal" step="0.01" placeholder="${t("actualPh")}" value="${S.actuals[fromNum(p.s)] ?? ""}"></div><span class="diff" id="actDiff"></span></div>` : ""}
     ${pc.x.capped > 0 ? `<p class="note" style="color:var(--ot)">${t("capNote", +S.otCap, hrs(pc.x.capped))}</p>` : ""}
     <button class="linkbtn" id="addBonus">${t("addBonus")}</button>
     <p class="note">${S.taxMode==="kr" ? t("krTaxNote") : S.taxMode==="auto" ? t("taxNoteAuto", (ST[S.state]||["—"])[0]) : taxesOn() ? t("taxNote", +S.taxPct) : t("noTaxNote")}</p>`;
   const ai = $("#actIn"), showDiff = () => { const d = $("#actDiff"); if(!d) return; const v = S.actuals[fromNum(p.s)];
     if(v == null || v === ""){ d.textContent = ""; return; } const diff = Math.round((+v - pc.net)*100)/100; d.textContent = t("actualDiff", diff, pc.net ? Math.abs(Math.round(diff/pc.net*1000)/10) : 0); d.style.color = Math.abs(diff) <= pc.net*0.02 ? "var(--pay)" : "var(--ot)"; };
   if(ai){ ai.oninput = () => { if(ai.value==="") delete S.actuals[fromNum(p.s)]; else S.actuals[fromNum(p.s)] = +ai.value; save(); showDiff(); }; showDiff(); }
-  $("#stubTog").onclick = () => { const d = $("#stubDetail"), o = d.hidden; d.hidden = !o; const b = $("#stubTog"); b.setAttribute("aria-expanded", o); b.firstElementChild.textContent = o ? t("stubHide") : t("stubShow"); try{ localStorage.setItem("shiftpay-stub-open", o ? "1" : "0"); }catch(e){} };
+  $("#stubTog").onclick = () => { if(!isPro()) return openPro(); const d = $("#stubDetail"), o = d.hidden; d.hidden = !o; const b = $("#stubTog"); b.setAttribute("aria-expanded", o); b.firstElementChild.textContent = o ? t("stubHide") : t("stubShow"); try{ localStorage.setItem("shiftpay-stub-open", o ? "1" : "0"); }catch(e){} };
   $("#addBonus").onclick = () => openBonus(p);
   $("#pPrev").onclick = () => goPeriod(-1);
   $("#pNext").onclick = () => goPeriod(1);
@@ -1421,7 +1444,7 @@ function renderOutlook(){
       ${(() => { const b = ptoBalance(); return b ? `<div class="ok" role="button" tabindex="0" id="ptoTile" style="cursor:pointer"><span class="v num">${hrs(b.now)}</span><span class="k">${t("ptoTile")}${b.after!==b.now?" · "+t("ptoAfter", hrs(b.after)):""}</span></div>`
         : `<button class="ok" id="ptoTile" style="border:1px dashed var(--line);text-align:left;cursor:pointer"><span class="v" style="font-size:14px">${t("ptoSet")}</span><span class="k">${t("ptoTile")}</span></button>`; })()}
     </div><button class="linkbtn" id="yearBtn">${KR() ? t("krYearBtn", y) : t("yearBtn", y)}</button><p class="note">${t("outlookNote")}</p>`;
-  $("#ptoTile").onclick = openPto; $("#yearBtn").onclick = openYear;
+  $("#ptoTile").onclick = openPto; $("#yearBtn").onclick = () => isPro() ? openYear() : openPro();
 }
 function render(){
   wkCache.clear(); document.documentElement.lang = S.lang;
@@ -1537,6 +1560,18 @@ function openLang(){
   $("#sheet").querySelectorAll("[data-lg]").forEach(b => b.onclick = () => { S.lang = b.dataset.lg; save(); render(); openSettings(); });
 }
 
+/* ================= Pro ================= */
+function openPro(){
+  const on = !!(auth && (auth.user.pro || auth.user.admin));
+  openSheet(`<div class="sheet-head"><h2>⭐ ${t("proTitle")}</h2><button class="x" id="prX" aria-label="Close">✕</button></div>
+    <p class="lead">${t("proLead")}</p>
+    <ul class="done-list">${t("proFeats").map(f => `<li>${f}</li>`).join("")}</ul>
+    ${on ? `<div class="result"><b>${t("proActive")}</b></div>` : `<p class="proprice">${t("proPrices")}</p><p class="hint">${t("proSoon")}</p>
+    ${auth ? "" : `<button class="btn" id="prLogin">${t("proHave")}</button>`}`}`);
+  $("#prX").onclick = closeSheet;
+  if($("#prLogin")) $("#prLogin").onclick = () => openAccount("login");
+}
+
 /* ================= master admin ================= */
 const esc = v => String(v ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" })[c]);
 let adTab = "users", adRows = null, adQ = "";
@@ -1544,11 +1579,11 @@ const rpc = (fn, args) => sb("/rest/v1/rpc/" + fn, { method:"POST", body: JSON.s
 const fWhen = iso => { if(!iso) return t("adNever"); const d = new Date(iso); return d.toLocaleDateString(LOC(), { month:"short", day:"numeric", year: d.getFullYear()===new Date().getFullYear() ? undefined : "numeric" }); };
 async function openAdmin(){
   openSheet(`<div class="sheet-head"><h2>👑 ${t("adTitle")}</h2><button class="x" id="adX" aria-label="Close">✕</button></div>
-    <div class="adtabs"><button data-adt="users" aria-pressed="${adTab==="users"}">${t("adUsers")}</button><button data-adt="notice" aria-pressed="${adTab==="notice"}">${t("adNotice")}</button></div>
+    <div class="adtabs"><button data-adt="users" aria-pressed="${adTab==="users"}">${t("adUsers")}</button><button data-adt="notice" aria-pressed="${adTab==="notice"}">${t("adNotice")}</button><button data-adt="pro" aria-pressed="${adTab==="pro"}">${t("adPro")}</button></div>
     <div id="adBody"><p class="hint">${t("adLoading")}</p></div>`);
   $("#adX").onclick = closeSheet;
   $("#sheet").querySelectorAll("[data-adt]").forEach(b => b.onclick = () => { adTab = b.dataset.adt; openAdmin(); });
-  adTab === "users" ? adUsers() : adNotice();
+  adTab === "users" ? adUsers() : adTab === "pro" ? adPro() : adNotice();
 }
 async function adUsers(force){
   const el = $("#adBody");
@@ -1563,7 +1598,7 @@ async function adUsers(force){
       <div><b>${rows.filter(r => r.updated_at && new Date(r.updated_at) > wk).length}</b><span>${t("adActive7")}</span></div></div>
     <p class="hint">${t("adLang")}: ${langs.map(([k,v]) => `${k} ${v}`).join(" · ") || "—"}<br>${t("adStates")}: ${states.map(([k,v]) => `${k} ${v}`).join(" · ") || "—"}</p>
     <div class="adsearch"><input id="adQ" placeholder="${t("adSearch")}" value="${esc(adQ)}" autocapitalize="none"><button class="linkbtn" id="adRef">${t("adRefresh")}</button></div>
-    <div class="adlist">${list.map(r => `<button data-uid="${r.user_id}"><span class="adn"><b>${esc(r.nickname || r.username)}</b>${r.admin ? `<i class="adbadge">${t("adIsAdmin")}</i>` : ""}<small>@${esc(r.username)}</small></span>
+    <div class="adlist">${list.map(r => `<button data-uid="${r.user_id}"><span class="adn"><b>${esc(r.nickname || r.username)}</b>${r.admin ? `<i class="adbadge">${t("adIsAdmin")}</i>` : ""}${r.pro ? `<i class="probadge">PRO</i>` : ""}<small>@${esc(r.username)}</small></span>
       <span class="adm">${t("adJoined")} ${fWhen(r.created_at)} · ${t("adLast")} ${fWhen(r.updated_at || r.last_sign_in)}<br>${r.pay_type ? [r.lang, r.state, r.pay_type, r.freq].filter(Boolean).join(" · ") : t("adNoData")}</span></button>`).join("")}</div>`;
   const qi = $("#adQ"); qi.oninput = () => { adQ = qi.value; const pos = qi.selectionStart; adUsers(); const n = $("#adQ"); n.focus(); n.setSelectionRange(pos, pos); };
   $("#adRef").onclick = () => { el.innerHTML = `<p class="hint">${t("adLoading")}</p>`; adUsers(true); };
@@ -1574,17 +1609,34 @@ function adUser(r){
   el.innerHTML = `<button class="linkbtn" id="adBk">‹ ${t("adBack")}</button>
     <div class="result"><b>${esc(r.nickname || r.username)}${r.admin ? ` <i class="adbadge">${t("adIsAdmin")}</i>` : ""}</b><span>@${esc(r.username)} · ${t("adJoined")} ${fWhen(r.created_at)} · ${t("adLast")} ${fWhen(r.updated_at || r.last_sign_in)}</span></div>
     <div class="field"><span class="lbl">${t("adResetPw")}</span><div class="adsearch"><input id="adPw" type="text" autocapitalize="none" placeholder="${t("adPwPh")}"><button class="btn" id="adPwGo" style="width:auto">${t("adDone")}</button></div></div>
+    <div class="field"><span class="lbl">${t("adPro")}${r.pro ? ` · ${r.pro_until ? t("proUntil", fWhen(r.pro_until)) : t("proActive")}` : ""}</span>
+      <div class="quick"><button id="adPL">${t("adGiveLife")}</button><button id="adP30">${t("adGive30")}</button>${r.pro ? `<button id="adP0">${t("adTakePro")}</button>` : ""}</div></div>
     ${me ? "" : `<button class="btn ghost" id="adMk">${r.admin ? t("adUnmake") : t("adMake")}</button>
     <button class="btn ghost" id="adDel" style="color:var(--err)">${t("adDel")}</button>`}
     <p class="err" id="adMsg"></p>`;
   const msg = (txt, ok) => { const m = $("#adMsg"); m.textContent = txt; m.style.color = ok ? "var(--pay)" : "var(--err)"; };
   $("#adBk").onclick = () => adUsers();
+  const setPro = async (make, days) => { try{ await rpc("admin_set_pro", { target:r.user_id, make, days: days ?? null }); r.pro = make; r.pro_until = make && days ? new Date(Date.now()+days*864e5).toISOString() : null; adUser(r); msg(t("adDone"), true); if(me) checkPro(); }catch(e){ msg(t("adErr")); } };
+  $("#adPL").onclick = () => setPro(true); $("#adP30").onclick = () => setPro(true, 30); if($("#adP0")) $("#adP0").onclick = () => setPro(false);
   $("#adPwGo").onclick = async () => { const pw = $("#adPw").value; if(pw.length < 6) return msg(t("adPwPh"));
     try{ await rpc("admin_reset_password", { target:r.user_id, new_password:pw }); msg(t("adPwDone"), true); }catch(e){ msg(t("adErr")); } };
   if(me) return;
   $("#adMk").onclick = async () => { try{ await rpc("admin_set_admin", { target:r.user_id, make:!r.admin }); r.admin = !r.admin; adUser(r); msg(t("adDone"), true); }catch(e){ msg(t("adErr")); } };
   const d = $("#adDel"); d.onclick = async () => { if(!d.dataset.armed){ d.dataset.armed = "1"; d.textContent = t("adDelConfirm"); return; }
     try{ await rpc("admin_delete_user", { target:r.user_id }); adRows = adRows.filter(x => x.user_id !== r.user_id); adUsers(); }catch(e){ msg(t("adErr")); } };
+}
+async function adPro(){
+  const el = $("#adBody");
+  if(!adRows){ try{ adRows = await rpc("admin_users"); }catch(e){ el.innerHTML = `<p class="err">${t("adErr")}</p>`; return; } }
+  await loadConfig();
+  const on = !!CFG.pro_enforced;
+  el.innerHTML = `<div class="adstats" style="grid-template-columns:1fr 1fr"><div><b>${adRows.filter(r => r.pro).length}</b><span>${t("adProCount")}</span></div><div><b>${adRows.length}</b><span>${t("adTotal")}</span></div></div>
+    <p class="adlive ${on ? "on" : ""}">${on ? "● " + t("adProOnNow") : t("adProOffNow")}</p>
+    <div class="field"><span class="lbl">${t("adProOn")}</span><div class="quick"><button data-pe="0" aria-pressed="${!on}">OFF</button><button data-pe="1" aria-pressed="${on}">ON</button></div><span class="hint">${t("adProOnLead")}</span></div>
+    <p class="err" id="adMsg"></p>`;
+  el.querySelectorAll("[data-pe]").forEach(b => b.onclick = async () => { const v = b.dataset.pe==="1";
+    try{ await rpc("admin_set_config", { d:{ pro_enforced:v } }); CFG.pro_enforced = v; try{ localStorage.setItem("shiftpay-cfg", JSON.stringify(CFG)); }catch(e){} render(); adPro(); }
+    catch(e){ const m = $("#adMsg"); m.textContent = t("adErr"); } });
 }
 async function adNotice(){
   const el = $("#adBody"); let n = {};
@@ -1652,6 +1704,7 @@ function openSettings(){
   const p = nextPayPeriod();
   const rows = [
     ...(CLOUD_OK() && auth && auth.user.admin ? [["admin", "👑 " + t("adTitle"), ""]] : []),
+    ...(CLOUD_OK() && (CFG.pro_enforced || (auth && auth.user.pro)) ? [["pro", "⭐ " + t("proTitle"), isPro() ? t("proActive") : t("proSee")]] : []),
     ...(CLOUD_OK() ? [["account", t("acTitle"), auth ? (auth.user.nickname || auth.user.username) : t("acNone")]] : []),
     ["language", t("set_language"), ({en:"English",ko:"한국어",es:"Español"})[S.lang]],
     ...(S.lang==="es" ? [["mx", t("set_mx"), t("mxStatusShort")[S.mxStatus||"resident"] + ((S.mxStatus||"resident")!=="resident" && !S.mx183 ? " · " + t("nra") : "")]] : []),
@@ -1675,6 +1728,7 @@ function openSettings(){
     if(b.dataset.k==="language"){ openLang(); return; }
     if(b.dataset.k==="account"){ openAccount(); return; }
     if(b.dataset.k==="admin"){ openAdmin(); return; }
+    if(b.dataset.k==="pro"){ openPro(); return; }
     if(b.dataset.k==="pto"){ openPto(); return; }
 
     if(b.dataset.k==="start"){ openStart(); return; }
@@ -1997,7 +2051,7 @@ function migrate(o){
   const local = loadLocal(); if(local) S = migrate(Object.assign(defaults(), local));
   render();
   if(!S.setupDone) openWizard();
-  loadNotice(); cloudSyncOnOpen();
+  loadNotice(); loadConfig(); cloudSyncOnOpen();
   setTimeout(() => { const sp = $("#splash"); if(sp){ sp.classList.add("out"); setTimeout(() => sp.remove(), 500); } }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 1200);
   (async () => {
     if(!window.claude) return;
