@@ -1,0 +1,8 @@
+{
+  "id": "store-launch-1",
+  "ios": "https://apps.apple.com/app/idXXXXXXXXX",
+  "android": "https://play.google.com/store/apps/details?id=app.shiftpay",
+  "en": { "title": "ShiftPay is now on the App Store & Google Play", "body": "Install the app for payday alerts and widgets. Tap \"Back up & move data\" first to bring your schedule with you." },
+  "ko": { "title": "ShiftPay가 앱스토어·구글플레이에 나왔어요", "body": "급여 알림과 위젯을 쓰려면 앱을 설치하세요. 먼저 '데이터 백업 · 옮기기'로 근무 기록을 옮겨 주세요." },
+  "es": { "title": "ShiftPay ya está en App Store y Google Play", "body": "Instala la app para alertas y widgets. Primero toca \"Respaldar y mover datos\" para llevar tu horario." }
+}

@@ -210,6 +210,13 @@ textarea.note-in{border:1px solid var(--line);background:var(--surface);border-r
 .yr div b{font-family:var(--f-mono)}
 .yr div.tot b{color:var(--pay);font-size:17px}
 html[lang="ko"] body{word-break:keep-all;overflow-wrap:anywhere}
+.notice-bar{background:var(--accent-soft);border:1px solid var(--accent);border-radius:16px;padding:12px 14px;display:grid;gap:8px}
+.notice-bar b{font-family:var(--f-display);font-size:15px}
+.notice-bar p{margin:0;font-size:13.5px}
+.notice-acts{display:flex;gap:8px;flex-wrap:wrap}
+.notice-acts a,.notice-acts button{border:0;border-radius:10px;padding:8px 12px;font-weight:800;font-size:13.5px;text-decoration:none;background:var(--accent);color:var(--accent-ink)}
+.notice-acts button{background:var(--chip);color:var(--ink)}
+textarea.code{width:100%;min-height:90px;border:1px solid var(--line);border-radius:12px;padding:10px;font-family:var(--f-mono);font-size:12px;background:var(--surface);color:var(--ink);resize:vertical}
 .splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(120% 80% at 80% 0%,#1c5a7f 0%,#0e2c42 55%,#0a1f30 100%);color:#fff;transition:opacity .45s ease,visibility .45s}
 .splash.out{opacity:0;visibility:hidden}
 .splash-in{display:grid;justify-items:center;gap:14px;text-align:center}
@@ -249,6 +256,7 @@ html[lang="ko"] body{word-break:keep-all;overflow-wrap:anywhere}
     <div><h1>ShiftPay</h1><div class="sub" id="tagline"></div></div>
     <button class="gear" id="openSettings"></button>
   </header>
+  <section class="notice-bar" id="notice" hidden></section>
   <section class="hero" id="hero" aria-live="polite"></section>
   <section class="card today" id="today"></section>
   <section class="card" id="calCard"></section>
@@ -659,6 +667,9 @@ Object.assign(L.en, {
   set_mx:"Visa & sending money", mxStatusShort:{ resident:"Resident", tn:"TN", h2b:"H-2B", h2a:"H-2A" }, nra:"nonresident"
 });
 
+Object.assign(L.en, { dismiss:"Close", bkTitle:"Back up & move data", bkLead:"Copy this code to keep a backup, or paste it into ShiftPay on another phone or in the App Store version to bring everything over.", bkExport:"Your backup code", bkImport:"Restore from a code", bkPh:"Paste a backup code", bkLoadBtn:"Restore", bkConfirm:"Replace my current data? Tap again", bkBad:"That code didn't work. Copy the whole code and try again." });
+Object.assign(L.ko, { dismiss:"닫기", bkTitle:"데이터 백업 · 옮기기", bkLead:"이 코드를 복사해 두면 백업이 돼요. 다른 폰이나 앱스토어 버전 ShiftPay에 붙여넣으면 설정과 근무 기록이 그대로 옮겨져요.", bkExport:"내 백업 코드", bkImport:"코드로 복원하기", bkPh:"백업 코드를 붙여넣으세요", bkLoadBtn:"복원하기", bkConfirm:"지금 데이터를 덮어쓸까요? 한 번 더 누르세요", bkBad:"코드가 맞지 않아요. 코드 전체를 복사해서 다시 해 주세요." });
+Object.assign(L.es, { dismiss:"Cerrar", bkTitle:"Respaldar y mover datos", bkLead:"Copia este código como respaldo, o pégalo en ShiftPay en otro teléfono o en la versión de la tienda para pasar todo.", bkExport:"Tu código de respaldo", bkImport:"Restaurar con un código", bkPh:"Pega un código de respaldo", bkLoadBtn:"Restaurar", bkConfirm:"¿Reemplazar mis datos actuales? Toca otra vez", bkBad:"Ese código no funcionó. Copia el código completo e inténtalo otra vez." });
 let S, W = null;
 const t = (k, ...a) => { const v = (L[S.lang]||L.en)[k] ?? L.en[k]; return typeof v === "function" ? v(...a) : v; };
 const LOC = () => S.lang==="ko" ? "ko-KR" : S.lang==="es" ? "es-MX" : "en-US";
@@ -1252,6 +1263,44 @@ function openLang(){
   $("#lX").onclick = closeSheet;
   $("#sheet").querySelectorAll("[data-lg]").forEach(b => b.onclick = () => { S.lang = b.dataset.lg; save(); render(); openSettings(); });
 }
+// Announcements: edit notice.json in the repo to show a banner to everyone (e.g. "now on the App Store")
+async function loadNotice(){
+  if(!/^https?:/.test(location.protocol) || location.hostname.endsWith("claude.ai") || location.hostname.endsWith("claudeusercontent.com")) return;
+  try{
+    const r = await fetch("notice.json", { cache:"no-store" }); if(!r.ok) return;
+    const n = await r.json(); if(!n || !n.id) return;
+    let seen = null; try{ seen = localStorage.getItem("shiftpay-notice"); }catch(e){}
+    if(seen === n.id) return;
+    const msg = n[S.lang] || n.en || {}; if(!msg.title) return;
+    const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua), android = /Android/.test(ua);
+    const btns = [];
+    if(n.ios && (ios || !android)) btns.push(`<a href="${n.ios}" target="_blank" rel="noopener">${msg.iosBtn || "App Store"}</a>`);
+    if(n.android && (android || !ios)) btns.push(`<a href="${n.android}" target="_blank" rel="noopener">${msg.androidBtn || "Google Play"}</a>`);
+    const el = $("#notice");
+    el.innerHTML = `<b>${msg.title}</b>${msg.body ? `<p>${msg.body}</p>` : ""}<div class="notice-acts">${btns.join("")}<button id="nBackup">${t("bkTitle")}</button><button id="nX">${t("dismiss")}</button></div>`;
+    el.hidden = false;
+    $("#nX").onclick = () => { try{ localStorage.setItem("shiftpay-notice", n.id); }catch(e){} el.hidden = true; };
+    $("#nBackup").onclick = openBackup;
+  }catch(e){}
+}
+function openBackup(){
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  openSheet(`<div class="sheet-head"><h2>${t("bkTitle")}</h2><button class="x" id="bkX" aria-label="Close">✕</button></div>
+    <p class="lead">${t("bkLead")}</p>
+    <div class="field"><span class="lbl">${t("bkExport")}</span><textarea class="code" id="bkOut" readonly>${code}</textarea><button class="btn" id="bkCopy">${t("copy")}</button></div>
+    <div class="field"><span class="lbl">${t("bkImport")}</span><textarea class="code" id="bkIn" placeholder="${t("bkPh")}"></textarea><button class="btn ghost" id="bkLoad">${t("bkLoadBtn")}</button><p class="err" id="bkErr"></p></div>`);
+  $("#bkX").onclick = closeSheet;
+  $("#bkCopy").onclick = async () => { try{ await navigator.clipboard.writeText(code); $("#bkCopy").textContent = t("copied"); }catch(e){ $("#bkOut").select(); } };
+  $("#bkLoad").onclick = () => {
+    const btn = $("#bkLoad");
+    try{
+      const obj = JSON.parse(decodeURIComponent(escape(atob($("#bkIn").value.trim()))));
+      if(!obj || typeof obj !== "object" || !("pattern" in obj)) throw 0;
+      if(!btn.dataset.armed){ btn.dataset.armed = "1"; btn.textContent = t("bkConfirm"); return; }
+      S = migrate(Object.assign(defaults(), obj)); save(); periodOffset = 0; render(); closeSheet();
+    }catch(e){ $("#bkErr").textContent = t("bkBad"); }
+  };
+}
 function openSettings(){
   const p = nextPayPeriod();
   const rows = [
@@ -1270,7 +1319,7 @@ function openSettings(){
   const nEdits = Object.keys(S.overrides).length + Object.keys(S.hours).length;
   openSheet(`<div class="sheet-head"><h2>${t("settings")}</h2><button class="x" id="sX" aria-label="Close">✕</button></div>
     <div class="setlist">${rows.map(([k,l,v]) => `<button data-k="${k}"><b>${l}</b><span>${v}</span></button>`).join("")}</div>
-    <div class="setlist"><button id="sShare"><b>${t("shareTitle")}</b><span></span></button></div>
+    <div class="setlist"><button id="sShare"><b>${t("shareTitle")}</b><span></span></button><button id="sBackup"><b>${t("bkTitle")}</b><span></span></button></div>
     <div class="setlist"><button id="sClear"><b>${t("set_clear")}</b><span>${nEdits || ""}</span></button><button id="sRedo"><b>${t("set_redo")}</b><span></span></button></div>`);
   $("#sX").onclick = closeSheet;
   $("#sheet").querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
@@ -1287,6 +1336,7 @@ function openSettings(){
   };
   $("#sRedo").onclick = () => { closeSheet(); openWizard(); };
   $("#sShare").onclick = openShare;
+  $("#sBackup").onclick = openBackup;
 }
 $("#openSettings").onclick = openSettings;
 
@@ -1574,6 +1624,7 @@ function migrate(o){
   const local = loadLocal(); if(local) S = migrate(Object.assign(defaults(), local));
   render();
   if(!S.setupDone) openWizard();
+  loadNotice();
   setTimeout(() => { const sp = $("#splash"); if(sp){ sp.classList.add("out"); setTimeout(() => sp.remove(), 500); } }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 1200);
   (async () => {
     if(!window.claude) return;
