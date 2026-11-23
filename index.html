@@ -108,8 +108,8 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .ok{background:var(--chip);border-radius:14px;padding:10px;display:grid;gap:2px;min-width:0}
 .ok .v{font-family:var(--f-display);font-weight:800;font-size:17px;overflow:hidden;text-overflow:ellipsis}
 .ok .k{font-size:11.5px;color:var(--muted)}
-.shade{position:fixed;inset:0;background:rgba(4,10,18,.5);z-index:40}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--surface);border-radius:22px 22px 0 0;max-height:90vh;overflow-y:auto;
+.shade{position:fixed;inset:0;background:rgba(4,10,18,.5);z-index:60}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;background:var(--surface);border-radius:22px 22px 0 0;max-height:90vh;overflow-y:auto;
   padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .sheet-in{max-width:520px;margin:0 auto;display:grid;gap:14px}
 .sheet-head{display:flex;align-items:center;gap:8px}
@@ -670,6 +670,24 @@ Object.assign(L.en, {
 Object.assign(L.en, { dismiss:"Close", bkTitle:"Back up & move data", bkLead:"Copy this code to keep a backup, or paste it into ShiftPay on another phone or in the App Store version to bring everything over.", bkExport:"Your backup code", bkImport:"Restore from a code", bkPh:"Paste a backup code", bkLoadBtn:"Restore", bkConfirm:"Replace my current data? Tap again", bkBad:"That code didn't work. Copy the whole code and try again." });
 Object.assign(L.ko, { dismiss:"닫기", bkTitle:"데이터 백업 · 옮기기", bkLead:"이 코드를 복사해 두면 백업이 돼요. 다른 폰이나 앱스토어 버전 ShiftPay에 붙여넣으면 설정과 근무 기록이 그대로 옮겨져요.", bkExport:"내 백업 코드", bkImport:"코드로 복원하기", bkPh:"백업 코드를 붙여넣으세요", bkLoadBtn:"복원하기", bkConfirm:"지금 데이터를 덮어쓸까요? 한 번 더 누르세요", bkBad:"코드가 맞지 않아요. 코드 전체를 복사해서 다시 해 주세요." });
 Object.assign(L.es, { dismiss:"Cerrar", bkTitle:"Respaldar y mover datos", bkLead:"Copia este código como respaldo, o pégalo en ShiftPay en otro teléfono o en la versión de la tienda para pasar todo.", bkExport:"Tu código de respaldo", bkImport:"Restaurar con un código", bkPh:"Pega un código de respaldo", bkLoadBtn:"Restaurar", bkConfirm:"¿Reemplazar mis datos actuales? Toca otra vez", bkBad:"Ese código no funcionó. Copia el código completo e inténtalo otra vez." });
+Object.assign(L.en, { acTitle:"Account", acNone:"Not signed in (optional)", acSignup:"Create an account", acLogin:"Sign in", acLead:"Optional. Sign in to keep your schedule safe and use it on any phone. No email needed.",
+  acId:"Username", acIdHint:"3–20 letters, numbers or _", acPw:"Password", acPwHint:"At least 6 characters", acNick:"Nickname", acNickPh:"What should we call you?", acNickNeed:"Enter a nickname.",
+  acForgot:"There's no email, so a forgotten password can't be recovered. Keep it somewhere safe.", acSignupBtn:"Create account", acLoginBtn:"Sign in",
+  acHaveAcct:"Already have an account? Sign in", acNoAcct:"New here? Create an account", acTaken:"That username is taken. Try another.", acWrong:"Wrong username or password.",
+  acPwShort:"Password is too short.", acNet:"Couldn't reach the server. Check your connection and try again.", acSynced:"Saved to your account", acLogout:"Sign out",
+  acDelete:"Delete account", acDeleteConfirm:"Delete account and cloud data? Tap again", acDoneHint:"Tip: create a free account in Settings so your data is never lost." });
+Object.assign(L.ko, { acTitle:"계정", acNone:"로그인 안 함 (선택)", acSignup:"회원가입", acLogin:"로그인", acLead:"선택이에요. 로그인하면 근무 기록이 안전하게 보관되고, 폰을 바꿔도 그대로 쓸 수 있어요. 이메일은 필요 없어요.",
+  acId:"아이디", acIdHint:"영문·숫자·_ 3~20자", acPw:"비밀번호", acPwHint:"6자 이상", acNick:"닉네임", acNickPh:"앱에서 부를 이름", acNickNeed:"닉네임을 적어 주세요.",
+  acForgot:"이메일이 없어서 비밀번호를 잊으면 찾을 수 없어요. 잘 적어 두세요.", acSignupBtn:"가입하기", acLoginBtn:"로그인",
+  acHaveAcct:"이미 계정이 있어요 → 로그인", acNoAcct:"처음이에요 → 회원가입", acTaken:"이미 있는 아이디예요. 다른 아이디를 써 주세요.", acWrong:"아이디나 비밀번호가 맞지 않아요.",
+  acPwShort:"비밀번호가 너무 짧아요.", acNet:"서버에 연결하지 못했어요. 인터넷을 확인하고 다시 해 주세요.", acSynced:"계정에 저장 중", acLogout:"로그아웃",
+  acDelete:"계정 삭제", acDeleteConfirm:"계정과 저장된 데이터를 지울까요? 한 번 더 누르세요", acDoneHint:"팁: 설정에서 무료 계정을 만들면 데이터가 사라지지 않아요." });
+Object.assign(L.es, { acTitle:"Cuenta", acNone:"Sin sesión (opcional)", acSignup:"Crear cuenta", acLogin:"Iniciar sesión", acLead:"Opcional. Inicia sesión para guardar tu horario y usarlo en cualquier teléfono. No necesitas correo.",
+  acId:"Usuario", acIdHint:"3–20 letras, números o _", acPw:"Contraseña", acPwHint:"Mínimo 6 caracteres", acNick:"Apodo", acNickPh:"¿Cómo te llamamos?", acNickNeed:"Escribe un apodo.",
+  acForgot:"No hay correo, así que una contraseña olvidada no se puede recuperar. Guárdala bien.", acSignupBtn:"Crear cuenta", acLoginBtn:"Entrar",
+  acHaveAcct:"¿Ya tienes cuenta? Inicia sesión", acNoAcct:"¿Eres nuevo? Crea una cuenta", acTaken:"Ese usuario ya existe. Prueba otro.", acWrong:"Usuario o contraseña incorrectos.",
+  acPwShort:"La contraseña es muy corta.", acNet:"No se pudo conectar. Revisa tu internet e inténtalo otra vez.", acSynced:"Guardado en tu cuenta", acLogout:"Cerrar sesión",
+  acDelete:"Eliminar cuenta", acDeleteConfirm:"¿Eliminar cuenta y datos? Toca otra vez", acDoneHint:"Consejo: crea una cuenta gratis en Ajustes para no perder tus datos." });
 let S, W = null;
 const t = (k, ...a) => { const v = (L[S.lang]||L.en)[k] ?? L.en[k]; return typeof v === "function" ? v(...a) : v; };
 const LOC = () => S.lang==="ko" ? "ko-KR" : S.lang==="es" ? "es-MX" : "en-US";
@@ -880,10 +898,103 @@ const loadLocal = () => { try{ const v = localStorage.getItem(LSKEY); return v ?
 const saveLocal = () => { try{ localStorage.setItem(LSKEY, JSON.stringify(S)); }catch(e){} };
 let saveT = null;
 function save(){
-  saveLocal(); clearTimeout(saveT);
+  S._savedAt = Date.now(); saveLocal(); clearTimeout(saveT);
   saveT = setTimeout(async () => {
     if(store.db && store.uid){ try{ await store.db.doc("data/users/"+store.uid+"/state").set({ json: JSON.stringify(S), at: Date.now() }); }catch(e){} }
+    cloudPush();
   }, 700);
+}
+
+/* ================= accounts (optional) ================= */
+// Fill these from Supabase → Project Settings → API. Empty = accounts hidden.
+const SB_URL = "", SB_KEY = "";
+const ID_DOMAIN = "users.shiftpay.app";
+const CLOUD_OK = () => !!(SB_URL && SB_KEY) && /^https?:/.test(location.protocol) && !/claude(usercontent)?\.(ai|com)$/.test(location.hostname);
+const AKEY = "shiftpay-auth";
+let auth = null;
+try{ auth = JSON.parse(localStorage.getItem(AKEY) || "null"); }catch(e){}
+const saveAuth = () => { try{ auth ? localStorage.setItem(AKEY, JSON.stringify(auth)) : localStorage.removeItem(AKEY); }catch(e){} };
+async function sb(path, opt={}, needAuth=false){
+  if(needAuth){ await freshToken(); if(!auth) throw { code:"signed_out" }; }
+  const r = await fetch(SB_URL + path, Object.assign({}, opt, { headers: Object.assign({ apikey:SB_KEY, "Content-Type":"application/json",
+    Authorization:"Bearer " + (needAuth ? auth.access_token : SB_KEY) }, opt.headers||{}) }));
+  const txt = await r.text(); let body = null; try{ body = txt ? JSON.parse(txt) : null; }catch(e){}
+  if(!r.ok) throw { status:r.status, body };
+  return body;
+}
+function setSession(b){ if(!b || !b.access_token) return; auth = { access_token:b.access_token, refresh_token:b.refresh_token, expires_at: Date.now() + (b.expires_in||3600)*1000 - 60000,
+  user:{ id:b.user.id, nickname:(b.user.user_metadata||{}).nickname || "", username:(b.user.email||"").split("@")[0] } }; saveAuth(); }
+async function freshToken(){
+  if(!auth || Date.now() < auth.expires_at) return;
+  try{ setSession(await sb("/auth/v1/token?grant_type=refresh_token", { method:"POST", body: JSON.stringify({ refresh_token: auth.refresh_token }) })); }
+  catch(e){ if(e && (e.status===400 || e.status===401)){ auth = null; saveAuth(); } }
+}
+const idEmail = u => `${u.toLowerCase()}@${ID_DOMAIN}`;
+async function signUp(u, pw, nick){
+  await sb("/auth/v1/signup", { method:"POST", body: JSON.stringify({ email:idEmail(u), password:pw, data:{ nickname:nick } }) });
+  await logIn(u, pw, true);
+}
+async function logIn(u, pw, fresh){
+  setSession(await sb("/auth/v1/token?grant_type=password", { method:"POST", body: JSON.stringify({ email:idEmail(u), password:pw }) }));
+  const cloud = await cloudPull();
+  if(cloud && !fresh){ S = migrate(Object.assign(defaults(), cloud)); saveLocal(); periodOffset = 0; render(); if(W && !W._chain) closeWiz(); }
+  else await cloudPush(true);
+}
+async function logOut(){ try{ await sb("/auth/v1/logout", { method:"POST" }, true); }catch(e){} auth = null; saveAuth(); }
+async function cloudPull(){
+  const rows = await sb(`/rest/v1/shiftpay_state?user_id=eq.${auth.user.id}&select=data,updated_at`, {}, true);
+  return rows && rows[0] ? rows[0].data : null;
+}
+let pushT = null;
+async function cloudPush(now){
+  if(!CLOUD_OK() || !auth || !S.setupDone) return;
+  const go = async () => { try{ await sb("/rest/v1/shiftpay_state", { method:"POST", headers:{ Prefer:"resolution=merge-duplicates" },
+    body: JSON.stringify({ user_id:auth.user.id, data:S, updated_at:new Date().toISOString() }) }, true); }catch(e){} };
+  clearTimeout(pushT); if(now) return go(); pushT = setTimeout(go, 1500);
+}
+async function cloudSyncOnOpen(){
+  if(!CLOUD_OK() || !auth) return;
+  try{ const cloud = await cloudPull(); if(cloud && (cloud._savedAt||0) > (S._savedAt||0)){ S = migrate(Object.assign(defaults(), cloud)); saveLocal(); render(); if(W && !W._chain) closeWiz(); } else if(!cloud) cloudPush(true); }catch(e){}
+}
+async function deleteAccount(){ await sb("/rest/v1/rpc/delete_my_account", { method:"POST", body:"{}" }, true); auth = null; saveAuth(); }
+const authErr = e => { const m = JSON.stringify((e && e.body) || "").toLowerCase();
+  if(m.includes("already") || m.includes("exists")) return t("acTaken");
+  if(m.includes("invalid login") || m.includes("invalid_credentials") || (e && e.status===400)) return t("acWrong");
+  if(m.includes("password")) return t("acPwShort");
+  return t("acNet"); };
+function openAccount(mode){
+  if(auth){
+    openSheet(`<div class="sheet-head"><h2>${t("acTitle")}</h2><button class="x" id="aX" aria-label="Close">✕</button></div>
+      <div class="result"><b>${(auth.user.nickname||auth.user.username).replace(/</g,"&lt;")}</b><span>@${auth.user.username} · ${t("acSynced")}</span></div>
+      <button class="btn ghost" id="aOut">${t("acLogout")}</button>
+      <button class="btn ghost" id="aDel" style="color:var(--err)">${t("acDelete")}</button><p class="err" id="aErr"></p>`);
+    $("#aX").onclick = closeSheet;
+    $("#aOut").onclick = async () => { await logOut(); closeSheet(); openSettings(); };
+    const d = $("#aDel"); d.onclick = async () => { if(!d.dataset.armed){ d.dataset.armed = "1"; d.textContent = t("acDeleteConfirm"); return; }
+      try{ await deleteAccount(); closeSheet(); openSettings(); }catch(e){ $("#aErr").textContent = t("acNet"); } };
+    return;
+  }
+  const signup = mode !== "login";
+  openSheet(`<div class="sheet-head"><h2>${signup ? t("acSignup") : t("acLogin")}</h2><button class="x" id="aX" aria-label="Close">✕</button></div>
+    <p class="lead">${t("acLead")}</p>
+    <div class="field"><label for="aU">${t("acId")}</label><input id="aU" autocapitalize="none" autocomplete="username" spellcheck="false" placeholder="shiftworker88"><span class="hint">${t("acIdHint")}</span></div>
+    <div class="field"><label for="aP">${t("acPw")}</label><input id="aP" type="password" autocomplete="${signup ? "new-password" : "current-password"}"><span class="hint">${signup ? t("acPwHint") : ""}</span></div>
+    ${signup ? `<div class="field"><label for="aN">${t("acNick")}</label><input id="aN" maxlength="20" placeholder="${t("acNickPh")}"></div>` : ""}
+    <p class="hint">${t("acForgot")}</p>
+    <p class="err" id="aErr"></p>
+    <button class="btn" id="aGo">${signup ? t("acSignupBtn") : t("acLoginBtn")}</button>
+    <button class="linkbtn" id="aSwap">${signup ? t("acHaveAcct") : t("acNoAcct")}</button>`);
+  $("#aX").onclick = closeSheet;
+  $("#aSwap").onclick = () => openAccount(signup ? "login" : "signup");
+  $("#aGo").onclick = async () => {
+    const u = $("#aU").value.trim(), pw = $("#aP").value, nick = signup ? $("#aN").value.trim() : "", err = $("#aErr"), btn = $("#aGo");
+    if(!/^[a-zA-Z0-9_]{3,20}$/.test(u)){ err.textContent = t("acIdHint"); return; }
+    if(pw.length < 6){ err.textContent = t("acPwHint"); return; }
+    if(signup && !nick){ err.textContent = t("acNickNeed"); return; }
+    btn.disabled = true; btn.textContent = "…"; err.textContent = "";
+    try{ signup ? await signUp(u, pw, nick) : await logIn(u, pw); closeSheet(); if(!W) openSettings(); }
+    catch(e){ err.textContent = authErr(e); btn.disabled = false; btn.textContent = signup ? t("acSignupBtn") : t("acLoginBtn"); }
+  };
 }
 const $ = s => document.querySelector(s);
 
@@ -1304,6 +1415,7 @@ function openBackup(){
 function openSettings(){
   const p = nextPayPeriod();
   const rows = [
+    ...(CLOUD_OK() ? [["account", t("acTitle"), auth ? (auth.user.nickname || auth.user.username) : t("acNone")]] : []),
     ["language", t("set_language"), ({en:"English",ko:"한국어",es:"Español"})[S.lang]],
     ...(S.lang==="es" ? [["mx", t("set_mx"), t("mxStatusShort")[S.mxStatus||"resident"] + ((S.mxStatus||"resident")!=="resident" && !S.mx183 ? " · " + t("nra") : "")]] : []),
     ["pattern", t("set_rotation"), t("pat")[S.pattern][0]],
@@ -1324,6 +1436,7 @@ function openSettings(){
   $("#sX").onclick = closeSheet;
   $("#sheet").querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
     if(b.dataset.k==="language"){ openLang(); return; }
+    if(b.dataset.k==="account"){ openAccount(); return; }
     if(b.dataset.k==="pto"){ openPto(); return; }
 
     if(b.dataset.k==="start"){ openStart(); return; }
@@ -1387,6 +1500,7 @@ function renderWiz(){
       <div class="welcome"><div class="big">${t("welcomeBig")}</div><p class="lead">${t("welcomeLead")}</p>
       <ul class="feat"><li><i class="s-W">1</i>${t("feat1")}</li><li><i class="s-OT">2</i>${t("feat2")}</li><li><i style="background:var(--pay-soft);color:var(--pay)">$</i>${t("feat3")}</li></ul></div>
       <div class="field"><span class="lbl">Language · 언어 · Idioma</span><div class="quick">${quickH("lang", W.lang, [["en","English"],["ko","한국어"],["es","Español"]])}</div></div>`;
+    if(CLOUD_OK() && !auth) body += `<button class="linkbtn" id="wLogin">${t("acHaveAcct")}</button>`;
     nextL = t("getStarted");
   } else if(step==="pattern"){
     body = `<h2>${t("q_pattern")}</h2><p class="lead">${t("q_patternLead")}</p>
@@ -1523,7 +1637,7 @@ function renderWiz(){
         <li><span>${t("sumPay")}</span><b>${W.payType==="hourly" ? money(+W.rate||0)+t("perHr") : money0(+W.salary||0)+t("perYr")}</b></li>
         <li><span>${t("sumFreq")}</span><b>${t("freq")[W.freq][0]}</b></li>
         <li><span>${t("thisPeriod")}</span><b>${fDate(np.s)} – ${fDate(np.e)}</b></li>
-      </ul>${stripHtml("preview")}<p class="lead">${t("doneNote")}</p>`;
+      </ul>${stripHtml("preview")}<p class="lead">${t("doneNote")}</p>${CLOUD_OK() && !auth ? `<p class="hint">${t("acDoneHint")}</p>` : ""}`;
     nextL = t("start");
   }
   if(editing && W._chain.indexOf(step) === W._chain.length-1) nextL = t("save");
@@ -1573,6 +1687,7 @@ function wireWiz(){
   el.querySelectorAll("[data-name]").forEach(x => x.oninput = () => { W.deds[+x.dataset.name].name = x.value; });
   (W.deds||[]).forEach((d,i) => el.querySelectorAll(`[data-op${i}]`).forEach(b => b.onclick = () => { d.pre = b.dataset["op"+i]==="1"; renderWiz(); }));
   taxPrev();
+  const wl = $("#wLogin"); if(wl) wl.onclick = () => openAccount("login");
   const back = $("#wBack"); if(back) back.onclick = () => { W._step--; while(W._step>0 && !stepShown(W._step)) W._step--; renderWiz(); el.scrollTop = 0; };
   const cancel = $("#wCancel"); if(cancel) cancel.onclick = closeWiz;
   const sk = $("#wSkip"); if(sk) sk.onclick = () => { W.deds = []; W._step++; while(W._step < STEPS.length-1 && !stepShown(W._step)) W._step++; renderWiz(); el.scrollTop = 0; };
@@ -1624,7 +1739,7 @@ function migrate(o){
   const local = loadLocal(); if(local) S = migrate(Object.assign(defaults(), local));
   render();
   if(!S.setupDone) openWizard();
-  loadNotice();
+  loadNotice(); cloudSyncOnOpen();
   setTimeout(() => { const sp = $("#splash"); if(sp){ sp.classList.add("out"); setTimeout(() => sp.remove(), 500); } }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 1200);
   (async () => {
     if(!window.claude) return;
