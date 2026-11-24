@@ -238,6 +238,10 @@ details.more{border:1px solid var(--line);border-radius:12px;padding:10px 12px;m
 details.more summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--accent)}
 details.more[open] summary{margin-bottom:8px}
 .easy-ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px;font-size:13.5px}
+.trust{text-align:center;font-size:13px;font-weight:700;color:var(--pay);margin:4px 0 0}
+#demoBar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:var(--ink);color:var(--surface);font-weight:700;font-size:14px;box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+#demoBar button{border:0;border-radius:10px;background:var(--accent);color:#fff;font:inherit;font-weight:800;padding:10px 14px;white-space:nowrap}
+body:has(#demoBar){padding-bottom:70px}
 .daywk{background:var(--chip);border-radius:12px;padding:10px 12px;font-size:13px;display:grid;gap:4px;margin-bottom:8px}
 .daywk .dsplit{font-size:14px}
 .daywk b{font-family:var(--f-mono)}
@@ -346,7 +350,7 @@ const L = {
     original:s=>`Scheduled: ${s}`, changed:"Edited", hoursLbl:"Paid hours this day", otHoursLbl:"OT hours this day", hoursHintW:h=>`Scheduled ${h}h. Hours above that count toward OT under your rules.`, hoursHintOT:"Type any number, or tap a preset. Changes only this day.", reset:"Reset day", done:"Done",
     back:"Back", next:"Next", skip:"Skip", start:"Start using ShiftPay", save:"Save", cancel:"Cancel",
     welcomeBig:"Know your paycheck before payday.", welcomeLead:"Answer a few quick questions. ShiftPay builds your shift calendar and estimates every paycheck — overtime included.",
-    feat1:"Your rotation, filled in automatically", feat2:"Overtime, double time and holidays counted", feat3:"A countdown to your next payday",
+    feat1:"Your rotation, filled in automatically", feat2:"Overtime, double time and holidays counted", feat3:"Take-home pay for this period, always up to date", trustLine:"Free · No sign-up · Saved only on your phone", demoBtn:"See an example first", demoBar:"This is an example.", demoStart:"Set up mine",
     getStarted:"Let's set it up",
     q_pattern:"What's your work rotation?", q_patternLead:"Pick the one that matches your schedule.",
     pat:{p223:["2-2-3 (Panama)","2 on, 2 off, 3 on, 2 off, 2 on, 3 off — 14 days"],p42:["4 on, 2 off","6-day cycle"],p44:["4 on, 4 off","8-day cycle"],p5:["Monday – Friday","Weekends off"],p6:["6 days a week","One day off each week"],custom:["Custom","Build your own on/off cycle"]},
@@ -413,7 +417,7 @@ const L = {
     original:s=>`원래 일정: ${s}`, changed:"바꾼 날", hoursLbl:"이날 유급 시간", otHoursLbl:"이날 OT 시간", hoursHintW:h=>`기본 ${h}시간이에요. 더 늘리면 설정한 규칙대로 OT로 계산돼요.`, hoursHintOT:"숫자를 직접 입력하거나 버튼을 누르세요. 이날만 바뀌어요.", reset:"원래대로", done:"완료",
     back:"이전", next:"다음", skip:"건너뛰기", start:"ShiftPay 시작하기", save:"저장", cancel:"취소",
     welcomeBig:"급여일 전에 내 급여를 미리 알아요.", welcomeLead:"몇 가지만 답하면 근무 달력을 만들고, OT까지 포함해서 매번 급여를 계산해 드려요.",
-    feat1:"교대 패턴대로 달력 자동 완성", feat2:"OT·2배·공휴일 수당 자동 계산", feat3:"다음 급여일 카운트다운",
+    feat1:"교대 패턴대로 달력 자동 완성", feat2:"OT·2배·공휴일 수당 자동 계산", feat3:"이번 급여 기간 실수령 예상, 늘 최신으로", trustLine:"무료 · 가입 없음 · 내 폰에만 저장", demoBtn:"예시로 먼저 보기", demoBar:"예시 화면이에요.", demoStart:"내 걸로 시작하기",
     getStarted:"설정 시작하기",
     q_pattern:"어떤 교대 패턴으로 일하세요?", q_patternLead:"내 근무표와 맞는 걸 고르세요.",
     pat:{p223:["2-2-3 (파나마)","2근 2휴 3근 2휴 2근 3휴 — 14일 주기"],p42:["4근 2휴","6일 주기"],p44:["4근 4휴","8일 주기"],p5:["월 ~ 금","주말 휴무"],p6:["주 6일","매주 하루 휴무"],custom:["직접 만들기","근무·휴무 순서를 직접 입력"]},
@@ -611,7 +615,7 @@ L.es = {
   original:s=>`Programado: ${s}`, changed:"Editado", hoursLbl:"Horas pagadas este día", otHoursLbl:"Horas extra este día", hoursHintW:h=>`Programado ${h}h. Las horas de más cuentan como extra según tus reglas.`, hoursHintOT:"Escribe cualquier número o toca un botón. Solo cambia este día.", reset:"Restablecer día", done:"Listo",
   back:"Atrás", next:"Siguiente", skip:"Omitir", start:"Empezar a usar ShiftPay", save:"Guardar", cancel:"Cancelar",
   welcomeBig:"Conoce tu cheque antes del día de pago.", welcomeLead:"Responde unas preguntas rápidas. ShiftPay arma tu calendario de turnos y calcula cada cheque, con horas extra incluidas.",
-  feat1:"Tu rotación, llenada automáticamente", feat2:"Horas extra, tiempo doble y festivos incluidos", feat3:"El estimado de este periodo, siempre al día",
+  feat1:"Tu rotación, llenada automáticamente", feat2:"Horas extra, tiempo doble y festivos incluidos", feat3:"El estimado de este periodo, siempre al día", trustLine:"Gratis · Sin registro · Se guarda solo en tu teléfono", demoBtn:"Ver un ejemplo primero", demoBar:"Esto es un ejemplo.", demoStart:"Configurar el mío",
   getStarted:"Vamos a configurarlo",
   q_pattern:"¿Cuál es tu rotación de trabajo?", q_patternLead:"Elige la que coincide con tu horario.",
   pat:{p223:["2-2-3 (Panamá)","2 sí, 2 no, 3 sí, 2 no, 2 sí, 3 no — 14 días"],p42:["4 sí, 2 no","Ciclo de 6 días"],p44:["4 sí, 4 no","Ciclo de 8 días"],p5:["Lunes a viernes","Fines de semana libres"],p6:["6 días a la semana","Un día libre por semana"],custom:["Personalizado","Arma tu propio ciclo"]},
@@ -1043,6 +1047,7 @@ const loadLocal = () => { try{ const v = localStorage.getItem(LSKEY); return v ?
 const saveLocal = () => { try{ localStorage.setItem(LSKEY, JSON.stringify(S)); }catch(e){} };
 let saveT = null;
 function save(){
+  if(S._demo){ S._savedAt = Date.now(); return; }
   S._savedAt = Date.now(); saveLocal(); clearTimeout(saveT);
   saveT = setTimeout(async () => {
     if(store.db && store.uid){ try{ await store.db.doc("data/users/"+store.uid+"/state").set({ json: JSON.stringify(S), at: Date.now() }); }catch(e){} }
@@ -1510,7 +1515,7 @@ function renderOutlook(){
 function render(){
   wkCache.clear(); document.documentElement.lang = S.lang;
   $("#tagline").textContent = t("tagline"); $("#openSettings").textContent = t("settings");
-  renderHero(); renderToday(); renderStub(); renderCal(); renderOutlook();
+  renderHero(); renderToday(); renderStub(); renderCal(); renderOutlook(); renderDemoBar();
 }
 
 /* ================= sheets ================= */
@@ -1634,9 +1639,28 @@ function openLang(){
   $("#sheet").querySelectorAll("[data-lg]").forEach(b => b.onclick = () => { S.lang = b.dataset.lg; save(); render(); openSettings(); });
 }
 
+/* ================= demo mode: a filled-in example, never saved ================= */
+function startDemo(){
+  const lang = (W && W.lang) || S.lang, ws = TODAY - dowN(TODAY);
+  const d = migrate(Object.assign(defaults(), { setupDone:true, _demo:true, lang, payType:"hourly", rate:25, otMult:1.5, pattern:"p223",
+    shiftStart:"06:00", shiftEnd:"18:30", breakMin:60, freq:"biweekly", periodAnchor:fromNum(ws - 7), taxMode:"auto", state:"GA", filing:"single",
+    deds:[{ type:"k401", amt:5 }, { type:"health", amt:60 }] }));
+  S = d; S.cycleStart = fromNum(ws);
+  for(let n = ws; n < ws + 21; n++){ if(statusAt(n)==="O" && dowN(n)===6){ S.overrides[fromNum(n)] = "OT"; } }
+  periodOffset = 0; closeWiz(); render();
+}
+function endDemo(){ const lang = S.lang; S = migrate(defaults()); S.lang = lang; periodOffset = 0; render(); openWizard(); }
+function renderDemoBar(){
+  let b = $("#demoBar");
+  if(!S._demo){ if(b) b.remove(); return; }
+  if(!b){ b = document.createElement("div"); b.id = "demoBar"; document.body.appendChild(b); }
+  b.innerHTML = `<span>👀 ${t("demoBar")}</span><button id="demoGo">${t("demoStart")}</button>`;
+  $("#demoGo").onclick = endDemo;
+}
+
 /* ================= gentle sign-up nudge (account stays optional) ================= */
 function maybeNudge(why){
-  if(!CLOUD_OK() || auth || !S.setupDone || W || !$("#sheet").hidden) return;
+  if(!CLOUD_OK() || auth || !S.setupDone || S._demo || W || !$("#sheet").hidden) return;
   let st = {}; try{ st = JSON.parse(localStorage.getItem("shiftpay-nudge") || "{}"); }catch(e){}
   const n = st.n || 0, now = Date.now();
   const show = n === 0 || (why === "open" && n === 1 && now - (st.last||0) >= 3*864e5);
@@ -1885,7 +1909,9 @@ function renderWiz(){
       </div>
       <div class="welcome"><div class="big">${t("welcomeBig")}</div><p class="lead">${t("welcomeLead")}</p>
       <ul class="feat"><li><i class="s-W">1</i>${t("feat1")}</li><li><i class="s-OT">2</i>${t("feat2")}</li><li><i style="background:var(--pay-soft);color:var(--pay)">$</i>${t("feat3")}</li></ul></div>
-      <div class="field"><span class="lbl">Language · 언어 · Idioma</span><div class="quick">${quickH("lang", W.lang, [["en","English"],["ko","한국어"],["es","Español"]])}</div></div>`;
+      <div class="field"><span class="lbl">Language · 언어 · Idioma</span><div class="quick">${quickH("lang", W.lang, [["en","English"],["ko","한국어"],["es","Español"]])}</div></div>
+      <p class="trust">🔒 ${t("trustLine")}</p>
+      ${S.setupDone ? "" : `<button class="btn ghost" id="wDemo">👀 ${t("demoBtn")}</button>`}`;
     if(CLOUD_OK() && !auth) body += `<button class="linkbtn" id="wLogin">${t("acHaveAcct")}</button>`;
     nextL = t("getStarted");
   } else if(step==="pattern"){
@@ -2101,6 +2127,7 @@ function wireWiz(){
   (W.deds||[]).forEach((d,i) => el.querySelectorAll(`[data-op${i}]`).forEach(b => b.onclick = () => { d.pre = b.dataset["op"+i]==="1"; renderWiz(); }));
   taxPrev();
   const wl = $("#wLogin"); if(wl) wl.onclick = () => openAccount("login");
+  const wd = $("#wDemo"); if(wd) wd.onclick = startDemo;
   const back = $("#wBack"); if(back) back.onclick = () => { W._step--; while(W._step>0 && !stepShown(W._step)) W._step--; renderWiz(); el.scrollTop = 0; };
   const cancel = $("#wCancel"); if(cancel) cancel.onclick = closeWiz;
   const sk = $("#wSkip"); if(sk) sk.onclick = () => { W.deds = []; W._step++; while(W._step < STEPS.length-1 && !stepShown(W._step)) W._step++; renderWiz(); el.scrollTop = 0; };
