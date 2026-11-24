@@ -49,8 +49,7 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;border:28px solid var(--hero-line);pointer-events:none}
 .hero{touch-action:pan-y}
 .hero-top{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
-.hero-top .eyebrow{flex:1;text-align:center;padding-left:42px}
-.hnav.heye{font-size:15px}
+.hero-top .eyebrow{flex:1;text-align:center}
 .hnav{width:34px;height:34px;border-radius:10px;border:1px solid var(--hero-line);background:rgba(255,255,255,.06);color:var(--hero-ink);font-size:18px;flex:none}
 .hback{border:1px solid var(--hero-line);background:transparent;color:var(--hero-ink);border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700}
 .hero .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--hero-muted)}
@@ -353,7 +352,7 @@ const L = {
     original:s=>`Scheduled: ${s}`, changed:"Edited", hoursLbl:"Paid hours this day", otHoursLbl:"OT hours this day", hoursHintW:h=>`Scheduled ${h}h. Hours above that count toward OT under your rules.`, hoursHintOT:"Type any number, or tap a preset. Changes only this day.", reset:"Reset day", done:"Done",
     back:"Back", next:"Next", skip:"Skip", start:"Start using ShiftPay", save:"Save", cancel:"Cancel",
     welcomeBig:"Know your paycheck before payday.", welcomeLead:"Answer a few quick questions. ShiftPay builds your shift calendar and estimates every paycheck — overtime included.",
-    feat1:"Your rotation, filled in automatically", feat2:"Overtime, double time and holidays counted", feat3:"Take-home pay for this period, always up to date", trustLine:"Free · No sign-up · Saved only on your phone", demoBtn:"See an example first", demoBar:"This is an example.", demoStart:"Set up mine", hsTitle:"Add ShiftPay to your home screen", hsLead:"Open it in one tap, full screen, just like an app.", hsIos:["Tap the Share button <b>⬆︎</b> at the bottom of Safari","Scroll and tap <b>Add to Home Screen</b>","Tap <b>Add</b> in the top right"], hsIosNote:"On iPhone this only works in Safari. If you opened the link in another app, open it in Safari first.", hsAnd:["Tap the <b>⋮</b> menu at the top right of Chrome","Tap <b>Add to Home screen</b> or <b>Install app</b>","Tap <b>Add</b> / <b>Install</b>"], hsInstall:"Install now", hsNever:"Don't show this again", hsOk:"Got it", demoBack:"Back to mine",
+    feat1:"Your rotation, filled in automatically", feat2:"Overtime, double time and holidays counted", feat3:"Take-home pay for this period, always up to date", trustLine:"Free · No sign-up · Saved only on your phone", demoBtn:"Preview", demoBar:"This is a preview.", demoStart:"Set up mine", hsTitle:"Add ShiftPay to your home screen", hsLead:"Open it in one tap, full screen, just like an app.", hsIos:["Tap the Share button <b>⬆︎</b> at the bottom of Safari","Scroll and tap <b>Add to Home Screen</b>","Tap <b>Add</b> in the top right"], hsIosNote:"On iPhone this only works in Safari. If you opened the link in another app, open it in Safari first.", hsAnd:["Tap the <b>⋮</b> menu at the top right of Chrome","Tap <b>Add to Home screen</b> or <b>Install app</b>","Tap <b>Add</b> / <b>Install</b>"], hsInstall:"Install now", hsNever:"Don't show this again", hsOk:"Got it", demoBack:"Back to mine",
     getStarted:"Get started",
     q_pattern:"What does your work schedule look like?", q_patternLead:"Pick the one closest to your company schedule.",
     pat:{p223:["2-2-3 (Panama)","2 on, 2 off, 3 on, 2 off, 2 on, 3 off — 14 days"],p42:["4 on, 2 off","6-day cycle"],p44:["4 on, 4 off","8-day cycle"],p5:["Monday – Friday","Weekends off"],p6:["6 days a week","One day off each week"],custom:["Custom","Build your own on/off cycle"]},
@@ -388,7 +387,7 @@ const L = {
     q_ded:"What comes out of your paycheck?", q_dedLead:"Optional. Copy these from your last paystub for a closer take-home number.",
     k401Lbl:"401(k) (%)", insLbl:"Health insurance ($ per check)",
     taxLbl:"Estimated tax rate (%)", taxHint:"Total taxes ÷ gross pay on your last paystub. Most people land between 15% and 25%.",
-    q_done:"You're all set! 🎉", sumRot:"Rotation", sumShift:"Shift", sumPay:"Pay", sumFreq:"Paid", sumNext:"Next payday",
+    q_done:"You're all set!", sumRot:"Rotation", sumShift:"Shift", sumPay:"Pay", sumFreq:"Paid", sumNext:"Next payday",
     doneNote:"Picked up a shift or took PTO? Just tap that date on your calendar.",
     err_custom:"Use W for work days and O for days off.", err_tap:"Tap at least one work day.", err_rate:"Enter your hourly rate.",
     err_salary:"Enter your salary.", err_time:"Check your shift times.", err_date:"Pick a date.",
@@ -420,7 +419,7 @@ const L = {
     original:s=>`원래 일정: ${s}`, changed:"바꾼 날", hoursLbl:"이날 유급 시간", otHoursLbl:"이날 OT 시간", hoursHintW:h=>`기본 ${h}시간이에요. 더 늘리면 설정한 규칙대로 OT로 계산돼요.`, hoursHintOT:"숫자를 직접 입력하거나 버튼을 누르세요. 이날만 바뀌어요.", reset:"원래대로", done:"완료",
     back:"이전", next:"다음", skip:"건너뛰기", start:"ShiftPay 시작하기", save:"저장", cancel:"취소",
     welcomeBig:"급여일 전에 내 급여를 미리 알아요.", welcomeLead:"몇 가지만 답하면 근무 달력을 만들고, OT까지 포함해서 매번 급여를 계산해 드려요.",
-    feat1:"교대 패턴대로 달력 자동 완성", feat2:"OT·2배·공휴일 수당 자동 계산", feat3:"이번 급여 기간 실수령 예상, 늘 최신으로", trustLine:"무료 · 가입 없음 · 내 폰에만 저장", demoBtn:"예시로 먼저 보기", demoBar:"예시 화면이에요.", demoStart:"내 걸로 시작하기", hsTitle:"홈 화면에 ShiftPay를 추가해 보세요", hsLead:"앱처럼 한 번에 열리고, 전체 화면으로 볼 수 있어요.", hsIos:["사파리 아래쪽 <b>공유 버튼 ⬆︎</b>을 눌러요","목록을 내려서 <b>홈 화면에 추가</b>를 눌러요","오른쪽 위 <b>추가</b>를 누르면 끝!"], hsIosNote:"아이폰은 사파리에서만 돼요. 카톡 같은 다른 앱에서 열었다면 먼저 사파리로 열어 주세요.", hsAnd:["크롬 오른쪽 위 <b>⋮</b> 메뉴를 눌러요","<b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 눌러요","<b>추가</b> / <b>설치</b>를 누르면 끝!"], hsInstall:"바로 설치하기", hsNever:"앞으로 이 화면 보지 않기", hsOk:"확인", demoBack:"내 화면으로 돌아가기",
+    feat1:"교대 패턴대로 달력 자동 완성", feat2:"OT·2배·공휴일 수당 자동 계산", feat3:"이번 급여 기간 실수령 예상, 늘 최신으로", trustLine:"무료 · 가입 없음 · 내 폰에만 저장", demoBtn:"미리 보기", demoBar:"미리 보기 화면이에요.", demoStart:"내 걸로 시작하기", hsTitle:"홈 화면에 ShiftPay를 추가해 보세요", hsLead:"앱처럼 한 번에 열리고, 전체 화면으로 볼 수 있어요.", hsIos:["사파리 아래쪽 <b>공유 버튼 ⬆︎</b>을 눌러요","목록을 내려서 <b>홈 화면에 추가</b>를 눌러요","오른쪽 위 <b>추가</b>를 누르면 끝!"], hsIosNote:"아이폰은 사파리에서만 돼요. 카톡 같은 다른 앱에서 열었다면 먼저 사파리로 열어 주세요.", hsAnd:["크롬 오른쪽 위 <b>⋮</b> 메뉴를 눌러요","<b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 눌러요","<b>추가</b> / <b>설치</b>를 누르면 끝!"], hsInstall:"바로 설치하기", hsNever:"앞으로 이 화면 보지 않기", hsOk:"확인", demoBack:"내 화면으로 돌아가기",
     getStarted:"지금 시작하기",
     q_pattern:"어떤 순서로 출근하세요?", q_patternLead:"회사 근무표와 가장 비슷한 걸 골라 주세요.",
     pat:{p223:["2-2-3 (파나마)","2근 2휴 3근 2휴 2근 3휴 — 14일 주기"],p42:["4근 2휴","6일 주기"],p44:["4근 4휴","8일 주기"],p5:["월 ~ 금","주말 휴무"],p6:["주 6일","매주 하루 휴무"],custom:["직접 만들기","근무·휴무 순서를 직접 입력"]},
@@ -454,7 +453,7 @@ const L = {
     q_ded:"급여에서 빠지는 게 있나요?", q_dedLead:"선택이에요. 최근 명세서를 보고 넣으면 실수령액이 정확해져요.",
     k401Lbl:"401(k) (%)", insLbl:"건강보험료 ($/1회)",
     taxLbl:"예상 세율 (%)", taxHint:"명세서의 세금 합계 ÷ 세전 급여. 보통 15~25%예요.",
-    q_done:"준비 끝났어요! 🎉", sumRot:"패턴", sumShift:"근무", sumPay:"급여", sumFreq:"지급", sumNext:"다음 급여일",
+    q_done:"준비 끝났어요!", sumRot:"패턴", sumShift:"근무", sumPay:"급여", sumFreq:"지급", sumNext:"다음 급여일",
     doneNote:"OT 출근이나 PTO는 달력에서 날짜를 눌러 바꾸세요.",
     err_custom:"근무는 W, 휴무는 O로 적어 주세요.", err_tap:"출근하는 날을 하나 이상 눌러 주세요.", err_rate:"시급을 적어 주세요.",
     err_salary:"연봉을 적어 주세요.", err_time:"근무 시간을 확인해 주세요.", err_date:"날짜를 골라 주세요.",
@@ -521,7 +520,7 @@ Object.assign(L.en, { breakLbl:"Unpaid lunch / break", otDayLbl:"When you pick u
   obCount:["From the Nth shift in a pay period","e.g. from the 7th shift in two weeks, every shift is overtime"],
   otWeeklyLbl:"Overtime starts after (hours per week)", otCountLbl:"Overtime starts from shift #",
   weekendOT:["Weekend work is all overtime","Any hours on Saturday or Sunday count as overtime"],
-  otWarnLbl:"OT warning limit per pay period (hours)", otWarnHint:"Optional. If your company limits OT, we'll warn you when a pay period goes over. Pay isn't changed.", otWarnNote:(h,l)=>`⚠️ ${h} of OT this pay period — over your ${l}h limit.`, calibNote:(n,f)=>`Taxes adjusted ×${f} using your ${n} real paycheck${n>1?"s":""}.`, calibOff:"Turn off", calibOn:"Use my real paychecks to fine-tune taxes", hideAmt:"Hide amounts", showAmt:"Show amounts",
+  otWarnLbl:"OT warning limit per pay period (hours)", otWarnHint:"Optional. If your company limits OT, we'll warn you when a pay period goes over. Pay isn't changed.", otWarnNote:(h,l)=>`${h} of OT this pay period — over your ${l}h limit.`, calibNote:(n,f)=>`Taxes adjusted ×${f} using your ${n} real paycheck${n>1?"s":""}.`, calibOff:"Turn off", calibOn:"Use my real paychecks to fine-tune taxes", hideAmt:"Hide amounts", showAmt:"Show amounts",
   otCapLbl:"Max overtime per pay period (hours)", otCapHint:"Leave empty for no limit. Hours above the limit aren't counted as overtime.",
   capNote:(c,h)=>`Overtime is capped at ${c} hrs per pay period, so ${h} wasn't counted as overtime.` });
 Object.assign(L.ko, { breakLbl:"점심·휴게 (무급)", otDayLbl:"쉬는 날 OT로 나가면 보통 몇 시간 일하세요?", otDaySame:"평소와 같게",
@@ -531,7 +530,7 @@ Object.assign(L.ko, { breakLbl:"점심·휴게 (무급)", otDayLbl:"쉬는 날 O
   obCount:["급여 기간 내 N번째 근무부터","예: 2주 중 7번째 출근부터 전부 OT"],
   otWeeklyLbl:"주 몇 시간 넘으면 OT인가요?", otCountLbl:"몇 번째 근무부터 OT인가요?",
   weekendOT:["주말 근무는 전부 OT","토·일요일에 일한 시간은 모두 OT로 계산"],
-  otWarnLbl:"급여 기간당 OT 경고 한도 (시간)", otWarnHint:"선택이에요. 회사에 OT 한도가 있으면 넣어 두세요. 넘으면 알려 드려요. 급여 계산은 그대로예요.", otWarnNote:(h,l)=>`⚠️ 이번 기간 OT ${h} — 한도 ${l}시간을 넘었어요.`, calibNote:(n,f)=>`실제 받은 급여 ${n}건을 기준으로 세금 예상치를 ×${f} 보정했어요.`, calibOff:"끄기", calibOn:"실제 받은 급여로 세금 예상치 보정하기", hideAmt:"금액 가리기", showAmt:"금액 보기",
+  otWarnLbl:"급여 기간당 OT 경고 한도 (시간)", otWarnHint:"선택이에요. 회사에 OT 한도가 있으면 넣어 두세요. 넘으면 알려 드려요. 급여 계산은 그대로예요.", otWarnNote:(h,l)=>`이번 기간 OT ${h} — 한도 ${l}시간을 넘었어요.`, calibNote:(n,f)=>`실제 받은 급여 ${n}건을 기준으로 세금 예상치를 ×${f} 보정했어요.`, calibOff:"끄기", calibOn:"실제 받은 급여로 세금 예상치 보정하기", hideAmt:"금액 가리기", showAmt:"금액 보기",
   otCapLbl:"급여 기간당 OT 최대 인정 시간", otCapHint:"한도가 없으면 비워 두세요. 한도를 넘은 시간은 OT로 계산하지 않아요.",
   capNote:(c,h)=>`OT는 기간당 ${c}시간까지 인정돼서 ${h}은 OT에서 빠졌어요.` });
 Object.assign(L.en, { pastPeriod:"Past period", futurePeriod:"Upcoming", backToNow:"Back to now" });
@@ -618,7 +617,7 @@ L.es = {
   original:s=>`Programado: ${s}`, changed:"Editado", hoursLbl:"Horas pagadas este día", otHoursLbl:"Horas extra este día", hoursHintW:h=>`Programado ${h}h. Las horas de más cuentan como extra según tus reglas.`, hoursHintOT:"Escribe cualquier número o toca un botón. Solo cambia este día.", reset:"Restablecer día", done:"Listo",
   back:"Atrás", next:"Siguiente", skip:"Omitir", start:"Empezar a usar ShiftPay", save:"Guardar", cancel:"Cancelar",
   welcomeBig:"Conoce tu cheque antes del día de pago.", welcomeLead:"Responde unas preguntas rápidas. ShiftPay arma tu calendario de turnos y calcula cada cheque, con horas extra incluidas.",
-  feat1:"Tu rotación, llenada automáticamente", feat2:"Horas extra, tiempo doble y festivos incluidos", feat3:"El estimado de este periodo, siempre al día", trustLine:"Gratis · Sin registro · Se guarda solo en tu teléfono", demoBtn:"Ver un ejemplo primero", demoBar:"Esto es un ejemplo.", demoStart:"Configurar el mío", hsTitle:"Agrega ShiftPay a tu pantalla de inicio", hsLead:"Ábrela con un toque, en pantalla completa, como una app.", hsIos:["Toca el botón Compartir <b>⬆︎</b> abajo en Safari","Baja y toca <b>Agregar a inicio</b>","Toca <b>Agregar</b> arriba a la derecha"], hsIosNote:"En iPhone solo funciona en Safari. Si abriste el enlace en otra app, ábrelo primero en Safari.", hsAnd:["Toca el menú <b>⋮</b> arriba a la derecha en Chrome","Toca <b>Agregar a la pantalla principal</b> o <b>Instalar app</b>","Toca <b>Agregar</b> / <b>Instalar</b>"], hsInstall:"Instalar ahora", hsNever:"No volver a mostrar", hsOk:"Entendido", demoBack:"Volver al mío",
+  feat1:"Tu rotación, llenada automáticamente", feat2:"Horas extra, tiempo doble y festivos incluidos", feat3:"El estimado de este periodo, siempre al día", trustLine:"Gratis · Sin registro · Se guarda solo en tu teléfono", demoBtn:"Vista previa", demoBar:"Esto es una vista previa.", demoStart:"Configurar el mío", hsTitle:"Agrega ShiftPay a tu pantalla de inicio", hsLead:"Ábrela con un toque, en pantalla completa, como una app.", hsIos:["Toca el botón Compartir <b>⬆︎</b> abajo en Safari","Baja y toca <b>Agregar a inicio</b>","Toca <b>Agregar</b> arriba a la derecha"], hsIosNote:"En iPhone solo funciona en Safari. Si abriste el enlace en otra app, ábrelo primero en Safari.", hsAnd:["Toca el menú <b>⋮</b> arriba a la derecha en Chrome","Toca <b>Agregar a la pantalla principal</b> o <b>Instalar app</b>","Toca <b>Agregar</b> / <b>Instalar</b>"], hsInstall:"Instalar ahora", hsNever:"No volver a mostrar", hsOk:"Entendido", demoBack:"Volver al mío",
   getStarted:"Comenzar ahora",
   q_pattern:"¿Cómo es tu horario de trabajo?", q_patternLead:"Elige el más parecido al de tu empresa.",
   pat:{p223:["2-2-3 (Panamá)","2 sí, 2 no, 3 sí, 2 no, 2 sí, 3 no — 14 días"],p42:["4 sí, 2 no","Ciclo de 6 días"],p44:["4 sí, 4 no","Ciclo de 8 días"],p5:["Lunes a viernes","Fines de semana libres"],p6:["6 días a la semana","Un día libre por semana"],custom:["Personalizado","Arma tu propio ciclo"]},
@@ -646,7 +645,7 @@ L.es = {
   semiLbl:"Los periodos van del 1 al 15 y del 16 al último día del mes.",
   q_ded:"¿Qué te descuentan del cheque?", q_dedLead:"Agrega todo lo que aparece en tu talón. Lo que es antes de impuestos baja tus impuestos.",
   taxLbl:"Tasa de impuestos estimada (%)", taxHint:"Total de impuestos ÷ pago bruto en tu último talón. Casi todos quedan entre 15% y 25%.",
-  q_done:"¡Todo listo! 🎉", sumRot:"Rotación", sumShift:"Turno", sumPay:"Pago", sumFreq:"Te pagan",
+  q_done:"¡Todo listo!", sumRot:"Rotación", sumShift:"Turno", sumPay:"Pago", sumFreq:"Te pagan",
   doneNote:"¿Hiciste un turno extra o tomaste PTO? Solo toca esa fecha en el calendario.",
   err_custom:"Usa W para días de trabajo y O para días libres.", err_tap:"Toca al menos un día de trabajo.", err_rate:"Escribe tu pago por hora.",
   err_salary:"Escribe tu salario.", err_time:"Revisa tu horario de turno.", err_date:"Elige una fecha.",
@@ -680,7 +679,7 @@ L.es = {
   obCount:["Desde el turno N del periodo de pago","Ej.: desde el 7.º turno en dos semanas, todo es extra"],
   otWeeklyLbl:"Las horas extra empiezan después de (horas por semana)", otCountLbl:"Las horas extra empiezan desde el turno n.º",
   weekendOT:["Trabajar en fin de semana es todo extra","Las horas de sábado o domingo cuentan como extra"],
-  otWarnLbl:"Límite de aviso de horas extra por periodo", otWarnHint:"Opcional. Si tu empresa limita las horas extra, te avisamos cuando un periodo lo pase. El pago no cambia.", otWarnNote:(h,l)=>`⚠️ ${h} de horas extra este periodo — pasaste tu límite de ${l} h.`, calibNote:(n,f)=>`Impuestos ajustados ×${f} con tus ${n} cheque${n>1?"s":""} reales.`, calibOff:"Desactivar", calibOn:"Ajustar impuestos con mis cheques reales", hideAmt:"Ocultar montos", showAmt:"Mostrar montos",
+  otWarnLbl:"Límite de aviso de horas extra por periodo", otWarnHint:"Opcional. Si tu empresa limita las horas extra, te avisamos cuando un periodo lo pase. El pago no cambia.", otWarnNote:(h,l)=>`${h} de horas extra este periodo — pasaste tu límite de ${l} h.`, calibNote:(n,f)=>`Impuestos ajustados ×${f} con tus ${n} cheque${n>1?"s":""} reales.`, calibOff:"Desactivar", calibOn:"Ajustar impuestos con mis cheques reales", hideAmt:"Ocultar montos", showAmt:"Mostrar montos",
   otCapLbl:"Máximo de horas extra por periodo", otCapHint:"Déjalo vacío si no hay límite. Las horas arriba del límite no cuentan como extra.",
   capNote:(c,h)=>`Las horas extra tienen tope de ${c} h por periodo, así que ${h} no contaron como extra.`,
   pastPeriod:"Periodo pasado", futurePeriod:"Próximo", backToNow:"Volver a hoy",
@@ -1390,7 +1389,6 @@ function renderHero(){
   $("#hero").innerHTML = `
     <div class="hero-top"><button class="hnav" id="hPrev" aria-label="Previous pay period">‹</button>
       <div class="eyebrow">${isCur ? t("thisPeriod") : t("payPeriod")}</div>
-      <button class="hnav heye" id="hEye" aria-label="${S.hideMoney ? t("showAmt") : t("hideAmt")}" aria-pressed="${!!S.hideMoney}">${S.hideMoney ? "🙈" : "👁"}</button>
       <button class="hnav" id="hNext" aria-label="Next pay period">›</button></div>
     <div class="when"><span class="date">${fDate(p.s)} – ${fDate(p.e)}</span><span class="count">${badge}</span>${isCur ? "" : `<button class="hback" id="hNow">${t("backToNow")}</button>`}</div>
     <div><div class="amt num">${money(showNet ? pc.net : pc.gross)}</div>
@@ -1398,7 +1396,7 @@ function renderHero(){
     <div><div class="bar"><i style="width:${Math.round(dIn/len*100)}%"></i></div>
       <div class="barcap"><span>${t("freq")[S.freq][0]}</span><span>${t("periodProgress", dIn, len)}</span></div></div>`;
   $("#hPrev").onclick = () => goPeriod(-1); $("#hNext").onclick = () => goPeriod(1);
-  $("#hEye").onclick = () => { S.hideMoney = !S.hideMoney; save(); render(); };
+
   const h = $("#hero"); h.ontouchstart = e => { h._x = e.touches[0].clientX; h._y = e.touches[0].clientY; };
   h.ontouchend = e => { if(h._x == null) return; const dx = e.changedTouches[0].clientX - h._x, dy = e.changedTouches[0].clientY - h._y; h._x = null;
     if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.5) goPeriod(dx < 0 ? 1 : -1); };
@@ -1437,7 +1435,7 @@ function renderStub(){
     <div class="stub-head"><button class="nav-btn" id="pPrev" aria-label="Previous pay period">‹</button><h2>${t("payPeriod")} ${fDate(p.s)} – ${fDate(p.e)}</h2><button class="nav-btn" id="pNext" aria-label="Next pay period">›</button></div>
     <div class="stub-sub">${t("freq")[S.freq][0]} · ${hrs(pc.x.worked)}</div>
     <div class="stub">
-      <button class="stub-tog" id="stubTog" aria-expanded="${open}"><span>${open ? t("stubHide") : t("stubShow")}</span>${pro ? "" : `<i class="probadge">🔒 ${t("proLocked")}</i>`}<span class="stub-sum">${money(pc.gross)} − ${money(dedTot)}</span><i class="chev">⌄</i></button>
+      <button class="stub-tog" id="stubTog" aria-expanded="${open}"><span>${open ? t("stubHide") : t("stubShow")}</span>${pro ? "" : `<i class="probadge">${t("proLocked")}</i>`}<span class="stub-sum">${money(pc.gross)} − ${money(dedTot)}</span><i class="chev">⌄</i></button>
       <div class="stub-detail" id="stubDetail"${open ? "" : " hidden"}>${rows}</div>
       ${netRow}${mxRows}
     </div>
@@ -1661,7 +1659,7 @@ function renderDemoBar(){
   let b = $("#demoBar");
   if(!S._demo){ if(b) b.remove(); return; }
   if(!b){ b = document.createElement("div"); b.id = "demoBar"; document.body.appendChild(b); }
-  b.innerHTML = `<span>👀 ${t("demoBar")}</span><button id="demoGo">${DEMO_BACK ? t("demoBack") : t("demoStart")}</button>`;
+  b.innerHTML = `<span>${t("demoBar")}</span><button id="demoGo">${DEMO_BACK ? t("demoBack") : t("demoStart")}</button>`;
   $("#demoGo").onclick = endDemo;
 }
 
@@ -1681,7 +1679,7 @@ function maybeHomeScreen(visits){
 function openHomeScreen(){
   const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
   const steps = ios ? t("hsIos") : t("hsAnd");
-  openSheet(`<div class="sheet-head"><h2>📲 ${t("hsTitle")}</h2><button class="x" id="hsX" aria-label="Close">✕</button></div>
+  openSheet(`<div class="sheet-head"><h2>${t("hsTitle")}</h2><button class="x" id="hsX" aria-label="Close">✕</button></div>
     <p class="lead">${t("hsLead")}</p>
     ${deferredInstall && !ios ? `<button class="btn" id="hsInstall">${t("hsInstall")}</button>` : ""}
     <ol class="share-steps">${steps.map(x => `<li>${x}</li>`).join("")}</ol>
@@ -1701,7 +1699,7 @@ function maybeNudge(why){
   const show = n === 0 || (why === "open" && n === 1 && now - (st.last||0) >= 3*864e5);
   if(!show) return;
   try{ localStorage.setItem("shiftpay-nudge", JSON.stringify({ n:n+1, last:now })); }catch(e){}
-  openSheet(`<div class="sheet-head"><h2>☁️ ${t("nuTitle")}</h2><button class="x" id="nuX" aria-label="Close">✕</button></div>
+  openSheet(`<div class="sheet-head"><h2>${t("nuTitle")}</h2><button class="x" id="nuX" aria-label="Close">✕</button></div>
     <p class="lead">${t("nuLead")}</p>
     <ul class="done-list">${t("nuPts").map(x => `<li>${x}</li>`).join("")}</ul>
     <button class="btn" id="nuGo">${t("nuGo")}</button>
@@ -1715,7 +1713,7 @@ function maybeNudge(why){
 /* ================= Pro ================= */
 function openPro(){
   const on = !!(auth && (auth.user.pro || auth.user.admin));
-  openSheet(`<div class="sheet-head"><h2>⭐ ${t("proTitle")}</h2><button class="x" id="prX" aria-label="Close">✕</button></div>
+  openSheet(`<div class="sheet-head"><h2>${t("proTitle")}</h2><button class="x" id="prX" aria-label="Close">✕</button></div>
     <p class="lead">${t("proLead")}</p>
     <ul class="done-list">${t("proFeats").map(f => `<li>${f}</li>`).join("")}</ul>
     ${on ? `<div class="result"><b>${t("proActive")}</b></div>` : `<p class="proprice">${t("proPrices")}</p><p class="hint">${t("proSoon")}</p>
@@ -1730,7 +1728,7 @@ let adTab = "users", adRows = null, adQ = "";
 const rpc = (fn, args) => sb("/rest/v1/rpc/" + fn, { method:"POST", body: JSON.stringify(args||{}) }, true);
 const fWhen = iso => { if(!iso) return t("adNever"); const d = new Date(iso); return d.toLocaleDateString(LOC(), { month:"short", day:"numeric", year: d.getFullYear()===new Date().getFullYear() ? undefined : "numeric" }); };
 async function openAdmin(){
-  openSheet(`<div class="sheet-head"><h2>👑 ${t("adTitle")}</h2><button class="x" id="adX" aria-label="Close">✕</button></div>
+  openSheet(`<div class="sheet-head"><h2>${t("adTitle")}</h2><button class="x" id="adX" aria-label="Close">✕</button></div>
     <div class="adtabs"><button data-adt="users" aria-pressed="${adTab==="users"}">${t("adUsers")}</button><button data-adt="notice" aria-pressed="${adTab==="notice"}">${t("adNotice")}</button><button data-adt="pro" aria-pressed="${adTab==="pro"}">${t("adPro")}</button></div>
     <div id="adBody"><p class="hint">${t("adLoading")}</p></div>`);
   $("#adX").onclick = closeSheet;
@@ -1855,8 +1853,8 @@ function openBackup(){
 function openSettings(){
   const p = nextPayPeriod();
   const rows = [
-    ...(CLOUD_OK() && auth && auth.user.admin ? [["admin", "👑 " + t("adTitle"), ""]] : []),
-    ...(CLOUD_OK() && (CFG.pro_enforced || (auth && auth.user.pro)) ? [["pro", "⭐ " + t("proTitle"), isPro() ? t("proActive") : t("proSee")]] : []),
+    ...(CLOUD_OK() && auth && auth.user.admin ? [["admin", t("adTitle"), ""]] : []),
+    ...(CLOUD_OK() && (CFG.pro_enforced || (auth && auth.user.pro)) ? [["pro", t("proTitle"), isPro() ? t("proActive") : t("proSee")]] : []),
     ...(CLOUD_OK() ? [["account", t("acTitle"), auth ? (auth.user.nickname || auth.user.username) : t("acNone")]] : []),
     ["language", t("set_language"), ({en:"English",ko:"한국어",es:"Español"})[S.lang]],
     ...(S.lang==="es" ? [["mx", t("set_mx"), t("mxStatusShort")[S.mxStatus||"resident"] + ((S.mxStatus||"resident")!=="resident" && !S.mx183 ? " · " + t("nra") : "")]] : []),
@@ -1873,7 +1871,7 @@ function openSettings(){
   const nEdits = Object.keys(S.overrides).length + Object.keys(S.hours).length;
   openSheet(`<div class="sheet-head"><h2>${t("settings")}</h2><button class="x" id="sX" aria-label="Close">✕</button></div>
     <div class="setlist">${rows.map(([k,l,v]) => `<button data-k="${k}"><b>${l}</b><span>${v}</span></button>`).join("")}</div>
-    <div class="setlist"><button id="sDemo"><b>👀 ${t("demoBtn")}</b><span></span></button><button id="sShare"><b>${t("shareTitle")}</b><span></span></button><button id="sBackup"><b>${t("bkTitle")}</b><span></span></button></div>
+    <div class="setlist"><button id="sHide"><b>${t("hideAmt")}</b><span>${S.hideMoney ? "ON" : "OFF"}</span></button><button id="sDemo"><b>${t("demoBtn")}</b><span></span></button><button id="sShare"><b>${t("shareTitle")}</b><span></span></button><button id="sBackup"><b>${t("bkTitle")}</b><span></span></button></div>
     <div class="setlist"><button id="sClear"><b>${t("set_clear")}</b><span>${nEdits || ""}</span></button><button id="sRedo"><b>${t("set_redo")}</b><span></span></button></div>`);
   $("#sX").onclick = closeSheet;
   $("#sheet").querySelectorAll("[data-k]").forEach(b => b.onclick = () => {
@@ -1893,6 +1891,7 @@ function openSettings(){
   };
   $("#sRedo").onclick = () => { closeSheet(); openWizard(); };
   $("#sShare").onclick = openShare;
+  $("#sHide").onclick = () => { S.hideMoney = !S.hideMoney; save(); render(); openSettings(); };
   $("#sDemo").onclick = () => { closeSheet(); startDemo(); };
   $("#sBackup").onclick = openBackup;
 }
@@ -1946,7 +1945,7 @@ function renderWiz(){
       <div class="welcome"><div class="big">${t("welcomeBig")}</div><p class="lead">${t("welcomeLead")}</p>
       <ul class="feat"><li><i class="s-W">1</i>${t("feat1")}</li><li><i class="s-OT">2</i>${t("feat2")}</li><li><i style="background:var(--pay-soft);color:var(--pay)">$</i>${t("feat3")}</li></ul></div>
       <div class="field"><span class="lbl">Language · 언어 · Idioma</span><div class="quick">${quickH("lang", W.lang, [["en","English"],["ko","한국어"],["es","Español"]])}</div></div>
-      <button class="btn ghost" id="wDemo">👀 ${t("demoBtn")}</button>`;
+      <button class="btn ghost" id="wDemo">${t("demoBtn")}</button>`;
     if(CLOUD_OK() && !auth) body += `<button class="linkbtn" id="wLogin">${t("acHaveAcct")}</button>`;
     nextL = t("getStarted");
   } else if(step==="pattern"){
@@ -2107,7 +2106,7 @@ function renderWiz(){
     nextL = t("start");
   }
   const whyK = { pay:"why_pay", pattern:"why_pattern", days:"why_days", shift:"why_shift", freq:"why_freq", payday:"why_period", tax:"why_tax" }[step];
-  if(whyK && !(step==="days" && ["p5","p6"].includes(W.pattern))) body = body.replace("</h2>", `</h2><p class="why">💡 ${t(whyK)}</p>`);
+  if(whyK && !(step==="days" && ["p5","p6"].includes(W.pattern))) body = body.replace("</h2>", `</h2><p class="why">${t(whyK)}</p>`);
   if(editing && W._chain.indexOf(step) === W._chain.length-1) nextL = t("save");
   const bar = editing ? "" : `<div class="steps">${STEPS.map((_,i)=>i).filter(i => stepShown(i)).map(i=>`<i class="${i<=W._step?"on":""}"></i>`).join("")}</div>`;
   const leftBtn = editing ? `<button class="btn ghost" id="wCancel">${t("cancel")}</button>` : (W._step>0 ? `<button class="btn ghost" id="wBack">${t("back")}</button>` : "");
