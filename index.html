@@ -234,6 +234,10 @@ h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:
 .addchips button{border:1px dashed var(--line);background:transparent;border-radius:999px;padding:7px 12px;font-size:13.5px;font-weight:600}
 .stub .ln.sec{padding:10px 0 2px;border-bottom:0}
 .note.warnline{color:var(--err);font-weight:700}
+details.more{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:6px 0}
+details.more summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--accent)}
+details.more[open] summary{margin-bottom:8px}
+.easy-ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px;font-size:13.5px}
 .daywk{background:var(--chip);border-radius:12px;padding:10px 12px;font-size:13px;display:grid;gap:4px;margin-bottom:8px}
 .daywk .dsplit{font-size:14px}
 .daywk b{font-family:var(--f-mono)}
@@ -353,6 +357,7 @@ const L = {
     thisWk:"This week", nextWk:"Next week", work:"Work", off:"Off",
     matchPerfect:"Found your rotation — perfect match.", matchClose:n=>`Closest match: ${n} of 14 days line up. You can fix single days later.`,
     fixedMF:"Monday – Friday is set. Nothing to tap.", fixed6:"Which day do you have off each week?",
+    q_easy:"Overtime rules: use the usual ones?", q_easyLead:"Most people can just start. You can change any of this later in Settings.", easyRules:"Usual rules", easyHourly:["Over 40 hours in a week → 1.5× pay","Working a holiday → overtime","Weekends → same as weekdays"], easySalary:["Extra shifts on days off → overtime at your regular hourly rate","Working a holiday → overtime","Weekends → same as weekdays"], easyYes:["Use the usual rules (recommended)","Skip the detailed questions — fix later if needed"], easyNo:["My company is different","Answer a few questions about OT and deductions"], moreOpt:"More options (kids, extra withholding, local tax)",
     q_pay:"How are you paid?", hourly:["Hourly","Paid for every hour you work"], salary:["Salary","A set yearly amount"],
     rateLbl:"Hourly rate", diffLbl:"Shift differential (optional)", diffHint:"Extra pay per hour, like a night premium. Leave 0 if none.",
     salaryLbl:"Annual salary",
@@ -419,6 +424,7 @@ const L = {
     thisWk:"이번 주", nextWk:"다음 주", work:"근무", off:"휴무",
     matchPerfect:"패턴을 찾았어요. 딱 맞아요.", matchClose:n=>`가장 비슷한 패턴: 14일 중 ${n}일 일치. 다른 날은 나중에 달력에서 고치면 돼요.`,
     fixedMF:"월~금 근무로 맞췄어요. 누를 필요 없어요.", fixed6:"매주 쉬는 요일을 고르세요.",
+    q_easy:"OT 규칙은 보통 기준으로 할까요?", q_easyLead:"대부분은 그냥 시작하면 돼요. 나중에 설정에서 언제든 바꿀 수 있어요.", easyRules:"보통 기준", easyHourly:["한 주 40시간 넘으면 → 1.5배","공휴일에 일하면 → OT","주말 → 평일과 같음"], easySalary:["쉬는 날 추가 출근 → 시간당 금액으로 OT","공휴일에 일하면 → OT","주말 → 평일과 같음"], easyYes:["보통 기준으로 시작 (추천)","어려운 질문은 건너뛰기 — 필요하면 나중에 수정"], easyNo:["우리 회사는 달라요","OT 규칙과 공제 항목을 직접 정하기"], moreOpt:"더 보기 (자녀, 추가 원천징수, 지역세)",
     q_pay:"급여는 어떻게 받으세요?", hourly:["시급제","일한 시간만큼 받아요"], salary:["연봉제","정해진 연봉을 받아요"],
     rateLbl:"시급", diffLbl:"교대 수당 (선택)", diffHint:"야간 수당처럼 시간당 더 받는 금액. 없으면 0.",
     salaryLbl:"연봉",
@@ -616,6 +622,7 @@ L.es = {
   thisWk:"Esta semana", nextWk:"Próxima semana", work:"Trab.", off:"Libre",
   matchPerfect:"Encontramos tu rotación: coincide perfecto.", matchClose:n=>`Lo más parecido: coinciden ${n} de 14 días. Puedes corregir días sueltos después.`,
   fixedMF:"Lunes a viernes listo. No hay que tocar nada.", fixed6:"¿Qué día descansas cada semana?",
+  q_easy:"Reglas de horas extra: ¿usamos las normales?", q_easyLead:"La mayoría puede empezar ya. Puedes cambiar todo después en Ajustes.", easyRules:"Reglas normales", easyHourly:["Más de 40 horas en la semana → 1.5×","Trabajar en feriado → horas extra","Fines de semana → igual que entre semana"], easySalary:["Turnos extra en días libres → extra a tu tarifa por hora","Trabajar en feriado → horas extra","Fines de semana → igual que entre semana"], easyYes:["Usar las reglas normales (recomendado)","Saltar las preguntas difíciles — cambiar después si hace falta"], easyNo:["Mi empresa es diferente","Responder sobre horas extra y deducciones"], moreOpt:"Más opciones (hijos, retención extra, impuesto local)",
   q_pay:"¿Cómo te pagan?", hourly:["Por hora","Te pagan cada hora trabajada"], salary:["Salario fijo","Una cantidad anual fija"],
   rateLbl:"Pago por hora", diffLbl:"Prima de turno (opcional)", diffHint:"Pago extra por hora, como prima nocturna. Deja 0 si no aplica.",
   salaryLbl:"Salario anual",
@@ -1832,8 +1839,9 @@ function openSettings(){
 $("#openSettings").onclick = openSettings;
 
 /* ================= setup wizard ================= */
-const STEPS = ["welcome","pattern","shift","days","pay","ot","otWhen","hol","wknd","otMore","freq","payday","tax","mx","ded","done"];
-const stepShown = i => STEPS[i] !== "mx" || (W && W.lang==="es");
+const STEPS = ["welcome","pay","pattern","days","shift","freq","payday","tax","mx","easy","ot","otWhen","hol","wknd","otMore","ded","done"];
+const ADV = new Set(["ot","otWhen","hol","wknd","otMore","ded"]);
+const stepShown = i => { const st = STEPS[i]; if(st==="mx") return !!(W && W.lang==="es"); if(st==="easy") return !(W && W._chain); if(ADV.has(st) && W && !W._chain && W._easy !== false) return false; return true; };
 const CHAINS = { pattern:["pattern","days"], shift:["shift"], pay:["pay","ot","otWhen","hol","wknd","otMore"], ot:["ot","otWhen","hol","wknd","otMore"], freq:["freq","payday"], tax:["tax"], mx:["mx"], ded:["ded"] };
 function openWizard(only){
   W = JSON.parse(JSON.stringify(S));
@@ -1952,6 +1960,11 @@ function renderWiz(){
         <div class="field"><label for="wCap">${t("otCapLbl")}</label><input id="wCap" type="number" min="0" step="1" value="${+W.otCap||""}" placeholder="${t("noLimit")}"><span class="hint">${t("otCapHint")}</span></div>`;
       nextL = W._chain ? nextL : t("next");
     }
+  } else if(step==="easy"){
+    const hourly = W.payType==="hourly";
+    body = `<h2>${t("q_easy")}</h2><p class="lead">${t("q_easyLead")}</p>
+      <div class="result"><b>${t("easyRules")}</b><ul class="easy-ul">${(hourly ? t("easyHourly") : t("easySalary")).map(x => `<li>${x}</li>`).join("")}</ul></div>
+      <div class="picks">${pickH("ez", W._easy === false ? 0 : 1, [[1, t("easyYes")[0], t("easyYes")[1]],[0, t("easyNo")[0], t("easyNo")[1]]])}</div>`;
   } else if(step==="freq"){
     body = `<h2>${t("q_freq")}</h2><div class="picks">${pickH("fq", W.freq, ["weekly","biweekly","semimonthly","monthly"].map(k => [k, ...t("freq")[k]]))}</div>`;
   } else if(step==="payday"){
@@ -1992,6 +2005,7 @@ function renderWiz(){
       body += `<div class="field"><label for="wState">${t("stateLbl")}</label><select id="wState">${Object.entries(ST).sort((a,b)=>a[1][0].localeCompare(b[1][0])).map(([k,v])=>`<option value="${k}" ${k===W.state?"selected":""}>${v[0]}</option>`).join("")}</select>
           ${st && !st[4].length ? `<span class="hint">${t("noStateTax", st[0])}</span>` : ""}</div>
         <div class="field"><span class="lbl">${t("filingLbl")}</span><div class="quick">${quickH("fs", W.filing, Object.entries(t("filing")))}</div></div>
+        <details class="more"${(+W.kids||+W.otherDeps||+W.extraWH||+W.localPct) ? " open" : ""}><summary>${t("moreOpt")}</summary>
         <div class="row2">
           <div class="field"><label for="wKids">${t("kidsLbl")}</label><input id="wKids" type="number" min="0" max="12" value="${W.kids||0}"></div>
           <div class="field"><label for="wDeps">${t("depsLbl")}</label><input id="wDeps" type="number" min="0" max="12" value="${W.otherDeps||0}"></div>
@@ -1999,7 +2013,7 @@ function renderWiz(){
         <div class="row2">
           <div class="field"><label for="wXwh">${t("extraWHLbl")}</label><input id="wXwh" type="number" inputmode="decimal" min="0" step="5" value="${W.extraWH||""}" placeholder="0"></div>
           <div class="field"><label for="wLocal">${t("localLbl")}</label><input id="wLocal" type="number" inputmode="decimal" min="0" max="5" step="0.1" value="${W.localPct||""}" placeholder="0"></div>
-        </div><span class="hint">${t("localHint")}</span>`;
+        </div><span class="hint">${t("localHint")}</span></details>`;
     } else {
       body += `<div class="field"><label for="wTax">${t("taxLbl")}</label><input id="wTax" type="number" inputmode="decimal" step="0.5" min="0" max="60" value="${W.taxPct||""}" placeholder="18">
         <div class="quick">${quickH("tx", W.taxPct, [[15,"15%"],[18,"18%"],[20,"20%"],[25,"25%"]])}</div><span class="hint">${t("taxHint")}</span></div>`;
@@ -2032,7 +2046,7 @@ function renderWiz(){
     nextL = t("start");
   }
   if(editing && W._chain.indexOf(step) === W._chain.length-1) nextL = t("save");
-  const bar = editing ? "" : `<div class="steps">${STEPS.map((_,i)=>`<i class="${i<=W._step?"on":""}"></i>`).join("")}</div>`;
+  const bar = editing ? "" : `<div class="steps">${STEPS.map((_,i)=>i).filter(i => stepShown(i)).map(i=>`<i class="${i<=W._step?"on":""}"></i>`).join("")}</div>`;
   const leftBtn = editing ? `<button class="btn ghost" id="wCancel">${t("cancel")}</button>` : (W._step>0 ? `<button class="btn ghost" id="wBack">${t("back")}</button>` : "");
   el.innerHTML = `<div class="wiz-in">${bar}${body}<p class="err">${W._err||""}</p>
     <div class="wiz-nav">${leftBtn}${skip?`<button class="btn ghost" id="wSkip">${t("skip")}</button>`:""}<button class="btn" id="wNext">${nextL}</button></div></div>`;
@@ -2045,6 +2059,7 @@ function wireWiz(){
   el.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { W.lang = b.dataset.lang; S.lang = W.lang; render(); renderWiz(); });
   setv("pat","pattern"); setv("lab","shiftLabel"); setv("six","sixOff",true); setv("pt","payType"); setv("otm","otMult",true); setv("hm","holidayMult",true);
   setv("som","salaryOtMult",true); setv("fq","freq"); setv("ws","weekStart",true); setv("pd","payDow",true); setv("dl","payDelay",true);
+  el.querySelectorAll("[data-ez]").forEach(b => b.onclick = () => { W._easy = b.dataset.ez==="1"; renderWiz(); });
   setv("sm","semiMode"); setv("mm","monthlyMode"); setv("tx","taxPct",true);
   el.querySelectorAll(".strip [data-n]").forEach(b => b.onclick = () => { const n = +b.dataset.n, i = W._tapped.indexOf(n); i>=0 ? W._tapped.splice(i,1) : W._tapped.push(n); renderWiz(); });
   const payPrev = () => { const c = $("#wPayPrev"); if(!c) return; try{ const np = periodFor(TODAY, W); c.innerHTML = t("periodPreview", fDate(np.s), fDate(np.e)); }catch(e){} };
