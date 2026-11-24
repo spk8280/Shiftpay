@@ -1916,7 +1916,6 @@ function renderWiz(){
       <div class="welcome"><div class="big">${t("welcomeBig")}</div><p class="lead">${t("welcomeLead")}</p>
       <ul class="feat"><li><i class="s-W">1</i>${t("feat1")}</li><li><i class="s-OT">2</i>${t("feat2")}</li><li><i style="background:var(--pay-soft);color:var(--pay)">$</i>${t("feat3")}</li></ul></div>
       <div class="field"><span class="lbl">Language · 언어 · Idioma</span><div class="quick">${quickH("lang", W.lang, [["en","English"],["ko","한국어"],["es","Español"]])}</div></div>
-      <p class="trust">🔒 ${t("trustLine")}</p>
       <button class="btn ghost" id="wDemo">👀 ${t("demoBtn")}</button>`;
     if(CLOUD_OK() && !auth) body += `<button class="linkbtn" id="wLogin">${t("acHaveAcct")}</button>`;
     nextL = t("getStarted");
